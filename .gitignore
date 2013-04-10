@@ -1,0 +1,36 @@
+
+#ignore thumbnails created by windows
+Thumbs.db
+*.~ml
+#Ignore files build by Visual Studio
+*.obj
+*.exe
+*.pdb
+*.user
+*.aps
+*.pch
+*.vspscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.cache
+*.ilk
+*.log
+[Bb]in
+[Oo]bj
+[Dd]ebug*/
+*.lib
+*.sbr
+[Rr]elease*/
+_ReSharper*/
+[Tt]est[Rr]esult*
+#Ignore files from Eclipse
+.metadata
+*.opensdf
+*.sdf
+
+/Assignment1/Assignment1/App_Data/aspnet-Assignment1-20130205112959.mdf
