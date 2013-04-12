@@ -1,0 +1,1456 @@
+CC_US.csv
+csv
+CC_US
+Is csv
+IS US
+
+
+NVB_US.csv
+csv
+NVB_US
+Is csv
+IS US
+
+
+MDCB_ATT.csv
+csv
+MDCB_ATT
+Is csv
+Not US
+
+
+KS_ATT.csv
+csv
+KS_ATT
+Is csv
+Not US
+
+
+MDCA_US.csv
+csv
+MDCA_US
+Is csv
+IS US
+
+
+UA_US.csv
+csv
+UA_US
+Is csv
+IS US
+
+
+NVB_ATT.csv
+csv
+NVB_ATT
+Is csv
+Not US
+
+
+KS_US.csv
+csv
+KS_US
+Is csv
+IS US
+
+
+MDCA_ATT.csv
+csv
+MDCA_ATT
+Is csv
+Not US
+
+
+NVA_ATT.csv
+csv
+NVA_ATT
+Is csv
+Not US
+
+
+CC_ATT.csv
+csv
+CC_ATT
+Is csv
+Not US
+
+
+UA_ATT.csv
+csv
+UA_ATT
+Is csv
+Not US
+
+
+RR_ATT.csv
+csv
+RR_ATT
+Is csv
+Not US
+
+
+NVA_US.csv
+csv
+NVA_US
+Is csv
+IS US
+
+
+MDCB_US.csv
+csv
+MDCB_US
+Is csv
+IS US
+
+
+RR_US.csv
+csv
+RR_US
+Is csv
+IS US
+
+
+motd.legal-displayed
+legal-displayed
+motd
+Not csv
+Not US
+
+
+Is csv
+IS US
+US table added
+
+field : OBJECTID
+
+field : POLYLINEID
+
+field : US_POLYID
+
+field : uni
+
+
+OBJECTID double, POLYLINEID double, US_POLYID double, uni
+ double, PRIMARY KEY(OBJECTID)
+
+FIELD : CREATE TABLE IF NOT EXISTS CC_US ( OBJECTID double, POLYLINEID double, US_POLYID double, uni
+ double, PRIMARY KEY(OBJECTID) ) ENGINE = InnoDB DEFAULT CHARSET=latin1
+File Not yet in database
+File CC_US added
+Is csv
+IS US
+US table added
+
+field : OBJECTID
+
+field : POLYLINEID
+
+field : US_POLYID
+
+field : uni
+
+
+OBJECTID double, POLYLINEID double, US_POLYID double, uni
+ double, PRIMARY KEY(OBJECTID)
+
+FIELD : CREATE TABLE IF NOT EXISTS NVB_US ( OBJECTID double, POLYLINEID double, US_POLYID double, uni
+ double, PRIMARY KEY(OBJECTID) ) ENGINE = InnoDB DEFAULT CHARSET=latin1
+File Not yet in database
+File NVB_US added
+Is csv
+Not US
+ATT table added
+
+field : ARCID
+
+field : GRID_CODE
+
+field : OBJECTID
+
+field : LCOVV11
+
+field : LCOVV12
+
+field : LCOVV21
+
+field : LCOVV22
+
+field : LCOVV23
+
+field : LCOVV24
+
+field : LCOVV31
+
+field : LCOVV41
+
+field : LCOVV42
+
+field : LCOVV43
+
+field : LCOVV52
+
+field : LCOVV71
+
+field : LCOVV81
+
+field : LCOVV82
+
+field : LCOVV90
+
+field : LCOVV95
+
+field : LCOVV127
+
+field : Area
+
+field : HydroID_1
+
+field : LCOV11
+
+field : LCOV12
+
+field : LCOV21
+
+field : LCOV22
+
+field : LCOV23
+
+field : LCOV24
+
+field : LCOV31
+
+field : LCOV41
+
+field : LCOV42
+
+field : LCOV43
+
+field : LCOV52
+
+field : LCOV71
+
+field : LCOV81
+
+field : LCOV82
+
+field : LCOV90
+
+field : LCOV95
+
+field : LCOV127
+
+field : MUKEY
+
+field : slopegradd
+
+field : slopegradw
+
+field : slope_l
+
+field : slope_r
+
+field : slope_h
+
+field : tfact
+
+field : weg
+
+field : cokey
+
+field : om_l
+
+field : om_r
+
+field : om_h
+
+field : dbthirdbar
+
+field : dbthirdb_1
+
+field : dbthirdb_2
+
+field : ksat_l
+
+field : ksat_r
+
+field : ksat_h
+
+field : awc_l
+
+field : awc_r
+
+field : awc_h
+
+field : kffact
+
+field : cokey_1
+
+field : brock
+
+field : wt
+
+field : uni
+
+
+ARCID double, GRID_CODE double, OBJECTID double, LCOVV11 double, LCOVV12 double, LCOVV21 double, LCOVV22 double, LCOVV23 double, LCOVV24 double, LCOVV31 double, LCOVV41 double, LCOVV42 double, LCOVV43 double, LCOVV52 double, LCOVV71 double, LCOVV81 double, LCOVV82 double, LCOVV90 double, LCOVV95 double, LCOVV127 double, Area double, HydroID_1 double, LCOV11 double, LCOV12 double, LCOV21 double, LCOV22 double, LCOV23 double, LCOV24 double, LCOV31 double, LCOV41 double, LCOV42 double, LCOV43 double, LCOV52 double, LCOV71 double, LCOV81 double, LCOV82 double, LCOV90 double, LCOV95 double, LCOV127 double, MUKEY double, slopegradd double, slopegradw double, slope_l double, slope_r double, slope_h double, tfact double, weg varchar(25), cokey varchar(25), om_l double, om_r double, om_h double, dbthirdbar double, dbthirdb_1 double, dbthirdb_2 double, ksat_l double, ksat_r double, ksat_h double, awc_l double, awc_r double, awc_h double, kffact varchar(25), cokey_1 varchar(25), brock double, wt double, uni
+ double, PRIMARY KEY(ARCID)
+
+COMM : CREATE TABLE IF NOT EXISTS MDCB_ATT ( ARCID double, GRID_CODE double, OBJECTID double, LCOVV11 double, LCOVV12 double, LCOVV21 double, LCOVV22 double, LCOVV23 double, LCOVV24 double, LCOVV31 double, LCOVV41 double, LCOVV42 double, LCOVV43 double, LCOVV52 double, LCOVV71 double, LCOVV81 double, LCOVV82 double, LCOVV90 double, LCOVV95 double, LCOVV127 double, Area double, HydroID_1 double, LCOV11 double, LCOV12 double, LCOV21 double, LCOV22 double, LCOV23 double, LCOV24 double, LCOV31 double, LCOV41 double, LCOV42 double, LCOV43 double, LCOV52 double, LCOV71 double, LCOV81 double, LCOV82 double, LCOV90 double, LCOV95 double, LCOV127 double, MUKEY double, slopegradd double, slopegradw double, slope_l double, slope_r double, slope_h double, tfact double, weg varchar(25), cokey varchar(25), om_l double, om_r double, om_h double, dbthirdbar double, dbthirdb_1 double, dbthirdb_2 double, ksat_l double, ksat_r double, ksat_h double, awc_l double, awc_r double, awc_h double, kffact varchar(25), cokey_1 varchar(25), brock double, wt double, uni
+ double, PRIMARY KEY(ARCID) ) ENGINE = InnoDB DEFAULT CHARSET=latin1
+File Not yet in database
+File MDCB_ATT added
+Is csv
+Not US
+ATT table added
+
+field : ARCID
+
+field : GRID_CODE
+
+field : OBJECTID
+
+field : LCOVV11
+
+field : LCOVV12
+
+field : LCOVV21
+
+field : LCOVV22
+
+field : LCOVV23
+
+field : LCOVV24
+
+field : LCOVV31
+
+field : LCOVV41
+
+field : LCOVV42
+
+field : LCOVV43
+
+field : LCOVV52
+
+field : LCOVV71
+
+field : LCOVV81
+
+field : LCOVV82
+
+field : LCOVV90
+
+field : LCOVV95
+
+field : LCOVV127
+
+field : Area
+
+field : HydroID_1
+
+field : LCOV11
+
+field : LCOV12
+
+field : LCOV21
+
+field : LCOV22
+
+field : LCOV23
+
+field : LCOV24
+
+field : LCOV31
+
+field : LCOV41
+
+field : LCOV42
+
+field : LCOV43
+
+field : LCOV52
+
+field : LCOV71
+
+field : LCOV81
+
+field : LCOV82
+
+field : LCOV90
+
+field : LCOV95
+
+field : LCOV127
+
+field : MUKEY
+
+field : slopegradd
+
+field : slopegradw
+
+field : slope_l
+
+field : slope_r
+
+field : slope_h
+
+field : tfact
+
+field : weg
+
+field : om_l
+
+field : om_r
+
+field : om_h
+
+field : dbthirdbar
+
+field : dbthirdb_1
+
+field : dbthirdb_2
+
+field : ksat_l
+
+field : ksat_r
+
+field : ksat_h
+
+field : awc_l
+
+field : awc_r
+
+field : awc_h
+
+field : kffact
+
+field : cokey_1
+
+field : brock
+
+field : wt
+
+field : Fnode
+
+field : Tnode
+
+field : CatchID
+
+field : Strahler
+
+field : Segment
+
+field : uni
+
+
+ARCID double, GRID_CODE double, OBJECTID double, LCOVV11 double, LCOVV12 double, LCOVV21 double, LCOVV22 double, LCOVV23 double, LCOVV24 double, LCOVV31 double, LCOVV41 double, LCOVV42 double, LCOVV43 double, LCOVV52 double, LCOVV71 double, LCOVV81 double, LCOVV82 double, LCOVV90 double, LCOVV95 double, LCOVV127 double, Area double, HydroID_1 double, LCOV11 double, LCOV12 double, LCOV21 double, LCOV22 double, LCOV23 double, LCOV24 double, LCOV31 double, LCOV41 double, LCOV42 double, LCOV43 double, LCOV52 double, LCOV71 double, LCOV81 double, LCOV82 double, LCOV90 double, LCOV95 double, LCOV127 double, MUKEY double, slopegradd double, slopegradw double, slope_l double, slope_r double, slope_h double, tfact double, weg varchar(25), om_l double, om_r double, om_h double, dbthirdbar double, dbthirdb_1 double, dbthirdb_2 double, ksat_l double, ksat_r double, ksat_h double, awc_l double, awc_r double, awc_h double, kffact varchar(25), cokey_1 varchar(25), brock double, wt double, Fnode double, Tnode double, CatchID double, Strahler double, Segment double, uni
+ double, PRIMARY KEY(ARCID)
+
+COMM : CREATE TABLE IF NOT EXISTS KS_ATT ( ARCID double, GRID_CODE double, OBJECTID double, LCOVV11 double, LCOVV12 double, LCOVV21 double, LCOVV22 double, LCOVV23 double, LCOVV24 double, LCOVV31 double, LCOVV41 double, LCOVV42 double, LCOVV43 double, LCOVV52 double, LCOVV71 double, LCOVV81 double, LCOVV82 double, LCOVV90 double, LCOVV95 double, LCOVV127 double, Area double, HydroID_1 double, LCOV11 double, LCOV12 double, LCOV21 double, LCOV22 double, LCOV23 double, LCOV24 double, LCOV31 double, LCOV41 double, LCOV42 double, LCOV43 double, LCOV52 double, LCOV71 double, LCOV81 double, LCOV82 double, LCOV90 double, LCOV95 double, LCOV127 double, MUKEY double, slopegradd double, slopegradw double, slope_l double, slope_r double, slope_h double, tfact double, weg varchar(25), om_l double, om_r double, om_h double, dbthirdbar double, dbthirdb_1 double, dbthirdb_2 double, ksat_l double, ksat_r double, ksat_h double, awc_l double, awc_r double, awc_h double, kffact varchar(25), cokey_1 varchar(25), brock double, wt double, Fnode double, Tnode double, CatchID double, Strahler double, Segment double, uni
+ double, PRIMARY KEY(ARCID) ) ENGINE = InnoDB DEFAULT CHARSET=latin1
+File Not yet in database
+File KS_ATT added
+Is csv
+IS US
+US table added
+
+field : OBJECTID
+
+field : POLYLINEID
+
+field : US_POLYID
+
+field : uni
+
+
+OBJECTID double, POLYLINEID double, US_POLYID double, uni
+ double, PRIMARY KEY(OBJECTID)
+
+FIELD : CREATE TABLE IF NOT EXISTS MDCA_US ( OBJECTID double, POLYLINEID double, US_POLYID double, uni
+ double, PRIMARY KEY(OBJECTID) ) ENGINE = InnoDB DEFAULT CHARSET=latin1
+File Not yet in database
+File MDCA_US added
+Is csv
+IS US
+US table added
+
+field : OBJECTID
+
+field : POLYLINEID
+
+field : US_POLYID
+
+field : uni
+
+
+OBJECTID double, POLYLINEID double, US_POLYID double, uni
+ double, PRIMARY KEY(OBJECTID)
+
+FIELD : CREATE TABLE IF NOT EXISTS UA_US ( OBJECTID double, POLYLINEID double, US_POLYID double, uni
+ double, PRIMARY KEY(OBJECTID) ) ENGINE = InnoDB DEFAULT CHARSET=latin1
+File Not yet in database
+File UA_US added
+Is csv
+Not US
+ATT table added
+
+field : ARCID
+
+field : GRID_CODE
+
+field : OBJECTID
+
+field : LCOVV11
+
+field : LCOVV12
+
+field : LCOVV21
+
+field : LCOVV22
+
+field : LCOVV23
+
+field : LCOVV24
+
+field : LCOVV31
+
+field : LCOVV41
+
+field : LCOVV42
+
+field : LCOVV43
+
+field : LCOVV52
+
+field : LCOVV71
+
+field : LCOVV81
+
+field : LCOVV82
+
+field : LCOVV90
+
+field : LCOVV95
+
+field : LCOVV127
+
+field : Area
+
+field : HydroID_1
+
+field : LCOV11
+
+field : LCOV12
+
+field : LCOV21
+
+field : LCOV22
+
+field : LCOV23
+
+field : LCOV24
+
+field : LCOV31
+
+field : LCOV41
+
+field : LCOV42
+
+field : LCOV43
+
+field : LCOV52
+
+field : LCOV71
+
+field : LCOV81
+
+field : LCOV82
+
+field : LCOV90
+
+field : LCOV95
+
+field : LCOV127
+
+field : MUKEY
+
+field : slopegradd
+
+field : slopegradw
+
+field : slope_l
+
+field : slope_r
+
+field : slope_h
+
+field : tfact
+
+field : weg
+
+field : cokey
+
+field : om_l
+
+field : om_r
+
+field : om_h
+
+field : dbthirdbar
+
+field : dbthirdb_1
+
+field : dbthirdb_2
+
+field : ksat_l
+
+field : ksat_r
+
+field : ksat_h
+
+field : awc_l
+
+field : awc_r
+
+field : awc_h
+
+field : kffact
+
+field : cokey_1
+
+field : brock
+
+field : wt
+
+field : uni
+
+
+ARCID double, GRID_CODE double, OBJECTID double, LCOVV11 double, LCOVV12 double, LCOVV21 double, LCOVV22 double, LCOVV23 double, LCOVV24 double, LCOVV31 double, LCOVV41 double, LCOVV42 double, LCOVV43 double, LCOVV52 double, LCOVV71 double, LCOVV81 double, LCOVV82 double, LCOVV90 double, LCOVV95 double, LCOVV127 double, Area double, HydroID_1 double, LCOV11 double, LCOV12 double, LCOV21 double, LCOV22 double, LCOV23 double, LCOV24 double, LCOV31 double, LCOV41 double, LCOV42 double, LCOV43 double, LCOV52 double, LCOV71 double, LCOV81 double, LCOV82 double, LCOV90 double, LCOV95 double, LCOV127 double, MUKEY double, slopegradd double, slopegradw double, slope_l double, slope_r double, slope_h double, tfact double, weg varchar(25), cokey varchar(25), om_l double, om_r double, om_h double, dbthirdbar double, dbthirdb_1 double, dbthirdb_2 double, ksat_l double, ksat_r double, ksat_h double, awc_l double, awc_r double, awc_h double, kffact varchar(25), cokey_1 varchar(25), brock double, wt double, uni
+ double, PRIMARY KEY(ARCID)
+
+COMM : CREATE TABLE IF NOT EXISTS NVB_ATT ( ARCID double, GRID_CODE double, OBJECTID double, LCOVV11 double, LCOVV12 double, LCOVV21 double, LCOVV22 double, LCOVV23 double, LCOVV24 double, LCOVV31 double, LCOVV41 double, LCOVV42 double, LCOVV43 double, LCOVV52 double, LCOVV71 double, LCOVV81 double, LCOVV82 double, LCOVV90 double, LCOVV95 double, LCOVV127 double, Area double, HydroID_1 double, LCOV11 double, LCOV12 double, LCOV21 double, LCOV22 double, LCOV23 double, LCOV24 double, LCOV31 double, LCOV41 double, LCOV42 double, LCOV43 double, LCOV52 double, LCOV71 double, LCOV81 double, LCOV82 double, LCOV90 double, LCOV95 double, LCOV127 double, MUKEY double, slopegradd double, slopegradw double, slope_l double, slope_r double, slope_h double, tfact double, weg varchar(25), cokey varchar(25), om_l double, om_r double, om_h double, dbthirdbar double, dbthirdb_1 double, dbthirdb_2 double, ksat_l double, ksat_r double, ksat_h double, awc_l double, awc_r double, awc_h double, kffact varchar(25), cokey_1 varchar(25), brock double, wt double, uni
+ double, PRIMARY KEY(ARCID) ) ENGINE = InnoDB DEFAULT CHARSET=latin1
+File Not yet in database
+File NVB_ATT added
+Is csv
+IS US
+US table added
+
+field : OBJECTID
+
+field : POLYLINEID
+
+field : US_POLYID
+
+field : uni
+
+
+OBJECTID double, POLYLINEID double, US_POLYID double, uni
+ double, PRIMARY KEY(OBJECTID)
+
+FIELD : CREATE TABLE IF NOT EXISTS KS_US ( OBJECTID double, POLYLINEID double, US_POLYID double, uni
+ double, PRIMARY KEY(OBJECTID) ) ENGINE = InnoDB DEFAULT CHARSET=latin1
+File Not yet in database
+File KS_US added
+Is csv
+Not US
+ATT table added
+
+field : ARCID
+
+field : GRID_CODE
+
+field : OBJECTID
+
+field : LCOVV11
+
+field : LCOVV12
+
+field : LCOVV21
+
+field : LCOVV22
+
+field : LCOVV23
+
+field : LCOVV24
+
+field : LCOVV31
+
+field : LCOVV41
+
+field : LCOVV42
+
+field : LCOVV43
+
+field : LCOVV52
+
+field : LCOVV71
+
+field : LCOVV81
+
+field : LCOVV82
+
+field : LCOVV90
+
+field : LCOVV95
+
+field : LCOVV127
+
+field : Area
+
+field : HydroID_1
+
+field : LCOV11
+
+field : LCOV12
+
+field : LCOV21
+
+field : LCOV22
+
+field : LCOV23
+
+field : LCOV24
+
+field : LCOV31
+
+field : LCOV41
+
+field : LCOV42
+
+field : LCOV43
+
+field : LCOV52
+
+field : LCOV71
+
+field : LCOV81
+
+field : LCOV82
+
+field : LCOV90
+
+field : LCOV95
+
+field : LCOV127
+
+field : MUKEY
+
+field : slopegradd
+
+field : slopegradw
+
+field : slope_l
+
+field : slope_r
+
+field : slope_h
+
+field : tfact
+
+field : weg
+
+field : cokey
+
+field : om_l
+
+field : om_r
+
+field : om_h
+
+field : dbthirdbar
+
+field : dbthirdb_1
+
+field : dbthirdb_2
+
+field : ksat_l
+
+field : ksat_r
+
+field : ksat_h
+
+field : awc_l
+
+field : awc_r
+
+field : awc_h
+
+field : kffact
+
+field : cokey_1
+
+field : brock
+
+field : wt
+
+field : uni
+
+
+ARCID double, GRID_CODE double, OBJECTID double, LCOVV11 double, LCOVV12 double, LCOVV21 double, LCOVV22 double, LCOVV23 double, LCOVV24 double, LCOVV31 double, LCOVV41 double, LCOVV42 double, LCOVV43 double, LCOVV52 double, LCOVV71 double, LCOVV81 double, LCOVV82 double, LCOVV90 double, LCOVV95 double, LCOVV127 double, Area double, HydroID_1 double, LCOV11 double, LCOV12 double, LCOV21 double, LCOV22 double, LCOV23 double, LCOV24 double, LCOV31 double, LCOV41 double, LCOV42 double, LCOV43 double, LCOV52 double, LCOV71 double, LCOV81 double, LCOV82 double, LCOV90 double, LCOV95 double, LCOV127 double, MUKEY double, slopegradd double, slopegradw double, slope_l double, slope_r double, slope_h double, tfact double, weg varchar(25), cokey varchar(25), om_l double, om_r double, om_h double, dbthirdbar double, dbthirdb_1 double, dbthirdb_2 double, ksat_l double, ksat_r double, ksat_h double, awc_l double, awc_r double, awc_h double, kffact varchar(25), cokey_1 varchar(25), brock double, wt double, uni
+ double, PRIMARY KEY(ARCID)
+
+COMM : CREATE TABLE IF NOT EXISTS MDCA_ATT ( ARCID double, GRID_CODE double, OBJECTID double, LCOVV11 double, LCOVV12 double, LCOVV21 double, LCOVV22 double, LCOVV23 double, LCOVV24 double, LCOVV31 double, LCOVV41 double, LCOVV42 double, LCOVV43 double, LCOVV52 double, LCOVV71 double, LCOVV81 double, LCOVV82 double, LCOVV90 double, LCOVV95 double, LCOVV127 double, Area double, HydroID_1 double, LCOV11 double, LCOV12 double, LCOV21 double, LCOV22 double, LCOV23 double, LCOV24 double, LCOV31 double, LCOV41 double, LCOV42 double, LCOV43 double, LCOV52 double, LCOV71 double, LCOV81 double, LCOV82 double, LCOV90 double, LCOV95 double, LCOV127 double, MUKEY double, slopegradd double, slopegradw double, slope_l double, slope_r double, slope_h double, tfact double, weg varchar(25), cokey varchar(25), om_l double, om_r double, om_h double, dbthirdbar double, dbthirdb_1 double, dbthirdb_2 double, ksat_l double, ksat_r double, ksat_h double, awc_l double, awc_r double, awc_h double, kffact varchar(25), cokey_1 varchar(25), brock double, wt double, uni
+ double, PRIMARY KEY(ARCID) ) ENGINE = InnoDB DEFAULT CHARSET=latin1
+File Not yet in database
+File MDCA_ATT added
+Is csv
+Not US
+ATT table added
+
+field : ARCID
+
+field : GRID_CODE
+
+field : OBJECTID
+
+field : LCOVV11
+
+field : LCOVV12
+
+field : LCOVV21
+
+field : LCOVV22
+
+field : LCOVV23
+
+field : LCOVV24
+
+field : LCOVV31
+
+field : LCOVV41
+
+field : LCOVV42
+
+field : LCOVV43
+
+field : LCOVV52
+
+field : LCOVV71
+
+field : LCOVV81
+
+field : LCOVV82
+
+field : LCOVV90
+
+field : LCOVV95
+
+field : LCOVV127
+
+field : Area
+
+field : HydroID_1
+
+field : LCOV11
+
+field : LCOV12
+
+field : LCOV21
+
+field : LCOV22
+
+field : LCOV23
+
+field : LCOV24
+
+field : LCOV31
+
+field : LCOV41
+
+field : LCOV42
+
+field : LCOV43
+
+field : LCOV52
+
+field : LCOV71
+
+field : LCOV81
+
+field : LCOV82
+
+field : LCOV90
+
+field : LCOV95
+
+field : LCOV127
+
+field : MUKEY
+
+field : slopegradd
+
+field : slopegradw
+
+field : slope_l
+
+field : slope_r
+
+field : slope_h
+
+field : tfact
+
+field : weg
+
+field : cokey
+
+field : om_l
+
+field : om_r
+
+field : om_h
+
+field : dbthirdbar
+
+field : dbthirdb_1
+
+field : dbthirdb_2
+
+field : ksat_l
+
+field : ksat_r
+
+field : ksat_h
+
+field : awc_l
+
+field : awc_r
+
+field : awc_h
+
+field : kffact
+
+field : cokey_1
+
+field : brock
+
+field : wt
+
+field : uni
+
+
+ARCID double, GRID_CODE double, OBJECTID double, LCOVV11 double, LCOVV12 double, LCOVV21 double, LCOVV22 double, LCOVV23 double, LCOVV24 double, LCOVV31 double, LCOVV41 double, LCOVV42 double, LCOVV43 double, LCOVV52 double, LCOVV71 double, LCOVV81 double, LCOVV82 double, LCOVV90 double, LCOVV95 double, LCOVV127 double, Area double, HydroID_1 double, LCOV11 double, LCOV12 double, LCOV21 double, LCOV22 double, LCOV23 double, LCOV24 double, LCOV31 double, LCOV41 double, LCOV42 double, LCOV43 double, LCOV52 double, LCOV71 double, LCOV81 double, LCOV82 double, LCOV90 double, LCOV95 double, LCOV127 double, MUKEY double, slopegradd double, slopegradw double, slope_l double, slope_r double, slope_h double, tfact double, weg varchar(25), cokey varchar(25), om_l double, om_r double, om_h double, dbthirdbar double, dbthirdb_1 double, dbthirdb_2 double, ksat_l double, ksat_r double, ksat_h double, awc_l double, awc_r double, awc_h double, kffact varchar(25), cokey_1 varchar(25), brock double, wt double, uni
+ double, PRIMARY KEY(ARCID)
+
+COMM : CREATE TABLE IF NOT EXISTS NVA_ATT ( ARCID double, GRID_CODE double, OBJECTID double, LCOVV11 double, LCOVV12 double, LCOVV21 double, LCOVV22 double, LCOVV23 double, LCOVV24 double, LCOVV31 double, LCOVV41 double, LCOVV42 double, LCOVV43 double, LCOVV52 double, LCOVV71 double, LCOVV81 double, LCOVV82 double, LCOVV90 double, LCOVV95 double, LCOVV127 double, Area double, HydroID_1 double, LCOV11 double, LCOV12 double, LCOV21 double, LCOV22 double, LCOV23 double, LCOV24 double, LCOV31 double, LCOV41 double, LCOV42 double, LCOV43 double, LCOV52 double, LCOV71 double, LCOV81 double, LCOV82 double, LCOV90 double, LCOV95 double, LCOV127 double, MUKEY double, slopegradd double, slopegradw double, slope_l double, slope_r double, slope_h double, tfact double, weg varchar(25), cokey varchar(25), om_l double, om_r double, om_h double, dbthirdbar double, dbthirdb_1 double, dbthirdb_2 double, ksat_l double, ksat_r double, ksat_h double, awc_l double, awc_r double, awc_h double, kffact varchar(25), cokey_1 varchar(25), brock double, wt double, uni
+ double, PRIMARY KEY(ARCID) ) ENGINE = InnoDB DEFAULT CHARSET=latin1
+File Not yet in database
+File NVA_ATT added
+Is csv
+Not US
+ATT table added
+
+field : ARCID
+
+field : GRID_CODE
+
+field : OBJECTID
+
+field : LCOVV11
+
+field : LCOVV12
+
+field : LCOVV21
+
+field : LCOVV22
+
+field : LCOVV23
+
+field : LCOVV24
+
+field : LCOVV31
+
+field : LCOVV41
+
+field : LCOVV42
+
+field : LCOVV43
+
+field : LCOVV52
+
+field : LCOVV71
+
+field : LCOVV81
+
+field : LCOVV82
+
+field : LCOVV90
+
+field : LCOVV95
+
+field : LCOVV127
+
+field : Area
+
+field : HydroID_1
+
+field : LCOV11
+
+field : LCOV12
+
+field : LCOV21
+
+field : LCOV22
+
+field : LCOV23
+
+field : LCOV24
+
+field : LCOV31
+
+field : LCOV41
+
+field : LCOV42
+
+field : LCOV43
+
+field : LCOV52
+
+field : LCOV71
+
+field : LCOV81
+
+field : LCOV82
+
+field : LCOV90
+
+field : LCOV95
+
+field : LCOV127
+
+field : MUKEY
+
+field : slopegradd
+
+field : slopegradw
+
+field : slope_l
+
+field : slope_r
+
+field : slope_h
+
+field : tfact
+
+field : weg
+
+field : cokey
+
+field : om_l
+
+field : om_r
+
+field : om_h
+
+field : dbthirdbar
+
+field : dbthirdb_1
+
+field : dbthirdb_2
+
+field : ksat_l
+
+field : ksat_r
+
+field : ksat_h
+
+field : awc_l
+
+field : awc_r
+
+field : awc_h
+
+field : kffact
+
+field : brock
+
+field : wt
+
+field : Fnode
+
+field : Tnode
+
+field : CatchID
+
+field : Strahler
+
+field : Segment
+
+field : uni
+
+
+ARCID double, GRID_CODE double, OBJECTID double, LCOVV11 double, LCOVV12 double, LCOVV21 double, LCOVV22 double, LCOVV23 double, LCOVV24 double, LCOVV31 double, LCOVV41 double, LCOVV42 double, LCOVV43 double, LCOVV52 double, LCOVV71 double, LCOVV81 double, LCOVV82 double, LCOVV90 double, LCOVV95 double, LCOVV127 double, Area double, HydroID_1 double, LCOV11 double, LCOV12 double, LCOV21 double, LCOV22 double, LCOV23 double, LCOV24 double, LCOV31 double, LCOV41 double, LCOV42 double, LCOV43 double, LCOV52 double, LCOV71 double, LCOV81 double, LCOV82 double, LCOV90 double, LCOV95 double, LCOV127 double, MUKEY double, slopegradd double, slopegradw double, slope_l double, slope_r double, slope_h double, tfact double, weg varchar(25), cokey varchar(25), om_l double, om_r double, om_h double, dbthirdbar double, dbthirdb_1 double, dbthirdb_2 double, ksat_l double, ksat_r double, ksat_h double, awc_l double, awc_r double, awc_h double, kffact varchar(25), brock double, wt double, Fnode double, Tnode double, CatchID double, Strahler double, Segment double, uni
+ double, PRIMARY KEY(ARCID)
+
+COMM : CREATE TABLE IF NOT EXISTS CC_ATT ( ARCID double, GRID_CODE double, OBJECTID double, LCOVV11 double, LCOVV12 double, LCOVV21 double, LCOVV22 double, LCOVV23 double, LCOVV24 double, LCOVV31 double, LCOVV41 double, LCOVV42 double, LCOVV43 double, LCOVV52 double, LCOVV71 double, LCOVV81 double, LCOVV82 double, LCOVV90 double, LCOVV95 double, LCOVV127 double, Area double, HydroID_1 double, LCOV11 double, LCOV12 double, LCOV21 double, LCOV22 double, LCOV23 double, LCOV24 double, LCOV31 double, LCOV41 double, LCOV42 double, LCOV43 double, LCOV52 double, LCOV71 double, LCOV81 double, LCOV82 double, LCOV90 double, LCOV95 double, LCOV127 double, MUKEY double, slopegradd double, slopegradw double, slope_l double, slope_r double, slope_h double, tfact double, weg varchar(25), cokey varchar(25), om_l double, om_r double, om_h double, dbthirdbar double, dbthirdb_1 double, dbthirdb_2 double, ksat_l double, ksat_r double, ksat_h double, awc_l double, awc_r double, awc_h double, kffact varchar(25), brock double, wt double, Fnode double, Tnode double, CatchID double, Strahler double, Segment double, uni
+ double, PRIMARY KEY(ARCID) ) ENGINE = InnoDB DEFAULT CHARSET=latin1
+File Not yet in database
+File CC_ATT added
+Is csv
+Not US
+ATT table added
+
+field : ARCID
+
+field : GRID_CODE
+
+field : OBJECTID
+
+field : LCOVV11
+
+field : LCOVV12
+
+field : LCOVV21
+
+field : LCOVV22
+
+field : LCOVV23
+
+field : LCOVV24
+
+field : LCOVV31
+
+field : LCOVV41
+
+field : LCOVV42
+
+field : LCOVV43
+
+field : LCOVV52
+
+field : LCOVV71
+
+field : LCOVV81
+
+field : LCOVV82
+
+field : LCOVV90
+
+field : LCOVV95
+
+field : LCOVV127
+
+field : Area
+
+field : HydroID_1
+
+field : LCOV11
+
+field : LCOV12
+
+field : LCOV21
+
+field : LCOV22
+
+field : LCOV23
+
+field : LCOV24
+
+field : LCOV31
+
+field : LCOV41
+
+field : LCOV42
+
+field : LCOV43
+
+field : LCOV52
+
+field : LCOV71
+
+field : LCOV81
+
+field : LCOV82
+
+field : LCOV90
+
+field : LCOV95
+
+field : LCOV127
+
+field : MUKEY
+
+field : slopegradd
+
+field : slopegradw
+
+field : slope_l
+
+field : slope_r
+
+field : slope_h
+
+field : tfact
+
+field : weg
+
+field : cokey
+
+field : om_l
+
+field : om_r
+
+field : om_h
+
+field : dbthirdbar
+
+field : dbthirdb_1
+
+field : dbthirdb_2
+
+field : ksat_l
+
+field : ksat_r
+
+field : ksat_h
+
+field : awc_l
+
+field : awc_r
+
+field : awc_h
+
+field : kffact
+
+field : cokey_1
+
+field : brock
+
+field : wt
+
+field : Fnode
+
+field : Tnode
+
+field : CatchID
+
+field : Strahler
+
+field : Segment
+
+field : uni
+
+
+ARCID double, GRID_CODE double, OBJECTID double, LCOVV11 double, LCOVV12 double, LCOVV21 double, LCOVV22 double, LCOVV23 double, LCOVV24 double, LCOVV31 double, LCOVV41 double, LCOVV42 double, LCOVV43 double, LCOVV52 double, LCOVV71 double, LCOVV81 double, LCOVV82 double, LCOVV90 double, LCOVV95 double, LCOVV127 double, Area double, HydroID_1 double, LCOV11 double, LCOV12 double, LCOV21 double, LCOV22 double, LCOV23 double, LCOV24 double, LCOV31 double, LCOV41 double, LCOV42 double, LCOV43 double, LCOV52 double, LCOV71 double, LCOV81 double, LCOV82 double, LCOV90 double, LCOV95 double, LCOV127 double, MUKEY double, slopegradd double, slopegradw double, slope_l double, slope_r double, slope_h double, tfact double, weg varchar(25), cokey varchar(25), om_l double, om_r double, om_h double, dbthirdbar double, dbthirdb_1 double, dbthirdb_2 double, ksat_l double, ksat_r double, ksat_h double, awc_l double, awc_r double, awc_h double, kffact varchar(25), cokey_1 varchar(25), brock double, wt double, Fnode double, Tnode double, CatchID double, Strahler double, Segment double, uni
+ double, PRIMARY KEY(ARCID)
+
+COMM : CREATE TABLE IF NOT EXISTS UA_ATT ( ARCID double, GRID_CODE double, OBJECTID double, LCOVV11 double, LCOVV12 double, LCOVV21 double, LCOVV22 double, LCOVV23 double, LCOVV24 double, LCOVV31 double, LCOVV41 double, LCOVV42 double, LCOVV43 double, LCOVV52 double, LCOVV71 double, LCOVV81 double, LCOVV82 double, LCOVV90 double, LCOVV95 double, LCOVV127 double, Area double, HydroID_1 double, LCOV11 double, LCOV12 double, LCOV21 double, LCOV22 double, LCOV23 double, LCOV24 double, LCOV31 double, LCOV41 double, LCOV42 double, LCOV43 double, LCOV52 double, LCOV71 double, LCOV81 double, LCOV82 double, LCOV90 double, LCOV95 double, LCOV127 double, MUKEY double, slopegradd double, slopegradw double, slope_l double, slope_r double, slope_h double, tfact double, weg varchar(25), cokey varchar(25), om_l double, om_r double, om_h double, dbthirdbar double, dbthirdb_1 double, dbthirdb_2 double, ksat_l double, ksat_r double, ksat_h double, awc_l double, awc_r double, awc_h double, kffact varchar(25), cokey_1 varchar(25), brock double, wt double, Fnode double, Tnode double, CatchID double, Strahler double, Segment double, uni
+ double, PRIMARY KEY(ARCID) ) ENGINE = InnoDB DEFAULT CHARSET=latin1
+File Not yet in database
+File UA_ATT added
+Is csv
+Not US
+ATT table added
+
+field : ARCID
+
+field : GRID_CODE
+
+field : OBJECTID
+
+field : LCOVV11
+
+field : LCOVV12
+
+field : LCOVV21
+
+field : LCOVV22
+
+field : LCOVV23
+
+field : LCOVV24
+
+field : LCOVV31
+
+field : LCOVV41
+
+field : LCOVV42
+
+field : LCOVV43
+
+field : LCOVV52
+
+field : LCOVV71
+
+field : LCOVV81
+
+field : LCOVV82
+
+field : LCOVV90
+
+field : LCOVV95
+
+field : LCOVV127
+
+field : Area
+
+field : HydroID_1
+
+field : LCOV11
+
+field : LCOV12
+
+field : LCOV21
+
+field : LCOV22
+
+field : LCOV23
+
+field : LCOV24
+
+field : LCOV31
+
+field : LCOV41
+
+field : LCOV42
+
+field : LCOV43
+
+field : LCOV52
+
+field : LCOV71
+
+field : LCOV81
+
+field : LCOV82
+
+field : LCOV90
+
+field : LCOV95
+
+field : LCOV127
+
+field : MUKEY
+
+field : slopegradd
+
+field : slopegradw
+
+field : slope_l
+
+field : slope_r
+
+field : slope_h
+
+field : tfact
+
+field : weg
+
+field : cokey
+
+field : om_l
+
+field : om_r
+
+field : om_h
+
+field : dbthirdbar
+
+field : dbthirdb_1
+
+field : dbthirdb_2
+
+field : ksat_l
+
+field : ksat_r
+
+field : ksat_h
+
+field : awc_l
+
+field : awc_r
+
+field : awc_h
+
+field : kffact
+
+field : cokey_1
+
+field : brock
+
+field : wt
+
+field : Fnode
+
+field : Tnode
+
+field : CatchID
+
+field : Strahler
+
+field : Segment
+
+field : uni
+
+
+ARCID double, GRID_CODE double, OBJECTID double, LCOVV11 double, LCOVV12 double, LCOVV21 double, LCOVV22 double, LCOVV23 double, LCOVV24 double, LCOVV31 double, LCOVV41 double, LCOVV42 double, LCOVV43 double, LCOVV52 double, LCOVV71 double, LCOVV81 double, LCOVV82 double, LCOVV90 double, LCOVV95 double, LCOVV127 double, Area double, HydroID_1 double, LCOV11 double, LCOV12 double, LCOV21 double, LCOV22 double, LCOV23 double, LCOV24 double, LCOV31 double, LCOV41 double, LCOV42 double, LCOV43 double, LCOV52 double, LCOV71 double, LCOV81 double, LCOV82 double, LCOV90 double, LCOV95 double, LCOV127 double, MUKEY double, slopegradd double, slopegradw double, slope_l double, slope_r double, slope_h double, tfact double, weg varchar(25), cokey varchar(25), om_l double, om_r double, om_h double, dbthirdbar double, dbthirdb_1 double, dbthirdb_2 double, ksat_l double, ksat_r double, ksat_h double, awc_l double, awc_r double, awc_h double, kffact varchar(25), cokey_1 varchar(25), brock double, wt double, Fnode double, Tnode double, CatchID double, Strahler double, Segment double, uni
+ double, PRIMARY KEY(ARCID)
+
+COMM : CREATE TABLE IF NOT EXISTS RR_ATT ( ARCID double, GRID_CODE double, OBJECTID double, LCOVV11 double, LCOVV12 double, LCOVV21 double, LCOVV22 double, LCOVV23 double, LCOVV24 double, LCOVV31 double, LCOVV41 double, LCOVV42 double, LCOVV43 double, LCOVV52 double, LCOVV71 double, LCOVV81 double, LCOVV82 double, LCOVV90 double, LCOVV95 double, LCOVV127 double, Area double, HydroID_1 double, LCOV11 double, LCOV12 double, LCOV21 double, LCOV22 double, LCOV23 double, LCOV24 double, LCOV31 double, LCOV41 double, LCOV42 double, LCOV43 double, LCOV52 double, LCOV71 double, LCOV81 double, LCOV82 double, LCOV90 double, LCOV95 double, LCOV127 double, MUKEY double, slopegradd double, slopegradw double, slope_l double, slope_r double, slope_h double, tfact double, weg varchar(25), cokey varchar(25), om_l double, om_r double, om_h double, dbthirdbar double, dbthirdb_1 double, dbthirdb_2 double, ksat_l double, ksat_r double, ksat_h double, awc_l double, awc_r double, awc_h double, kffact varchar(25), cokey_1 varchar(25), brock double, wt double, Fnode double, Tnode double, CatchID double, Strahler double, Segment double, uni
+ double, PRIMARY KEY(ARCID) ) ENGINE = InnoDB DEFAULT CHARSET=latin1
+File Not yet in database
+File RR_ATT added
+Is csv
+IS US
+US table added
+
+field : OBJECTID
+
+field : POLYLINEID
+
+field : US_POLYID
+
+field : uni
+
+
+OBJECTID double, POLYLINEID double, US_POLYID double, uni
+ double, PRIMARY KEY(OBJECTID)
+
+FIELD : CREATE TABLE IF NOT EXISTS NVA_US ( OBJECTID double, POLYLINEID double, US_POLYID double, uni
+ double, PRIMARY KEY(OBJECTID) ) ENGINE = InnoDB DEFAULT CHARSET=latin1
+File Not yet in database
+File NVA_US added
+Is csv
+IS US
+US table added
+
+field : OBJECTID
+
+field : POLYLINEID
+
+field : US_POLYID
+
+field : uni
+
+
+OBJECTID double, POLYLINEID double, US_POLYID double, uni
+ double, PRIMARY KEY(OBJECTID)
+
+FIELD : CREATE TABLE IF NOT EXISTS MDCB_US ( OBJECTID double, POLYLINEID double, US_POLYID double, uni
+ double, PRIMARY KEY(OBJECTID) ) ENGINE = InnoDB DEFAULT CHARSET=latin1
+File Not yet in database
+File MDCB_US added
+Is csv
+IS US
+US table added
+
+field : OBJECTID
+
+field : POLYLINEID
+
+field : US_POLYID
+
+field : uni
+
+
+OBJECTID double, POLYLINEID double, US_POLYID double, uni
+ double, PRIMARY KEY(OBJECTID)
+
+FIELD : CREATE TABLE IF NOT EXISTS RR_US ( OBJECTID double, POLYLINEID double, US_POLYID double, uni
+ double, PRIMARY KEY(OBJECTID) ) ENGINE = InnoDB DEFAULT CHARSET=latin1
+File Not yet in database
+File RR_US added
+Not csv
+Not US
+Not a CSV file
+File Not yet in database
+Error 1146: Table 'cybercomm.motd' doesn't exist

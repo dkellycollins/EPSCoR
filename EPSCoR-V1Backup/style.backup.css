@@ -1,0 +1,158 @@
+body {
+background-color:#f1f1f1;
+font-family: georgia,sans-serif;
+color:#333;
+margin:0;
+padding:0;
+}
+ 
+#wrapper {
+width:1115px;
+background-color:#f8f8f8;
+margin:0 auto;
+border-left:0px solid #ccc;
+border-right:0px solid #ccc;
+}
+
+#header {
+width:1115px;
+height:145px;
+margin:0 auto;
+margin-bottom:10px;
+border-bottom:1px solid #ccc;
+border-top:1px solid #ccc;
+}
+
+#header h2 {
+padding:10px;
+}
+
+#header h3 {
+padding:10px;
+}
+
+#nav {
+width:1120px;
+height:40px;
+border-bottom:1px solid #ccc;
+}
+
+#nav a {
+display:inline;
+padding:10px;
+text-decoration:none;
+background-color:#f1f1f1;
+}
+
+#nav a:hover {
+background-color:#bababa;
+height:80px;
+}
+
+#content {
+width:900px;
+float:left;
+padding:10px;
+}
+
+#sidebar {
+width:175px;
+float:right;
+margin-bottom:25px;
+}
+
+#sidebar a {
+text-decoration:none;
+}
+
+#sidebar li {
+list-style:none;
+}
+
+#footer {
+clear:both;
+width:1115px;
+height:115px;
+border-top:1px solid #ccc;
+}
+
+#footer p {
+padding:10px;
+}
+
+@media all{
+.navmenu, 
+.navmenu ul,
+.navmenu li
+{
+    padding: 0px;
+    margin: 0px;
+}
+.navmenu > li
+{
+    float: left;
+}
+.navmenu li
+{
+    list-style-type: none;
+    border: 1px solid #5d177a;
+    color: black;
+    background-color: #5d177a;
+    padding: 0px;
+}
+.navmenu ul
+{
+    display: none;
+    position: absolute;
+    margin-left: -3px;
+    margin-top: 2px;
+}
+.navmenu li:hover > ul
+{
+    display: block;
+}
+.navmenu ul.parent_hover
+{
+    display: block;
+}
+.navmenu a
+{
+    color: black;
+    background: none;
+    display: block;
+    width: 100%;
+    text-decoration: none;
+}
+.navmenu li:hover
+{
+    color: black;
+    background-color: #5d177a;
+}
+.navmenu li.hover,
+.navmenu a:hover
+{
+    color: black;
+    background-color: #5d177a;
+}
+.navmenu ul ul
+{
+    margin-top: -1.2em;
+    left: 99%;
+}
+.navmenu span
+{
+    display: block;
+}
+.navmenu
+{
+    float: left;
+    width: 98.5%;
+    color: black;
+    background-color: #5d177a;
+    border:6px solid #FFF
+}
+.endmenu
+{
+    clear: left;
+}
+}
