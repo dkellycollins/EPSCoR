@@ -8,7 +8,30 @@
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-    @RenderBody()
+    <header id ="header">
+        <img src="~/Content/images/header.jpeg" alt="EPSCoR" height="160" width="1150"/>
+
+        <nav id ="nav">
+            <ul class ="navmenu">
+                <li>@Html.ActionLink("Home", "Index")</li>
+                <li>@Html.ActionLink("About", "Index")</li>
+                <li>@Html.ActionLink("How To", "Index")</li>
+                <li>@Html.ActionLink("Export Access Table", "Index")</li>
+                <li>@Html.ActionLink("Upload Data Table", "Index")</li>
+                <li>@Html.ActionLink("Load Table", "Index")</li>
+                <li>@Html.ActionLink("Data", "Index")</li>
+                <li>@Html.ActionLink("Watershed", "Index")</li>
+            </ul>
+        </nav>
+    </header>
+
+    <div id ="content">
+        @RenderBody()
+    </div>
+
+    <footer id="footer">
+        <img src="~/Content/images/footer.jpeg" alt="Footer" height="100" width="1150" />
+    </footer>
 
     @Scripts.Render("~/bundles/jquery")
     @RenderSection("scripts", required: false)
