@@ -1,0 +1,51 @@
+﻿@{
+    ViewBag.Title = "CIS Cybercommons - KSU 2012";
+}
+
+<h2>How to export your database from Microsoft Access</h2>
+
+	<pre> Step 1: </pre>
+	<span class="center">
+        First, open up your associated .accdb database file in Microsoft 
+	    Access 2007 or newer, and look for the tables section on the 
+	    left side (default)
+	    <img src="~Content/images/howto/step1.jpg" alt="Step 1" height="429" width="391" />
+    </span>
+	<pre> Step 2: </pre>
+	<span class ="center">
+	    Right click on the database table you'd like to upload, select "Export", and then select "Text File"
+	    <img src="~Content/images/howto/step2.jpg" alt="Step 2" height="429" width="570" />>
+	</span>
+    <pre> Step 3: </pre>
+    <span class="center">
+	    At the output filename prompt, type in the name of your output file (the table name is a good name) and change the
+	    .txt filetype to .csv
+        <em>*** NOTE ***</em>
+        When naming files, it is necessary for you to ensure proper operation by ending all upstream filenames
+	    with "_US" before the .csv filetype. Otherwise your uploaded table will be assumed as an attribute table i.e. 
+	    if your attribute filename is CC.csv then your upstream filename would be CC_US.csv
+	    <img src="~Content/images/howto/step3.jpg" alt="Step 3" height="429" width="576" />
+    </span>
+	<pre> Step 4: </pre>
+	<span class="center">
+	    After clicking OK, make sure in the next pane that the "Delimited" radio button is selected, and then press Next.
+	    <img src="~Content/images/howto/step4.jpg" alt="Step 4" height="429" width="570" />
+	</span>
+    <pre> Step 5: </pre>
+	<span class="center">
+	    In the next window make sure that the "Comma" radio button is selected, and that the check box next to 
+	    "Include Field Names on First Row" is ckecked. Click Next.
+	    <img src="~Content/images/howto/step5.jpg" alt="Step 5" height="429" width="570" />
+	</span>
+    <pre> Step 6 </pre>
+	<span class="center">
+	    At the last step, check to see that your export file is named correctly and that it has the .csv extension. Click
+	    finish and let Access do its job. Once you have exported all the table files you'd like to upload you can proceed
+	    to the upload stage.
+	    <img src="~Content/images/howto/step6.jpg" alt="Step 6" height="429" width="570" />
+	</span>
+	<div class="">
+	    @Html.ActionLink("Go to Upload How To", "HowToUpload", "About")
+        <br />
+	    @Html.ActionLink("Skip to Upload", "Index", "Upload")
+	</div>

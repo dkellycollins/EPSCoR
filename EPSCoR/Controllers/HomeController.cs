@@ -6,6 +6,9 @@ using System.Web.Mvc;
 
 namespace EPSCoR.Controllers
 {
+    /// <summary>
+    /// Contains public info pages such as the welcome page.
+    /// </summary>
     public class HomeController : Controller
     {
         //

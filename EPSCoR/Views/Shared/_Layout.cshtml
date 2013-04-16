@@ -13,14 +13,18 @@
 
         <nav id ="nav">
             <ul class ="navmenu">
-                <li>@Html.ActionLink("Home", "Index")</li>
-                <li>@Html.ActionLink("About", "Index")</li>
-                <li>@Html.ActionLink("How To", "Index")</li>
-                <li>@Html.ActionLink("Export Access Table", "Index")</li>
-                <li>@Html.ActionLink("Upload Data Table", "Index")</li>
-                <li>@Html.ActionLink("Load Table", "Index")</li>
-                <li>@Html.ActionLink("Data", "Index")</li>
-                <li>@Html.ActionLink("Watershed", "Index")</li>
+                <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                <li>@Html.ActionLink("About", "Index", "About")</li>
+                <li>
+                    @Html.ActionLink("How To", "Index", "About")
+                    <ul>
+                        <li>@Html.ActionLink("Export Access Table", "HowToExport", "About")</li>
+                        <li>@Html.ActionLink("Upload Data Table", "HowToUpload", "About")</li>
+                    </ul>
+                </li>
+                <li>@Html.ActionLink("Load Table", "Index", "Load_Table")</li>
+                <li>@Html.ActionLink("Data", "Index", "Data")</li>
+                <li>@Html.ActionLink("Watershed", "Index", "Watershed")</li>
             </ul>
         </nav>
     </header>
