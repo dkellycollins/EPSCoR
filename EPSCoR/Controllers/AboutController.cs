@@ -6,6 +6,10 @@ using System.Web.Mvc;
 
 namespace EPSCoR.Controllers
 {
+    /// <summary>
+    /// Contains private info pages such as the How to pages.
+    /// </summary>
+    [Authorize]
     public class AboutController : Controller
     {
         //
