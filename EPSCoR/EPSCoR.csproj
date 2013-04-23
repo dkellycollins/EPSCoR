@@ -150,7 +150,9 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AboutController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\FileHelpers.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\TablesController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -158,6 +160,9 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\DefaultContext.cs" />
+    <Compile Include="Models\Repositories\BasicRepo.cs" />
+    <Compile Include="Models\Repositories\IRepository.cs" />
+    <Compile Include="Models\Table.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -268,6 +273,10 @@
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\_RemoveExternalLoginsPartial.cshtml" />
     <Content Include="Views\Account\_SetPasswordPartial.cshtml" />
+    <Content Include="Views\Tables\Index.cshtml" />
+    <Content Include="Views\Tables\Upload.cshtml" />
+    <Content Include="Views\Tables\Details.cshtml" />
+    <Content Include="Views\Tables\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

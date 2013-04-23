@@ -15,6 +15,8 @@ namespace EPSCoR.Models
         [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int UserId { get; set; }
         public string UserName { get; set; }
+
+        public virtual ICollection<Table> Tables { get; set; }
     }
 
     public class RegisterExternalLoginModel

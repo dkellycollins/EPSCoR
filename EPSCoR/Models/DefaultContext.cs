@@ -8,6 +8,7 @@ namespace EPSCoR.Models
 {
     public class DefaultContext : DbContext
     {
+        public DbSet<Table> Tables { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
 
         public DefaultContext()

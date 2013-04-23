@@ -51,8 +51,11 @@ height:60px;
 
 #content {
 width:1120px;
-float:left;
 padding:5px;
+margin:0 auto;
+margin-bottom:10px;
+border-bottom:1px solid #ccc;
+border-top:1px solid #ccc;
 }
 
 
@@ -68,6 +71,9 @@ list-style:none;
 clear:both;
 width:1115px;
 height:115px;
+margin:0 auto;
+margin-bottom:10px;
+border-bottom:1px solid #ccc;
 border-top:1px solid #ccc;
 }
 
