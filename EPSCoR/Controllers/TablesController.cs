@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using EPSCoR.Models;
-using EPSCoR.Models.Repositories;
+using EPSCoR.Repositories;
 
 namespace EPSCoR.Controllers
 {

@@ -2,9 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using EPSCoR.Models;
 
-namespace EPSCoR.Models.Repositories
+namespace EPSCoR.Repositories
 {
+    /// <summary>
+    /// This implementation uses a DbContext to access the database
+    /// </summary>
+    /// <typeparam name="T">Model type</typeparam>
     public class BasicRepo<T> : IRepository<T>
         where T : class
     {

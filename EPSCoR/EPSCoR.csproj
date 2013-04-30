@@ -160,8 +160,8 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\DefaultContext.cs" />
-    <Compile Include="Models\Repositories\BasicRepo.cs" />
-    <Compile Include="Models\Repositories\IRepository.cs" />
+    <Compile Include="Repositories\BasicRepo.cs" />
+    <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Models\Table.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -277,6 +277,9 @@
     <Content Include="Views\Tables\Upload.cshtml" />
     <Content Include="Views\Tables\Details.cshtml" />
     <Content Include="Views\Tables\Delete.cshtml" />
+    <Content Include="Views\Tables\TableDetails.cshtml" />
+    <Content Include="Views\Tables\CalcForm.cshtml" />
+    <Content Include="Views\Tables\ConvertedTablesForm.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

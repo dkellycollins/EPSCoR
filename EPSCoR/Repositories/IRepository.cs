@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace EPSCoR.Models.Repositories
+namespace EPSCoR.Repositories
 {
     /// <summary>
     /// Interface for accessing the database.
