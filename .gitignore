@@ -33,6 +33,6 @@ _ReSharper*/
 *.opensdf
 *.sdf
 
-/Assignment1/Assignment1/App_Data/aspnet-Assignment1-20130205112959.mdf
 
-/Old_Site
+*.mdf
+*.ldf
