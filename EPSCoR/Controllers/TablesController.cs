@@ -62,7 +62,7 @@ namespace EPSCoR.Controllers
             try
             {
                 Table newTable = new Table();
-                newTable.Name = FileHelpers.SaveFile(this.User.Identity.Name, file);
+                newTable.Name = FileConverter.SaveFile(this.User.Identity.Name, file);
                 _tableRepo.Create(newTable);
                 ViewBag.UploadResult = "Upload Sucessful!";
             }
