@@ -150,7 +150,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AboutController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\FileHelpers.cs" />
+    <Compile Include="Controllers\FileConverter.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TablesController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
