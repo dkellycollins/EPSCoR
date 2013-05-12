@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using EPSCoR.Models;
@@ -13,11 +14,16 @@ namespace EPSCoR.Repositories
     public class BasicRepo<T> : IRepository<T>
         where T : class
     {
-        private DefaultContext _context;
+        private DbContext _context;
 
         public BasicRepo()
         {
             _context = new DefaultContext();
+        }
+
+        public BasicRepo(DbContext context)
+        {
+            _context = context;
         }
 
         public T Get(int entityID)

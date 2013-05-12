@@ -11,14 +11,14 @@ namespace EPSCoR.Controllers
     [Authorize]
     public class TablesController : Controller
     {
-        private IRepository<Table> _tableRepo;
+        private IRepository<TableIndex> _tableRepo;
 
         public TablesController()
         {
-            _tableRepo = new BasicRepo<Table>();
+            _tableRepo = new BasicRepo<TableIndex>();
         }
 
-        public TablesController(IRepository<Table> repo)
+        public TablesController(IRepository<TableIndex> repo)
         {
             _tableRepo = repo;
         }
@@ -39,7 +39,7 @@ namespace EPSCoR.Controllers
         // GET: /Tables/Details/{Table.ID}
         public ActionResult Details(int id = 0)
         {
-            Table table = _tableRepo.Get(id);
+            TableIndex table = _tableRepo.Get(id);
             if (table == null)
             {
                 return new HttpNotFoundResult();
@@ -61,7 +61,7 @@ namespace EPSCoR.Controllers
         {
             try
             {
-                Table newTable = new Table();
+                TableIndex newTable = new TableIndex();
                 newTable.Name = FileConverter.SaveFile(this.User.Identity.Name, file);
                 _tableRepo.Create(newTable);
                 ViewBag.UploadResult = "Upload Sucessful!";

@@ -5,7 +5,7 @@ using System.Web;
 
 namespace EPSCoR.Models
 {
-    public class Table
+    public class TableIndex
     {
         public int ID { get; set; }
 

@@ -16,7 +16,7 @@ namespace EPSCoR.Models
         public int UserId { get; set; }
         public string UserName { get; set; }
 
-        public virtual ICollection<Table> Tables { get; set; }
+        public virtual ICollection<TableIndex> Tables { get; set; }
     }
 
     public class RegisterExternalLoginModel

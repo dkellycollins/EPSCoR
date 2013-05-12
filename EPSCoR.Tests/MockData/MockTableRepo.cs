@@ -8,24 +8,24 @@ using EPSCoR.Repositories;
 
 namespace EPSCoR.Tests.MockData
 {
-    public class MockTableRepo : IRepository<Table>
+    public class MockTableRepo : IRepository<TableIndex>
     {
-        public Table Get(int entityID)
+        public TableIndex Get(int entityID)
         {
             throw new NotImplementedException();
         }
 
-        public IQueryable<Table> GetAll()
+        public IQueryable<TableIndex> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public void Create(Table itemToCreate)
+        public void Create(TableIndex itemToCreate)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(Table itemToUpdate)
+        public void Update(TableIndex itemToUpdate)
         {
             throw new NotImplementedException();
         }
