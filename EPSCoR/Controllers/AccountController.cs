@@ -8,7 +8,7 @@ using System.Web.Security;
 using DotNetOpenAuth.AspNet;
 using Microsoft.Web.WebPages.OAuth;
 using WebMatrix.WebData;
-using EPSCoR.Models;
+using EPSCoR.Database.Models;
 using EPSCoR.Filters;
 
 namespace EPSCoR.Controllers
@@ -263,8 +263,9 @@ namespace EPSCoR.Controllers
             if (ModelState.IsValid)
             {
                 // Insert a new user into the database
-                using (DefaultContext db = new DefaultContext())
+                try
                 {
+                    DefaultContext db = DefaultContext.GetInstance();
                     UserProfile user = db.UserProfiles.FirstOrDefault(u => u.UserName.ToLower() == model.UserName.ToLower());
                     // Check if user already exists
                     if (user == null)
@@ -282,6 +283,10 @@ namespace EPSCoR.Controllers
                     {
                         ModelState.AddModelError("UserName", "User name already exists. Please enter a different user name.");
                     }
+                }
+                finally
+                {
+                    DefaultContext.Release();
                 }
             }
 

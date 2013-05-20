@@ -15,6 +15,6 @@ namespace EPSCoR.Repositories
         FileStream OpenFile(string fileName);
         IEnumerable<string> GetFiles();
         void DeleteFile(string fileName);
-        bool FileExist();
+        bool FileExist(string fileName);
     }
 }

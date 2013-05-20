@@ -5,9 +5,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPSCoR", "EPSCoR\EPSCoR.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPSCoR.Tests", "EPSCoR.Tests\EPSCoR.Tests.csproj", "{162C5C70-4A14-4E6D-A835-DEDB6DCBCC1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPSCoR.Database", "ESPCoR.Database\EPSCoR.Database.csproj", "{CABE2C57-7BB7-40DE-8F38-2B18BFFBEE38}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPSCoR.Database", "EPSCoR.Database\EPSCoR.Database.csproj", "{CABE2C57-7BB7-40DE-8F38-2B18BFFBEE38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPSCoR.Database.Tests", "EPSCoR.Database.Test\EPSCoR.Database.Tests.csproj", "{941470A0-3864-4D16-8EA6-CF3684F9FA29}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPSCoR.Database.Tests", "EPSCoR.Database.Tests\EPSCoR.Database.Tests.csproj", "{941470A0-3864-4D16-8EA6-CF3684F9FA29}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

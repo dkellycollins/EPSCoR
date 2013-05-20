@@ -4,7 +4,7 @@ using System.Data.Entity.Infrastructure;
 using System.Threading;
 using System.Web.Mvc;
 using WebMatrix.WebData;
-using EPSCoR.Models;
+using EPSCoR.Database.Models;
 
 namespace EPSCoR.Filters
 {
@@ -26,11 +26,11 @@ namespace EPSCoR.Filters
         {
             public SimpleMembershipInitializer()
             {
-                Database.SetInitializer<DefaultContext>(null);
+                System.Data.Entity.Database.SetInitializer<DefaultContext>(null);
 
                 try
                 {
-                    using (var context = new DefaultContext())
+                    using (var context = DefaultContext.GetInstance())
                     {
                         if (!context.Database.Exists())
                         {
@@ -44,6 +44,10 @@ namespace EPSCoR.Filters
                 catch (Exception ex)
                 {
                     throw new InvalidOperationException("The ASP.NET Simple Membership database could not be initialized. For more information, please see http://go.microsoft.com/fwlink/?LinkId=256588", ex);
+                }
+                finally
+                {
+                    DefaultContext.Release();
                 }
             }
         }

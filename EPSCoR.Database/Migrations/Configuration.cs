@@ -1,25 +1,22 @@
 namespace EPSCoR.Database.Migrations
 {
     using System;
+    using System.Collections.Generic;
     using System.Data.Entity;
+    using System.Data.Entity.Infrastructure;
     using System.Data.Entity.Migrations;
     using System.IO;
     using System.Linq;
     using System.Reflection;
     using System.Web.Security;
-    using EPSCoR.Models;
+    using EPSCoR.Database.Models;
     using WebMatrix.WebData;
-    using EPSCoR.Filters;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<EPSCoR.Models.DefaultContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<EPSCoR.Database.Models.DefaultContext>
     {
         public Configuration()
         {
-#if DEBUG
             AutomaticMigrationsEnabled = true;
-#else
-            AutomaticMigrationsEnabled = false;
-#endif
         }
 
         protected override void Seed(DefaultContext context)
@@ -29,14 +26,16 @@ namespace EPSCoR.Database.Migrations
 #endif
             context.Database.CreateIfNotExists();
 
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            seedAccounts(assembly.GetManifestResourceStream("EPSCoR.App_Data.Seed_Data.AccountSeed.txt"));
+            //Get the assembly that contains this class.
+            Assembly assembly = Assembly.GetAssembly(typeof(Configuration));
+            //seedAccounts(assembly.GetManifestResourceStream("EPSCoR.Database.App_Data.Seed_Data.AccountSeed.txt"));
+            seedAccounts();
         }
 
         private void seedAccounts(Stream resourceStream)
         {
             //Initializes websecurity
-            new InitializeSimpleMembershipAttribute.SimpleMembershipInitializer();
+            new SimpleMembershipInitializer();
 
             StreamReader reader = new StreamReader(resourceStream);
             string[] roles = reader.ReadLine().Split(',');
@@ -59,6 +58,70 @@ namespace EPSCoR.Database.Migrations
                         password);
                 for(int i = 2; i < account.Length; i++)
                     Roles.AddUserToRole(userName, account[i].Trim());
+            }
+        }
+
+        private void seedAccounts()
+        {
+            new SimpleMembershipInitializer();
+
+            string[] roles = new string[]
+            {
+                "admin",
+                "default"
+            };
+
+            foreach (string role in roles)
+            {
+                if (!Roles.RoleExists(role))
+                    Roles.CreateRole(role);
+            }
+
+            List<Tuple<string, string, string>> accounts = new List<Tuple<string,string,string>>()
+            {
+                new Tuple<string, string, string>("ram", "Ircees60Joib_@", "admin")
+            };
+
+            foreach (Tuple<string, string, string> account in accounts)
+            {
+                if (!WebSecurity.UserExists(account.Item1))
+                {
+                    WebSecurity.CreateUserAndAccount(
+                        account.Item1,
+                        account.Item2);
+                    Roles.AddUserToRole(account.Item1, account.Item3);
+                }
+            }
+
+        }
+
+        internal class SimpleMembershipInitializer
+        {
+            public SimpleMembershipInitializer()
+            {
+                System.Data.Entity.Database.SetInitializer<DefaultContext>(null);
+
+                try
+                {
+                    using (var context = DefaultContext.GetInstance())
+                    {
+                        if (!context.Database.Exists())
+                        {
+                            // Create the SimpleMembership database without Entity Framework migration schema
+                            ((IObjectContextAdapter)context).ObjectContext.CreateDatabase();
+                        }
+                    }
+
+                    WebSecurity.InitializeDatabaseConnection("DefaultConnection", "UserProfile", "UserId", "UserName", autoCreateTables: true);
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException("The ASP.NET Simple Membership database could not be initialized. For more information, please see http://go.microsoft.com/fwlink/?LinkId=256588", ex);
+                }
+                finally
+                {
+                    DefaultContext.Release();
+                }
             }
         }
     }

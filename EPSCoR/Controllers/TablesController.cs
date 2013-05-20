@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using EPSCoR.Models;
+using EPSCoR.Database.Models;
 using EPSCoR.Repositories;
 using WebMatrix.WebData;
 
