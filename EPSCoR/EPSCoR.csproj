@@ -160,10 +160,8 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\DefaultContext.cs" />
-    <Compile Include="Models\DynamicTable.cs" />
     <Compile Include="Repositories\BasicFileAccessor.cs" />
     <Compile Include="Repositories\BasicRepo.cs" />
-    <Compile Include="Repositories\DynamicTableRepo.cs" />
     <Compile Include="Repositories\IFileAccessor.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Models\TableIndex.cs" />
@@ -285,7 +283,12 @@
     <Content Include="Views\Tables\CalcForm.cshtml" />
     <Content Include="Views\Tables\ConvertedTablesForm.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\ESPCoR.Database\EPSCoR.Database.csproj">
+      <Project>{cabe2c57-7bb7-40de-8f38-2b18bffbee38}</Project>
+      <Name>EPSCoR.Database</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
   </ItemGroup>

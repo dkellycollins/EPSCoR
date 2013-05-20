@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
-using EPSCoR.Models;
+using EPSCoR.Database.Models;
 
 namespace EPSCoR.Repositories
 {
@@ -18,7 +18,7 @@ namespace EPSCoR.Repositories
 
         public BasicRepo()
         {
-            _context = new DefaultContext();
+            _context = DefaultContext.GetInstance();
         }
 
         public BasicRepo(DbContext context)
@@ -57,7 +57,7 @@ namespace EPSCoR.Repositories
 
         public void Dispose()
         {
-            _context.Dispose();
+            DefaultContext.Release();
         }
     }
 }

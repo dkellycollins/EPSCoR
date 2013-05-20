@@ -1,34 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using EPSCoR.Models;
 using EPSCoR.Repositories;
+using WebMatrix.WebData;
 
 namespace EPSCoR.Controllers
 {
     [Authorize]
     public class TablesController : Controller
     {
-        private IRepository<TableIndex> _tableRepo;
+        private IRepository<UserProfile> _userProfileRepo;
+        private IRepository<TableIndex> _tableIndexRepo;
+        private IFileAccessor _uploadFileAccessor;
 
         public TablesController()
         {
-            _tableRepo = new BasicRepo<TableIndex>();
+            _tableIndexRepo = new BasicRepo<TableIndex>();
         }
 
         public TablesController(IRepository<TableIndex> repo)
         {
-            _tableRepo = repo;
+            _tableIndexRepo = repo;
+            _uploadFileAccessor = new BasicFileAccessor(BasicFileAccessor.UPLOAD_DIRECTORY, WebSecurity.CurrentUserName);
         }
 
         //
         // GET: /Tables/
         public ActionResult Index()
         {
-            var tables = from t in _tableRepo.GetAll() select t;
-            //This will not work as we are comparing UserProfile to IPrinciple. But I dont know what I should do instead.
+            var tables = from t in _tableIndexRepo.GetAll() select t;
             if(!this.User.IsInRole("admin"))
                 tables = tables.Where((t) => t.User == this.User);
 
@@ -39,7 +43,7 @@ namespace EPSCoR.Controllers
         // GET: /Tables/Details/{Table.ID}
         public ActionResult Details(int id = 0)
         {
-            TableIndex table = _tableRepo.Get(id);
+            TableIndex table = _tableIndexRepo.Get(id);
             if (table == null)
             {
                 return new HttpNotFoundResult();
@@ -57,19 +61,32 @@ namespace EPSCoR.Controllers
         //
         // POST: /Table/Upload/
         [HttpPost]
-        public ActionResult Upload(HttpPostedFileBase file)
+        public ActionResult Upload(HttpPostedFileBase attFile, HttpPostedFileBase usFile)
         {
-            try
+            TableIndex newTable = new TableIndex();
+
+            UserProfile userProfile = _userProfileRepo.GetAll().Where((u) => u.UserName == WebSecurity.CurrentUserName).FirstOrDefault();
+            bool attFileSaveResult = _uploadFileAccessor.SaveFile(attFile);
+            bool usFileSaveResult = _uploadFileAccessor.SaveFile(usFile);
+
+            if (attFileSaveResult && usFileSaveResult && userProfile != null)
             {
-                TableIndex newTable = new TableIndex();
-                newTable.Name = FileConverter.SaveFile(this.User.Identity.Name, file);
-                _tableRepo.Create(newTable);
-                ViewBag.UploadResult = "Upload Sucessful!";
+                newTable.AttributeTable = Path.GetFileNameWithoutExtension(attFile.FileName);
+                newTable.UpstreamTable = Path.GetFileNameWithoutExtension(usFile.FileName);
+                newTable.User = userProfile;
+                newTable.Name = "";
+                newTable.Region = "";
+                newTable.Version = "";
+
+                _tableIndexRepo.Create(newTable);
+                ViewData["StatusMessage"] = "Upload Sucessful!";
             }
-            catch(Exception e)
+            else
             {
-                ViewBag.UploadResult = "Upload failed: " + e.Message;
+                ViewData["StatusMessage"] = "Upload Failed.";
             }
+
+            
 
             return RedirectToAction("Index");
         }
@@ -91,7 +108,7 @@ namespace EPSCoR.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            _tableRepo.Dispose();
+            _tableIndexRepo.Dispose();
             base.Dispose(disposing);
         }
     }

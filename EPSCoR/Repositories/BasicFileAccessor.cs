@@ -9,8 +9,19 @@ namespace EPSCoR.Repositories
 {
     public class BasicFileAccessor : IFileAccessor
     {
+        /// <summary>
+        /// Upload directory is where we store the users uploads no matter the format.
+        /// </summary>
         public const string UPLOAD_DIRECTORY = "~/App_Data/Uploads";
+
+        /// <summary>
+        /// Convertion directory is where we store the files that we create the tables with.
+        /// </summary>
         public const string CONVERTION_DIRECTORY = "~/App_Data/Convertions";
+
+        /// <summary>
+        /// Archive directory is where we store the uploaded files after they have been converted.
+        /// </summary>
         public const string ARCHIVE_DIRECTORY = "~/App_Data/Archive";
 
         //Just a way to make access the server context easier.
@@ -34,7 +45,7 @@ namespace EPSCoR.Repositories
             _serverPath = userDirectory;
         }
 
-        public bool SaveFile(HttpPostedFile file)
+        public bool SaveFile(HttpPostedFileBase file)
         {
             var fileName = Path.GetFileName(file.FileName);
             var path = Path.Combine(_serverPath, fileName);

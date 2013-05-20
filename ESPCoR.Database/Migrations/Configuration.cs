@@ -1,4 +1,4 @@
-namespace EPSCoR.Migrations
+namespace EPSCoR.Database.Migrations
 {
     using System;
     using System.Data.Entity;

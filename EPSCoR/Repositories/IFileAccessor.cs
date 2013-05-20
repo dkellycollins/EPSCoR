@@ -11,8 +11,7 @@ namespace EPSCoR.Repositories
     /// </summary>
     public interface IFileAccessor
     {
-        bool SaveFile(HttpPostedFile file);
-        bool SaveFile(FileStream file);
+        bool SaveFile(HttpPostedFileBase file);
         FileStream OpenFile(string fileName);
         IEnumerable<string> GetFiles();
         void DeleteFile(string fileName);
