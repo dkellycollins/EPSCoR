@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Web;
 
 namespace EPSCoR.Repositories
@@ -31,6 +32,7 @@ namespace EPSCoR.Repositories
         }
 
         private string _serverPath;
+        private string _lockFile;
 
         public BasicFileAccessor(string directory, string userName)
         {
@@ -43,27 +45,35 @@ namespace EPSCoR.Repositories
                 Directory.CreateDirectory(userDirectory);
             
             _serverPath = userDirectory;
+            _lockFile = Path.Combine(_serverPath, "lock");
         }
 
-        public bool SaveFile(HttpPostedFileBase file)
-        {
-            var fileName = Path.GetFileName(file.FileName);
-            var path = Path.Combine(_serverPath, fileName);
+        #region IFileAccessor Members
 
-            try
+        public bool SaveFiles(params HttpPostedFileBase[] files)
+        {
+            waitForLock();
+
+            bool result = true;
+            foreach (HttpPostedFileBase file in files)
             {
-                file.SaveAs(path);
+                if (!saveFile(file))
+                {
+                    result = false;
+                    break;
+                }
             }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.ToString());
-                return false;
-            }
-            return true;
+
+            releaseLock();
+
+            return result;
         }
 
         public FileStream OpenFile(string fileName)
         {
+            //Might not even need this function. It wont work since I have no way of releasing the lock before returning.
+            throw new NotImplementedException();
+
             string path = Path.Combine(_serverPath, fileName);
 
             FileStream fileStream;
@@ -86,11 +96,14 @@ namespace EPSCoR.Repositories
             return Directory.GetFiles(_serverPath);
         }
 
-        public void DeleteFile(string fileName)
+        public void DeleteFiles(params string[] fileNames)
         {
-            string path = Path.Combine(_serverPath, fileName);
-            if (File.Exists(path))
-                File.Delete(path);
+            waitForLock();
+
+            foreach (string fileName in fileNames)
+                deleteFile(fileName);
+
+            releaseLock();
         }
 
         public bool FileExist(string fileName)
@@ -98,5 +111,47 @@ namespace EPSCoR.Repositories
             string path = Path.Combine(_serverPath, fileName);
             return File.Exists(path);
         }
+
+        #endregion IFileAccessor Memebers
+
+        #region Private Members
+
+        private bool saveFile(HttpPostedFileBase file)
+        {
+            bool result = true;
+            var fileName = Path.GetFileName(file.FileName);
+            var path = Path.Combine(_serverPath, fileName);
+
+            try
+            {
+                file.SaveAs(path);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.ToString());
+                result = false;
+            }
+            return result;
+        }
+
+        private void deleteFile(string fileName)
+        {
+            string path = Path.Combine(_serverPath, fileName);
+            if (File.Exists(path))
+                File.Delete(path);
+        }
+
+        private void waitForLock()
+        {
+            while (Directory.GetFiles(_serverPath).Contains(_lockFile)) ;
+            File.Create(_lockFile).Close();
+        }
+
+        private void releaseLock()
+        {
+            File.Delete(_lockFile);
+        }
+
+        #endregion Private Members
     }
 }

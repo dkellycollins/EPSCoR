@@ -1,4 +1,5 @@
-﻿@{
+﻿@model EPSCoR.Database.Models.TableIndex
+@{
     ViewBag.Title = "Upload";
 }
 
@@ -6,8 +7,25 @@
 
 @using (Html.BeginForm("Upload", "Tables", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    <label for ="file">File:</label>
-    <input type="file" name="file" />
-
+    <label for ="attFile">Attribute Table:</label>
+    <input type="file" name="attFile" />
+    <br/>
+    
+    <label for="usFile">Upstream Table:</label>
+    <input type="file" name="usFile" />
+    <br/>
+    
+    @Html.LabelFor(model => model.Name)
+    @Html.EditorFor(model => model.Name)
+    <br />
+    
+    @Html.LabelFor(model => model.Region)
+    @Html.EditorFor(model => model.Region)
+    <br />
+    
+    @Html.LabelFor(model => model.Version)
+    @Html.EditorFor(model => model.Version)
+    <br />
+    
     <input type="submit" />
 }

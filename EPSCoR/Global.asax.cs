@@ -6,6 +6,8 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using EPSCoR.Filters;
+using ESPCoR.Database;
 
 namespace EPSCoR
 {
@@ -22,6 +24,13 @@ namespace EPSCoR
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            FileProcessor.Start();
+        }
+
+        protected void Application_End()
+        {
+            FileProcessor.Stop();
         }
     }
 }

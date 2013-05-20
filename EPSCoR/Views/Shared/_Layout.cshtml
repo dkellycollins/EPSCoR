@@ -30,11 +30,16 @@
     </header>
 
     <div id ="content">
+        @if (TempData["StatusMessage"] != null)
+        {
+            <span id="statusMessage">@TempData["StatusMessage"]</span>
+        }
         @RenderBody()
     </div>
 
     <footer id="footer">
         <img src="~/Content/images/footer.jpeg" alt="Footer" height="100" width="1150" />
+        @Html.Partial("LoginPartial")
     </footer>
 
     @Scripts.Render("~/bundles/jquery")

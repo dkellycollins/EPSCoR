@@ -277,6 +277,7 @@
     <Content Include="Views\Tables\TableDetails.cshtml" />
     <Content Include="Views\Tables\CalcForm.cshtml" />
     <Content Include="Views\Tables\ConvertedTablesForm.cshtml" />
+    <Content Include="Views\Shared\LoginPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

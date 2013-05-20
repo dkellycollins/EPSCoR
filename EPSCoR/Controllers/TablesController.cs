@@ -20,12 +20,15 @@ namespace EPSCoR.Controllers
         public TablesController()
         {
             _tableIndexRepo = new BasicRepo<TableIndex>();
+            _userProfileRepo = new BasicRepo<UserProfile>();
+            _uploadFileAccessor = new BasicFileAccessor(BasicFileAccessor.UPLOAD_DIRECTORY, WebSecurity.CurrentUserName);
         }
 
-        public TablesController(IRepository<TableIndex> repo)
+        public TablesController(IRepository<TableIndex> tableIndexRepo, IRepository<UserProfile> userProfileRepo, IFileAccessor uploadFileAccessor)
         {
-            _tableIndexRepo = repo;
-            _uploadFileAccessor = new BasicFileAccessor(BasicFileAccessor.UPLOAD_DIRECTORY, WebSecurity.CurrentUserName);
+            _tableIndexRepo = tableIndexRepo;
+            _userProfileRepo = userProfileRepo;
+            _uploadFileAccessor = uploadFileAccessor;
         }
 
         //
@@ -61,32 +64,31 @@ namespace EPSCoR.Controllers
         //
         // POST: /Table/Upload/
         [HttpPost]
-        public ActionResult Upload(HttpPostedFileBase attFile, HttpPostedFileBase usFile)
+        public ActionResult Upload(TableIndex table, HttpPostedFileBase attFile, HttpPostedFileBase usFile)
         {
-            TableIndex newTable = new TableIndex();
+            TableIndex existingTable = _tableIndexRepo.GetAll().Where((t) => t.Name == table.Name && t.Version == table.Version).FirstOrDefault();
+            if (existingTable != null)
+            {
+                TempData["StatusMessage"] = "Tables already exist";
+                return RedirectToAction("Upload");
+            }
 
             UserProfile userProfile = _userProfileRepo.GetAll().Where((u) => u.UserName == WebSecurity.CurrentUserName).FirstOrDefault();
-            bool attFileSaveResult = _uploadFileAccessor.SaveFile(attFile);
-            bool usFileSaveResult = _uploadFileAccessor.SaveFile(usFile);
+            bool saveSuccessful = _uploadFileAccessor.SaveFiles(attFile, usFile);
 
-            if (attFileSaveResult && usFileSaveResult && userProfile != null)
+            if (saveSuccessful && userProfile != null)
             {
-                newTable.AttributeTable = Path.GetFileNameWithoutExtension(attFile.FileName);
-                newTable.UpstreamTable = Path.GetFileNameWithoutExtension(usFile.FileName);
-                newTable.User = userProfile;
-                newTable.Name = "";
-                newTable.Region = "";
-                newTable.Version = "";
+                table.AttributeTable = Path.GetFileNameWithoutExtension(attFile.FileName);
+                table.UpstreamTable = Path.GetFileNameWithoutExtension(usFile.FileName);
+                table.User = userProfile;
 
-                _tableIndexRepo.Create(newTable);
-                ViewData["StatusMessage"] = "Upload Sucessful!";
+                _tableIndexRepo.Create(table);
+                TempData["StatusMessage"] = "Upload Sucessful!";
             }
             else
             {
-                ViewData["StatusMessage"] = "Upload Failed.";
+                TempData["StatusMessage"] = "Upload Failed.";
             }
-
-            
 
             return RedirectToAction("Index");
         }
@@ -109,6 +111,7 @@ namespace EPSCoR.Controllers
         protected override void Dispose(bool disposing)
         {
             _tableIndexRepo.Dispose();
+            _userProfileRepo.Dispose();
             base.Dispose(disposing);
         }
     }

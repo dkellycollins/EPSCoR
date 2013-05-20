@@ -22,7 +22,7 @@ namespace EPSCoR.Filters
         }
 
         //Marked as internal so the seed method can get access to this.
-        internal class SimpleMembershipInitializer
+        private class SimpleMembershipInitializer
         {
             public SimpleMembershipInitializer()
             {
@@ -30,13 +30,11 @@ namespace EPSCoR.Filters
 
                 try
                 {
-                    using (var context = DefaultContext.GetInstance())
+                    var context = DefaultContext.GetInstance();
+                    if (!context.Database.Exists())
                     {
-                        if (!context.Database.Exists())
-                        {
-                            // Create the SimpleMembership database without Entity Framework migration schema
-                            ((IObjectContextAdapter)context).ObjectContext.CreateDatabase();
-                        }
+                        // Create the SimpleMembership database without Entity Framework migration schema
+                        ((IObjectContextAdapter)context).ObjectContext.CreateDatabase();
                     }
 
                     WebSecurity.InitializeDatabaseConnection("DefaultConnection", "UserProfile", "UserId", "UserName", autoCreateTables: true);

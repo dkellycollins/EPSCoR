@@ -1,4 +1,4 @@
-﻿@model IEnumerable<EPSCoR.Models.Table>
+﻿@model IEnumerable<EPSCoR.Database.Models.TableIndex>
 
 @{
     ViewBag.Title = "Index";
@@ -6,21 +6,14 @@
 
 <h2>Index</h2>
 
-@if (!string.IsNullOrEmpty(ViewBag.UploadResult))
-{
-    <div id="uploadResult">
-        @ViewBag.UploadResult
-    </div>
-}
-
 <div id="calc">
     <h2>Calculations</h2>
-    @Html.RenderPartial("CalcForm")
+    @Html.Partial("CalcForm")
 </div>
 
 <div id="convertedTbls">
     <h2>Converted Tables</h2>
-    @Html.RenderPartial("ConvertedTablesForm")
+    @Html.Partial("ConvertedTablesForm")
 </div>
 
 <select id="tableSelect">

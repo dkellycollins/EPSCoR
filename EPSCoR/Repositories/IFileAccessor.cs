@@ -11,10 +11,10 @@ namespace EPSCoR.Repositories
     /// </summary>
     public interface IFileAccessor
     {
-        bool SaveFile(HttpPostedFileBase file);
+        bool SaveFiles(params HttpPostedFileBase[] files);
         FileStream OpenFile(string fileName);
         IEnumerable<string> GetFiles();
-        void DeleteFile(string fileName);
+        void DeleteFiles(params string[] fileNames);
         bool FileExist(string fileName);
     }
 }
