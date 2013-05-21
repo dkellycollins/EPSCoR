@@ -12,18 +12,17 @@ using System.Threading.Tasks;
 using System.Web;
 using EPSCoR.Database.Models;
 
-namespace ESPCoR.Database
+namespace EPSCoR.Database
 {
     /// <summary>
     /// The file processor coverts any uploaded files into csv file and moves them to the archive folder.
     /// </summary>
     public class FileProcessor
     {
-        //The directories on the server.
-        private static string RootDir = HttpContext.Current.Server.MapPath("~/App_Data");
-        private static string UploadDir = HttpContext.Current.Server.MapPath("~/App_Data/Uploads");
-        private static string ConversionDir = HttpContext.Current.Server.MapPath("~/App_Data/Convertions");
-        private static string ArchiveDir = HttpContext.Current.Server.MapPath("~/App_Data/Archive");
+        static FileProcessor()
+        {
+            DirectoryManager.Initialize(HttpContext.Current.Server);
+        }
 
         //Allows us to cancel the thread.
         private static bool _cancel;
@@ -51,20 +50,12 @@ namespace ESPCoR.Database
         /// </summary>
         private static void convertFiles()
         {
-            if (!Directory.Exists(UploadDir))
-                Directory.CreateDirectory(UploadDir);
-            if (!Directory.Exists(ConversionDir))
-                Directory.CreateDirectory(ConversionDir);
-            if (!Directory.Exists(ArchiveDir))
-                Directory.CreateDirectory(ArchiveDir);
-
             while (!_cancel)
             {
                 string lockFile = null;
-                DefaultContext dbContext = DefaultContext.GetInstance();
                 try
                 {
-                    foreach (string userDirectory in Directory.GetDirectories(UploadDir))
+                    foreach (string userDirectory in Directory.GetDirectories(DirectoryManager.UploadDir))
                     {
                         //See if we need to cancel.
                         if (_cancel)
@@ -111,17 +102,17 @@ namespace ESPCoR.Database
                             //Add converted file to the database.
                             if (conversionPath != null)
                             {
-                                addTableFromFile(conversionPath, dbContext);
-                                populateTableFromFile(conversionPath, dbContext);
+                                SqlServer.AddTableFromFile(conversionPath);
+                                SqlServer.PopulateTableFromFile(conversionPath);
                             }
 
                             //Move the original file to the Archive.
-                            string archivePath = Path.Combine(ArchiveDir, Directory.GetParent(file).Name, Path.GetFileName(file));
+                            string archivePath = Path.Combine(DirectoryManager.ArchiveDir, Directory.GetParent(file).Name, Path.GetFileName(file));
                             validateDestination(archivePath);
                             File.Move(file, archivePath);
 
-                            //Log when we the file was processed.
-                            Log("File processed: " + file);
+                            //Log when the file was processed.
+                            Logger.Log("File processed: " + file);
                         }
 
                         //Release the lock.
@@ -129,108 +120,31 @@ namespace ESPCoR.Database
                         lockFile = null;
                     }
                 }
+                catch (InvalidFileException e)
+                {
+                    Logger.Log("Invalid File: " + e.Message);
+                    string invalidPath = Path.Combine(DirectoryManager.InvalidDir, Path.GetFileName(e.InvalidFile));
+                    validateDestination(invalidPath);
+                    File.Move(e.InvalidFile, invalidPath);
+                }
                 catch (Exception e)
                 {
-                    Log("Exception: " + e.Message);
+                    Logger.Log("Exception: " + e.Message);
                 }
                 finally
                 {
                     //This makes sure we release the lock if we were canceled or hit an exception.
                     if (lockFile != null)
                         File.Delete(lockFile);
-                    DefaultContext.Release();
                 }
 #if DEBUG
+                //In debug mode only run once.
                 _cancel = true;
 #endif
             }
         }
 
-        /// <summary>
-        /// Populates the table with same name as the file with the data in the file.
-        /// </summary>
-        /// <param name="file">CSV file</param>
-        /// <param name="dbContext">The reference to the database.</param>
-        private static void populateTableFromFile(string file, DbContext dbContext)
-        {
-            string table = Path.GetFileNameWithoutExtension(file);
-            
-            int rowsUpdated = dbContext.Database.ExecuteSqlCommand(
-                "LOAD DATA LOCAL INFILE {0} INTO TABLE {1} FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES",
-                file,
-                table
-                );
-
-            Log(rowsUpdated + " rows updated in table " + table);
-        }
-
-        /// <summary>
-        /// Creates a new table based on the file provided.
-        /// </summary>
-        /// <param name="file">CSV file.</param>
-        /// <param name="dbContext">Reference to thte database.</param>
-        private static void addTableFromFile(string file, DbContext dbContext)
-        /*{
-            DbProviderFactory dbFactory = DbProviderFactories.GetFactory(dbContext.Database.Connection);
-            DbCommand cmd = dbFactory.CreateCommand();
-            cmd.Connection = dbContext.Database.Connection;
-
-            DbParameter tableParam = dbFactory.CreateParameter();
-            tableParam.ParameterName = "tableName";
-            tableParam.Value = Path.GetFileNameWithoutExtension(file);
-            cmd.Parameters.Add(tableParam);
-
-            //Get all the fields from the file.
-            TextReader reader = File.OpenText(file);
-            string head = reader.ReadLine();
-            reader.Close();
-            head = head.Replace('\"', ' ');
-
-            //Build the column paramaters for the Sql query.
-            string[] fields = head.Split(',');
-            StringBuilder columnsBuilder = new StringBuilder();
-            for (int i = 0; i < fields.Count(); i++)
-            {
-                columnsBuilder.Append("@column" + i + " char(25), ");
-
-                DbParameter param = dbFactory.CreateParameter();
-                param.ParameterName = "column" + i;
-                param.Value = fields[i].Trim();
-                cmd.Parameters.Add(param);
-            }
-            //Make the first field the primary key.
-            columnsBuilder.Append("PRIMARY KEY(@column0)");
-
-            cmd.CommandText = "CREATE TABLE [IF NOT EXISTS] @tableName (" + columnsBuilder.ToString() + ") ENGINE = InnoDB DEFAULT CHARSET=latin1";
-
-            if (dbContext.Database.Connection.State == System.Data.ConnectionState.Closed)
-                dbContext.Database.Connection.Open();
-            cmd.ExecuteNonQuery();
-
-            Log("Table " + tableParam.Value + "added to the database.");
-        }*/
-        {
-            //Get all the fields from the file.
-            TextReader reader = File.OpenText(file);
-            string head = reader.ReadLine();
-            reader.Close();
-            head = head.Replace('\"', ' ');
-
-            //Build the column paramaters for the Sql query.
-            string[] fields = head.Split(',');
-            StringBuilder columnsBuilder = new StringBuilder();
-            for (int i = 0; i < fields.Count(); i++)
-            {
-                columnsBuilder.Append(fields[i].Trim() + " char(25), ");
-            }
-            //Make the first field the primary key.
-            columnsBuilder.Append("PRIMARY KEY(" + fields[0].Trim() + ")");
-            
-            string sqlCommand = "CREATE TABLE [IF NOT EXISTS] " + Path.GetFileNameWithoutExtension(file) + " ( " + columnsBuilder.ToString() + " )";
-            dbContext.Database.ExecuteSqlCommand(sqlCommand);
-
-            Log("Table " + Path.GetFileNameWithoutExtension(file) + " added to the database.");
-        }
+        
 
         /// <summary>
         /// Converts mdb into a csv file and stores the conversion in the conversion folder.
@@ -246,7 +160,7 @@ namespace ESPCoR.Database
 
             oAccess.Quit();
             return converstionFile;*/
-            return null;
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -269,29 +183,10 @@ namespace ESPCoR.Database
             //CSV files dont need any converstion. Just copy the file to the CnversionDirectory
             string userDir = Directory.GetParent(file).Name;
             string fileName = Path.GetFileName(file);
-            string conversionPath = Path.Combine(ConversionDir, userDir, fileName);
+            string conversionPath = Path.Combine(DirectoryManager.ConversionDir, userDir, fileName);
             validateDestination(conversionPath);
             File.Copy(file, conversionPath);
             return conversionPath;
-        }
-
-        /// <summary>
-        /// Appends the entry to the log file with the current time.
-        /// </summary>
-        /// <param name="entry">Log entry.</param>
-        private static void Log(string entry)
-        {
-            string logFile = Path.Combine(RootDir, "Log.txt");
-            StreamWriter logFileStream;
-            if (!File.Exists(logFile))
-                logFileStream = File.CreateText(logFile);
-            else
-                logFileStream = new StreamWriter(File.Open(logFile, FileMode.Append));
-
-            logFileStream.WriteLine(string.Format("{0} - {1}", DateTime.Now.ToString(), entry));
-
-            logFileStream.Flush();
-            logFileStream.Close();
         }
 
         /// <summary>

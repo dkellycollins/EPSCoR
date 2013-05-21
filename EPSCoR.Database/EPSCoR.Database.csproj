@@ -47,11 +47,16 @@
     <Reference Include="WebMatrix.WebData, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DirectoryManager.cs" />
     <Compile Include="FileProcessor.cs" />
+    <Compile Include="InvalidFileException.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\DefaultContext.cs" />
     <Compile Include="Models\TableIndex.cs" />
+    <Compile Include="SqlServer.cs" />
+    <Compile Include="MySql.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
