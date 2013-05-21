@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.Entity;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -107,8 +109,11 @@ namespace ESPCoR.Database
                             }
 
                             //Add converted file to the database.
-                            if(conversionPath != null)
-                                addFileToDatabase(conversionPath, dbContext);
+                            if (conversionPath != null)
+                            {
+                                addTableFromFile(conversionPath, dbContext);
+                                populateTableFromFile(conversionPath, dbContext);
+                            }
 
                             //Move the original file to the Archive.
                             string archivePath = Path.Combine(ArchiveDir, Directory.GetParent(file).Name, Path.GetFileName(file));
@@ -135,21 +140,96 @@ namespace ESPCoR.Database
                         File.Delete(lockFile);
                     DefaultContext.Release();
                 }
+#if DEBUG
+                _cancel = true;
+#endif
             }
         }
 
         /// <summary>
-        /// Adds the given file to the database.
+        /// Populates the table with same name as the file with the data in the file.
         /// </summary>
-        /// <param name="file">The CSV file to add.</param>
+        /// <param name="file">CSV file</param>
         /// <param name="dbContext">The reference to the database.</param>
-        private static void addFileToDatabase(string file, DbContext dbContext)
+        private static void populateTableFromFile(string file, DbContext dbContext)
         {
-            dbContext.Database.ExecuteSqlCommand(
-                "LOAD DATA LOCAL INFILE '@fileName' INTO TABLE '@tableName' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES",
-                new SqlParameter("fileName", file),
-                new SqlParameter("tableName", Path.GetFileNameWithoutExtension(file))
+            string table = Path.GetFileNameWithoutExtension(file);
+            
+            int rowsUpdated = dbContext.Database.ExecuteSqlCommand(
+                "LOAD DATA LOCAL INFILE {0} INTO TABLE {1} FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES",
+                file,
+                table
                 );
+
+            Log(rowsUpdated + " rows updated in table " + table);
+        }
+
+        /// <summary>
+        /// Creates a new table based on the file provided.
+        /// </summary>
+        /// <param name="file">CSV file.</param>
+        /// <param name="dbContext">Reference to thte database.</param>
+        private static void addTableFromFile(string file, DbContext dbContext)
+        /*{
+            DbProviderFactory dbFactory = DbProviderFactories.GetFactory(dbContext.Database.Connection);
+            DbCommand cmd = dbFactory.CreateCommand();
+            cmd.Connection = dbContext.Database.Connection;
+
+            DbParameter tableParam = dbFactory.CreateParameter();
+            tableParam.ParameterName = "tableName";
+            tableParam.Value = Path.GetFileNameWithoutExtension(file);
+            cmd.Parameters.Add(tableParam);
+
+            //Get all the fields from the file.
+            TextReader reader = File.OpenText(file);
+            string head = reader.ReadLine();
+            reader.Close();
+            head = head.Replace('\"', ' ');
+
+            //Build the column paramaters for the Sql query.
+            string[] fields = head.Split(',');
+            StringBuilder columnsBuilder = new StringBuilder();
+            for (int i = 0; i < fields.Count(); i++)
+            {
+                columnsBuilder.Append("@column" + i + " char(25), ");
+
+                DbParameter param = dbFactory.CreateParameter();
+                param.ParameterName = "column" + i;
+                param.Value = fields[i].Trim();
+                cmd.Parameters.Add(param);
+            }
+            //Make the first field the primary key.
+            columnsBuilder.Append("PRIMARY KEY(@column0)");
+
+            cmd.CommandText = "CREATE TABLE [IF NOT EXISTS] @tableName (" + columnsBuilder.ToString() + ") ENGINE = InnoDB DEFAULT CHARSET=latin1";
+
+            if (dbContext.Database.Connection.State == System.Data.ConnectionState.Closed)
+                dbContext.Database.Connection.Open();
+            cmd.ExecuteNonQuery();
+
+            Log("Table " + tableParam.Value + "added to the database.");
+        }*/
+        {
+            //Get all the fields from the file.
+            TextReader reader = File.OpenText(file);
+            string head = reader.ReadLine();
+            reader.Close();
+            head = head.Replace('\"', ' ');
+
+            //Build the column paramaters for the Sql query.
+            string[] fields = head.Split(',');
+            StringBuilder columnsBuilder = new StringBuilder();
+            for (int i = 0; i < fields.Count(); i++)
+            {
+                columnsBuilder.Append(fields[i].Trim() + " char(25), ");
+            }
+            //Make the first field the primary key.
+            columnsBuilder.Append("PRIMARY KEY(" + fields[0].Trim() + ")");
+            
+            string sqlCommand = "CREATE TABLE [IF NOT EXISTS] " + Path.GetFileNameWithoutExtension(file) + " ( " + columnsBuilder.ToString() + " )";
+            dbContext.Database.ExecuteSqlCommand(sqlCommand);
+
+            Log("Table " + Path.GetFileNameWithoutExtension(file) + " added to the database.");
         }
 
         /// <summary>
