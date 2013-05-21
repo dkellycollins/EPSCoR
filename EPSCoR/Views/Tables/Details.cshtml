@@ -1,5 +1,8 @@
-﻿@{
-    ViewBag.Title = "Details";
+﻿@model System.Data.DataTable
+@{
+    ViewBag.Title = Model.TableName;
 }
 
-<h2>Details</h2>
+<h2>@Model.TableName</h2>
+
+@Html.Partial("DetailsPartial", Model);

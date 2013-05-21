@@ -1,4 +1,4 @@
-﻿@model IEnumerable<EPSCoR.Database.Models.TableIndex>
+﻿@model EPSCoR.ViewModels.TableIndexVM
 
 @{
     ViewBag.Title = "Index";
@@ -17,6 +17,10 @@
 </div>
 
 <select id="tableSelect">
+    @foreach(var table in Model.Tables)
+    {
+        <option>@table</option>
+    }
 </select>
 <div id="tableDetials">
     <!-- To be filled in when user selects a table -->

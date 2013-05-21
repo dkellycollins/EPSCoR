@@ -150,7 +150,6 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AboutController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\FileConverter.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TablesController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
@@ -162,6 +161,7 @@
     <Compile Include="Repositories\IFileAccessor.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\TableIndexViewModels.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\images\footer.jpeg" />
@@ -272,9 +272,9 @@
     <Content Include="Views\Account\_SetPasswordPartial.cshtml" />
     <Content Include="Views\Tables\Index.cshtml" />
     <Content Include="Views\Tables\Upload.cshtml" />
-    <Content Include="Views\Tables\Details.cshtml" />
+    <Content Include="Views\Tables\DetailsPartial.cshtml" />
     <Content Include="Views\Tables\Delete.cshtml" />
-    <Content Include="Views\Tables\TableDetails.cshtml" />
+    <Content Include="Views\Tables\Details.cshtml" />
     <Content Include="Views\Tables\CalcForm.cshtml" />
     <Content Include="Views\Tables\ConvertedTablesForm.cshtml" />
     <Content Include="Views\Shared\LoginPartial.cshtml" />

@@ -7,8 +7,8 @@
     <ProjectGuid>{CABE2C57-7BB7-40DE-8F38-2B18BFFBEE38}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ESPCoR.Database</RootNamespace>
-    <AssemblyName>ESPCoR.Database</AssemblyName>
+    <RootNamespace>EPSCoR.Database</RootNamespace>
+    <AssemblyName>EPSCoR.Database</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

@@ -1,1 +1,33 @@
-﻿
+﻿@model EPSCoR.ViewModels.CalcFormVM
+<h2>Calculations</h2>
+
+<p>Please select the following</p>
+@using (Html.BeginForm("Calc", "Tables", FormMethod.Post, new { @class = "editform" }))
+{    
+    <label>Attribute Table:</label>
+    <select name="Attribute">
+        @foreach(var table in Model.AttributeTables)
+        {
+            <option>@table</option>
+        }
+    </select>
+    <br />
+        
+    <label>Upstream Table:</label>
+    <select name="Upstream">
+        @foreach(var table in Model.UpstreamTables)
+        {
+            <option>@table</option>
+        }
+    </select>
+    <br />
+    
+    <label>Calculation:</label>
+    <select name="Calculation">
+        <option>Sum</option>
+        <option>Avg</option>
+    </select>
+    <br />
+        
+    <input type="submit" />
+}
