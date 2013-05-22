@@ -17,6 +17,7 @@ namespace EPSCoR.Controllers
     [InitializeSimpleMembership]
     public class AccountController : Controller
     {
+        
         //
         // GET: /Account/Login
 
@@ -408,5 +409,6 @@ namespace EPSCoR.Controllers
             }
         }
         #endregion
+        
     }
 }

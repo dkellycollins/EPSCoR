@@ -36,7 +36,7 @@ namespace EPSCoR.Database.Models
         public DbSet<UserProfile> UserProfiles { get; set; }
 
         public DefaultContext()
-            : base("DefaultConnection")
+            : base("MySqlConnection")
         {
         }
     }

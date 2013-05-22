@@ -14,7 +14,7 @@ namespace EPSCoR.Database
     /// <summary>
     /// Performs database actions using MsSql commands.
     /// </summary>
-    internal class SqlServer
+    internal class SqlServerCmd
     {
         /// <summary>
         /// Creates a new table based on the file provided.
@@ -58,6 +58,7 @@ namespace EPSCoR.Database
         /// <param name="dbContext">The reference to the database.</param>
         public static void PopulateTableFromFile(string file)
         {
+            throw new NotImplementedException();
         }
     }
 }

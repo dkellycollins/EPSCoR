@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -7,6 +9,8 @@ namespace EPSCoR.Database.Models
 {
     public class TableIndex
     {
+        [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
         /// <summary>
@@ -25,15 +29,18 @@ namespace EPSCoR.Database.Models
         public string Region { get; set; }
 
         /// <summary>
-        /// Filename of the upstream table.
+        /// Name of the upstream table.
         /// </summary>
         public string UpstreamTable { get; set; }
 
         /// <summary>
-        /// Filename of the attribute table.
+        /// Name of the attribute table.
         /// </summary>
         public string AttributeTable { get; set; }
 
+        /// <summary>
+        /// User who submited the tables.
+        /// </summary>
         public virtual UserProfile User { get; set; }
     }
 }

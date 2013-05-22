@@ -102,8 +102,8 @@ namespace EPSCoR.Database
                             //Add converted file to the database.
                             if (conversionPath != null)
                             {
-                                SqlServer.AddTableFromFile(conversionPath);
-                                SqlServer.PopulateTableFromFile(conversionPath);
+                                MySqlCmd.AddTableFromFile(conversionPath);
+                                MySqlCmd.PopulateTableFromFile(conversionPath);
                             }
 
                             //Move the original file to the Archive.
