@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace EPSCoR.Database
+namespace EPSCoR.Database.Services
 {
     public class DirectoryManager
     {

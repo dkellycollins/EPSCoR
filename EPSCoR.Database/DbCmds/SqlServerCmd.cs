@@ -48,7 +48,7 @@ namespace EPSCoR.Database
                 );
 
             DefaultContext.Release();
-            Logger.Log("Table " + Path.GetFileNameWithoutExtension(file) + " added to the database.");
+            FileLogger.Log("Table " + Path.GetFileNameWithoutExtension(file) + " added to the database.");
         }
 
         /// <summary>

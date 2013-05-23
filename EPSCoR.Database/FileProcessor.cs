@@ -10,7 +10,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using EPSCoR.Database.DbCmds;
+using EPSCoR.Database.Exceptions;
 using EPSCoR.Database.Models;
+using EPSCoR.Database.Services;
+using EPSCoR.Database.Services.Log;
 
 namespace EPSCoR.Database
 {
@@ -112,7 +116,7 @@ namespace EPSCoR.Database
                             File.Move(file, archivePath);
 
                             //Log when the file was processed.
-                            Logger.Log("File processed: " + file);
+                            LoggerFactory.Logger.Log("File processed: " + file);
                         }
 
                         //Release the lock.
@@ -122,14 +126,14 @@ namespace EPSCoR.Database
                 }
                 catch (InvalidFileException e)
                 {
-                    Logger.Log("Invalid File: " + e.Message);
+                    LoggerFactory.Logger.Log("Invalid File: " + e.Message);
                     string invalidPath = Path.Combine(DirectoryManager.InvalidDir, Path.GetFileName(e.InvalidFile));
                     validateDestination(invalidPath);
                     File.Move(e.InvalidFile, invalidPath);
                 }
                 catch (Exception e)
                 {
-                    Logger.Log("Exception: " + e.Message);
+                    LoggerFactory.Logger.Log("Exception: " + e.Message);
                 }
                 finally
                 {

@@ -7,9 +7,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EPSCoR.Database.Exceptions;
 using EPSCoR.Database.Models;
+using EPSCoR.Database.Services.Log;
 
-namespace EPSCoR.Database
+namespace EPSCoR.Database.DbCmds
 {
     /// <summary>
     /// Performs database action using MySql commands
@@ -54,7 +56,7 @@ namespace EPSCoR.Database
                 );
 
             DefaultContext.Release();
-            Logger.Log("Table " + tableName + " added to the database.");
+            LoggerFactory.Logger.Log("Table " + tableName + " added to the database.");
         }
 
         /// <summary>
@@ -73,9 +75,14 @@ namespace EPSCoR.Database
             int rowsUpdated = dbContext.Database.ExecuteSqlCommand(cmd);
 
             DefaultContext.Release();
-            Logger.Log(rowsUpdated + " rows updated in table " + table);
+            LoggerFactory.Logger.Log(rowsUpdated + " rows updated in table " + table);
         }
 
+        /// <summary>
+        /// Creates a new table where the two given tables have been summed.
+        /// </summary>
+        /// <param name="attTable">Attribute Table</param>
+        /// <param name="usTable">Upstream Table</param>
         public static void SumTables(string attTable, string usTable)
         {
             throw new NotImplementedException();
