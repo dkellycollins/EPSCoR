@@ -16,9 +16,9 @@ namespace EPSCoR.Database.Services.Log
 
         public FileLogger()
         {
-            string logFile = Path.Combine(DirectoryManager.RootDir, "Log.txt");
-            if (!File.Exists(logFile))
-                File.Create(logFile).Close();
+            _logFile = Path.Combine(DirectoryManager.RootDir, "Log.txt");
+            if (!File.Exists(_logFile))
+                File.Create(_logFile).Close();
         }
 
         /// <summary>

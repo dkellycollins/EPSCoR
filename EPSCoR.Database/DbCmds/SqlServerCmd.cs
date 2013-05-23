@@ -7,7 +7,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EPSCoR.Database.Exceptions;
 using EPSCoR.Database.Models;
+using EPSCoR.Database.Services.Log;
 
 namespace EPSCoR.Database
 {
@@ -48,17 +50,7 @@ namespace EPSCoR.Database
                 );
 
             DefaultContext.Release();
-            FileLogger.Log("Table " + Path.GetFileNameWithoutExtension(file) + " added to the database.");
-        }
-
-        /// <summary>
-        /// Populates the table with same name as the file with the data in the file.
-        /// </summary>
-        /// <param name="file">CSV file</param>
-        /// <param name="dbContext">The reference to the database.</param>
-        public static void PopulateTableFromFile(string file)
-        {
-            throw new NotImplementedException();
+            LoggerFactory.Logger.Log("Table " + Path.GetFileNameWithoutExtension(file) + " added to the database.");
         }
     }
 }

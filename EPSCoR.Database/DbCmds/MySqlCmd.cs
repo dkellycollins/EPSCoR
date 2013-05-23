@@ -49,14 +49,18 @@ namespace EPSCoR.Database.DbCmds
             columnsBuilder.Append("PRIMARY KEY(" + fields[0] + ")");
 
             DefaultContext dbContext = DefaultContext.GetInstance();
-
-            //Execute the command.
-            dbContext.Database.ExecuteSqlCommand(
-                "CREATE TABLE IF NOT EXISTS " + tableName + " ( " + columnsBuilder.ToString() + " ) ENGINE = InnoDB DEFAULT CHARSET=latin1"
-                );
-
-            DefaultContext.Release();
-            LoggerFactory.Logger.Log("Table " + tableName + " added to the database.");
+            try
+            {
+                //Execute the command.
+                dbContext.Database.ExecuteSqlCommand(
+                    "CREATE TABLE IF NOT EXISTS " + tableName + " ( " + columnsBuilder.ToString() + " ) ENGINE = InnoDB DEFAULT CHARSET=latin1"
+                    );
+                LoggerFactory.Logger.Log("Table " + tableName + " added to the database.");
+            }
+            finally
+            {
+                DefaultContext.Release();
+            } 
         }
 
         /// <summary>
@@ -70,12 +74,17 @@ namespace EPSCoR.Database.DbCmds
             throwIfInvalidSql(file, table);
 
             DefaultContext dbContext = DefaultContext.GetInstance();
-
-            string cmd = "LOAD DATA LOCAL INFILE '" + file + "' INTO TABLE " + table + " FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\r\n' IGNORE 1 LINES";
-            int rowsUpdated = dbContext.Database.ExecuteSqlCommand(cmd);
-
-            DefaultContext.Release();
-            LoggerFactory.Logger.Log(rowsUpdated + " rows updated in table " + table);
+            try
+            {
+                string cmd = "LOAD DATA LOCAL INFILE '" + file.Replace('\\', '/') + "' INTO TABLE " + table + " FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES;";
+                int rowsUpdated = dbContext.Database.ExecuteSqlCommand(cmd);
+                LoggerFactory.Logger.Log(rowsUpdated + " rows updated in table " + table);
+            }
+            finally
+            {
+                DefaultContext.Release();
+            }
+            
         }
 
         /// <summary>
