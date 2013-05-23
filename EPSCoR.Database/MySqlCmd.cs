@@ -69,9 +69,8 @@ namespace EPSCoR.Database
 
             DefaultContext dbContext = DefaultContext.GetInstance();
 
-            int rowsUpdated = dbContext.Database.ExecuteSqlCommand(
-                "LOAD DATA LOCAL INFILE " + file + " INTO TABLE " + table + " FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES"
-                );
+            string cmd = "LOAD DATA LOCAL INFILE '" + file + "' INTO TABLE " + table + " FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES";
+            int rowsUpdated = dbContext.Database.ExecuteSqlCommand(cmd);
 
             DefaultContext.Release();
             Logger.Log(rowsUpdated + " rows updated in table " + table);

@@ -6,11 +6,12 @@ using System.Web;
 using System.Web.Mvc;
 using EPSCoR.Database.Models;
 using EPSCoR.Repositories;
+using EPSCoR.ViewModels;
 using WebMatrix.WebData;
 
 namespace EPSCoR.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class TablesController : Controller
     {
         private IRepository<UserProfile> _userProfileRepo;
@@ -36,10 +37,30 @@ namespace EPSCoR.Controllers
         public ActionResult Index()
         {
             var tables = from t in _tableIndexRepo.GetAll() select t;
-            if(!this.User.IsInRole("admin"))
-                tables = tables.Where((t) => t.User == this.User);
+            //if(!this.User.IsInRole("admin"))
+                //tables = tables.Where((t) => t.User == this.User);
 
-            return View(tables.ToList());
+            return View(createTableIndexViewModel(tables.ToList()));
+        }
+
+        private TableIndexVM createTableIndexViewModel(List<TableIndex> tableIndexes)
+        {
+            TableIndexVM vm = new TableIndexVM();
+            vm.Tables = new List<string>();
+            vm.CalcForm = new CalcFormVM();
+            vm.CalcForm.AttributeTables = new List<string>();
+            vm.CalcForm.UpstreamTables = new List<string>();
+            foreach (TableIndex index in tableIndexes)
+            {
+                vm.Tables.Add(index.AttributeTable);
+                vm.Tables.Add(index.UpstreamTable);
+                vm.CalcForm.AttributeTables.Add(index.AttributeTable);
+                vm.CalcForm.UpstreamTables.Add(index.UpstreamTable);
+            }
+
+            vm.ConvertedTables = new List<ConvertedTablesVM>();
+
+            return vm;
         }
 
         //
@@ -73,14 +94,13 @@ namespace EPSCoR.Controllers
                 return RedirectToAction("Upload");
             }
 
-            UserProfile userProfile = _userProfileRepo.GetAll().Where((u) => u.UserName == WebSecurity.CurrentUserName).FirstOrDefault();
+            //UserProfile userProfile = _userProfileRepo.GetAll().Where((u) => u.UserName == WebSecurity.CurrentUserName).FirstOrDefault();
             bool saveSuccessful = _uploadFileAccessor.SaveFiles(attFile, usFile);
 
-            if (saveSuccessful && userProfile != null)
+            if (saveSuccessful)
             {
                 table.AttributeTable = Path.GetFileNameWithoutExtension(attFile.FileName);
                 table.UpstreamTable = Path.GetFileNameWithoutExtension(usFile.FileName);
-                table.User = userProfile;
 
                 _tableIndexRepo.Create(table);
                 TempData["StatusMessage"] = "Upload Sucessful!";

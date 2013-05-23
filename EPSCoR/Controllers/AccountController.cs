@@ -266,7 +266,7 @@ namespace EPSCoR.Controllers
                 // Insert a new user into the database
                 try
                 {
-                    DefaultContext db = DefaultContext.GetInstance();
+                    /*DefaultContext db = DefaultContext.GetInstance();
                     UserProfile user = db.UserProfiles.FirstOrDefault(u => u.UserName.ToLower() == model.UserName.ToLower());
                     // Check if user already exists
                     if (user == null)
@@ -283,7 +283,7 @@ namespace EPSCoR.Controllers
                     else
                     {
                         ModelState.AddModelError("UserName", "User name already exists. Please enter a different user name.");
-                    }
+                    }*/
                 }
                 finally
                 {

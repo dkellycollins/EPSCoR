@@ -37,10 +37,5 @@ namespace EPSCoR.Database.Models
         /// Name of the attribute table.
         /// </summary>
         public string AttributeTable { get; set; }
-
-        /// <summary>
-        /// User who submited the tables.
-        /// </summary>
-        public virtual UserProfile User { get; set; }
     }
 }
