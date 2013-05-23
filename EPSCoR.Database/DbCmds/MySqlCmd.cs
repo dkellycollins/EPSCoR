@@ -52,9 +52,11 @@ namespace EPSCoR.Database.DbCmds
             try
             {
                 //Execute the command.
-                dbContext.Database.ExecuteSqlCommand(
-                    "CREATE TABLE IF NOT EXISTS " + tableName + " ( " + columnsBuilder.ToString() + " ) ENGINE = InnoDB DEFAULT CHARSET=latin1"
-                    );
+                string cmd = "CREATE TABLE IF NOT EXISTS " + tableName
+                    + " ( " + columnsBuilder.ToString() + " ) "
+                    + "ENGINE = InnoDB"
+                    + "DEFAULT CHARSET=latin1";
+                dbContext.Database.ExecuteSqlCommand(cmd);
                 LoggerFactory.Logger.Log("Table " + tableName + " added to the database.");
             }
             finally
@@ -76,7 +78,12 @@ namespace EPSCoR.Database.DbCmds
             DefaultContext dbContext = DefaultContext.GetInstance();
             try
             {
-                string cmd = "LOAD DATA LOCAL INFILE '" + file.Replace('\\', '/') + "' INTO TABLE " + table + " FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES;";
+                string cmd = "LOAD DATA LOCAL INFILE '" + file.Replace('\\', '/') + "'"
+                    + "INTO TABLE " + table + " "
+                    + "FIELDS TERMINATED BY ','" 
+                    + "OPTIONALLY ENCLOSED BY '\"'" 
+                    + "LINES TERMINATED BY '\n'" 
+                    + "IGNORE 1 LINES";
                 int rowsUpdated = dbContext.Database.ExecuteSqlCommand(cmd);
                 LoggerFactory.Logger.Log(rowsUpdated + " rows updated in table " + table);
             }
@@ -84,7 +91,6 @@ namespace EPSCoR.Database.DbCmds
             {
                 DefaultContext.Release();
             }
-            
         }
 
         /// <summary>

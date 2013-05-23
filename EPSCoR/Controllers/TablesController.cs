@@ -11,7 +11,7 @@ using WebMatrix.WebData;
 
 namespace EPSCoR.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class TablesController : Controller
     {
         private IRepository<UserProfile> _userProfileRepo;
