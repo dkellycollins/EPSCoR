@@ -26,10 +26,12 @@ namespace EPSCoR.Database
         static FileProcessor()
         {
             DirectoryManager.Initialize(HttpContext.Current.Server);
+            _fileConverter = new FileConverter();
         }
 
         //Allows us to cancel the thread.
         private static bool _cancel;
+        private static FileConverter _fileConverter;
 
         /// <summary>
         /// Starts the file processor in a separate thread.
@@ -85,30 +87,11 @@ namespace EPSCoR.Database
                                 break;
 
                             //Convert the file.
-                            string conversionPath;
-                            string ext = Path.GetExtension(file).ToLower();
-                            switch (ext)
-                            {
-                                case ".csv":
-                                    conversionPath = handleCSV(file);
-                                    break;
-                                case ".dbf":
-                                    conversionPath = handleDBF(file);
-                                    break;
-                                case ".mdb":
-                                    conversionPath = handleMDB(file);
-                                    break;
-                                default:
-                                    conversionPath = null;
-                                    break;
-                            }
+                            string conversionPath = _fileConverter.Convert(file);
 
                             //Add converted file to the database.
-                            if (conversionPath != null)
-                            {
-                                MySqlCmd.AddTableFromFile(conversionPath);
-                                MySqlCmd.PopulateTableFromFile(conversionPath);
-                            }
+                            MySqlCmd.AddTableFromFile(conversionPath);
+                            MySqlCmd.PopulateTableFromFile(conversionPath);
 
                             //Move the original file to the Archive.
                             string archivePath = Path.Combine(DirectoryManager.ArchiveDir, Directory.GetParent(file).Name, Path.GetFileName(file));
@@ -127,6 +110,7 @@ namespace EPSCoR.Database
                 catch (InvalidFileException e)
                 {
                     LoggerFactory.Logger.Log("Invalid File: " + e.Message);
+                    //Move the invalid file.
                     string invalidPath = Path.Combine(DirectoryManager.InvalidDir, Path.GetFileName(e.InvalidFile));
                     validateDestination(invalidPath);
                     File.Move(e.InvalidFile, invalidPath);
@@ -134,6 +118,8 @@ namespace EPSCoR.Database
                 catch (Exception e)
                 {
                     LoggerFactory.Logger.Log("Exception: " + e.Message);
+                    //Once we hit an exception we don't want to keep going.
+                    _cancel = true;
                 }
                 finally
                 {
