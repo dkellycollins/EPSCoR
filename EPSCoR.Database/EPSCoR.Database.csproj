@@ -54,10 +54,16 @@
     <Reference Include="WebMatrix.WebData, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CSVFileConverter.cs" />
+    <Compile Include="DbCmds\DbCmd.cs" />
+    <Compile Include="FileConverter.cs" />
+    <Compile Include="IFileConverter.cs" />
+    <Compile Include="Models\CalcData.cs" />
     <Compile Include="Models\TableIndex.cs" />
     <Compile Include="Services\DirectoryManager.cs" />
     <Compile Include="FileProcessor.cs" />
     <Compile Include="Exceptions\InvalidFileException.cs" />
+    <Compile Include="Services\Log\ConsoleLogger.cs" />
     <Compile Include="Services\Log\FileLogger.cs" />
     <Compile Include="Models\UserProfile.cs" />
     <Compile Include="Models\AttributeData.cs" />

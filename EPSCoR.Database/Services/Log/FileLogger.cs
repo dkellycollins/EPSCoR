@@ -34,5 +34,23 @@ namespace EPSCoR.Database.Services.Log
             logFileStream.Flush();
             logFileStream.Close();
         }
+
+        public void Log(string message, Exception e)
+        {
+            StreamWriter logFileStream = new StreamWriter(File.Open(_logFile, FileMode.Append));
+
+            logFileStream.WriteLine(string.Format("{0} - {1}", DateTime.Now.ToString(), message));
+            
+            Exception currentException = e;
+            while (currentException != null)
+            {
+                logFileStream.WriteLine(e.Message);
+                logFileStream.WriteLine(e.StackTrace);
+                currentException = currentException.InnerException;
+            }
+
+            logFileStream.Flush();
+            logFileStream.Close();
+        }
     }
 }

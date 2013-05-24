@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using EPSCoR.Database.Exceptions;
 using EPSCoR.Database.Models;
@@ -16,28 +17,26 @@ namespace EPSCoR.Database.DbCmds
     /// <summary>
     /// Performs database action using MySql commands
     /// </summary>
-    internal class MySqlCmd
+    internal class MySqlCmd : DbCmd
     {
+        public MySqlCmd() : base() { }
+
         /// <summary>
         /// Creates a new table based on the file provided.
         /// </summary>
         /// <param name="file">CSV file.</param>
         /// <param name="dbContext">Reference to thte database.</param>
-        public static void AddTableFromFile(string file)
+        public override void AddTableFromFile(string file)
         {
             //Get the table name.
             string tableName = Path.GetFileNameWithoutExtension(file);
-            throwIfInvalidSql(tableName);
+            ThrowIfInvalidSql(tableName);
 
             //Get all the fields from the file.
-            TextReader reader = File.OpenText(file);
-            string head = reader.ReadLine();
-            reader.Close();
-            head = head.Replace('\"', ' ');
-            string[] fields = head.Split(',');
+            string[] fields = GetFieldsFromFile(file);
             if (fields.Length == 0)
                 throw new InvalidFileException(file, "No data to process.");
-            throwIfInvalidSql(fields);
+            ThrowIfInvalidSql(file, fields);
 
             //Build the column paramaters for the Sql query.
             StringBuilder columnsBuilder = new StringBuilder();
@@ -54,7 +53,7 @@ namespace EPSCoR.Database.DbCmds
                 //Execute the command.
                 string cmd = "CREATE TABLE IF NOT EXISTS " + tableName
                     + " ( " + columnsBuilder.ToString() + " ) "
-                    + "ENGINE = InnoDB"
+                    + "ENGINE = InnoDB "
                     + "DEFAULT CHARSET=latin1";
                 dbContext.Database.ExecuteSqlCommand(cmd);
                 dbContext.Set<TableIndex>().Add(new TableIndex()
@@ -62,7 +61,8 @@ namespace EPSCoR.Database.DbCmds
                     Name = tableName,
                     Type = (tableName.Contains("_ATT")) ? TableTypes.ATTRIBUTE : TableTypes.UPSTREAM
                 });
-                LoggerFactory.Logger.Log("Table " + tableName + " added to the database.");
+                dbContext.SaveChanges();
+                LoggerFactory.Log("Table " + tableName + " added to the database.");
             }
             finally
             {
@@ -75,10 +75,10 @@ namespace EPSCoR.Database.DbCmds
         /// </summary>
         /// <param name="file">CSV file</param>
         /// <param name="dbContext">The reference to the database.</param>
-        public static void PopulateTableFromFile(string file)
+        public override void PopulateTableFromFile(string file)
         {
             string table = Path.GetFileNameWithoutExtension(file);
-            throwIfInvalidSql(file, table);
+            ThrowIfInvalidSql(file, table);
 
             DefaultContext dbContext = DefaultContext.GetInstance();
             try
@@ -90,7 +90,7 @@ namespace EPSCoR.Database.DbCmds
                     + "LINES TERMINATED BY '\n'" 
                     + "IGNORE 1 LINES";
                 int rowsUpdated = dbContext.Database.ExecuteSqlCommand(cmd);
-                LoggerFactory.Logger.Log(rowsUpdated + " rows updated in table " + table);
+                LoggerFactory.Log(rowsUpdated + " rows updated in table " + table);
             }
             finally
             {
@@ -103,62 +103,108 @@ namespace EPSCoR.Database.DbCmds
         /// </summary>
         /// <param name="attTable">Attribute Table</param>
         /// <param name="usTable">Upstream Table</param>
-        public static void SumTables(string attTable, string usTable)
+        public override void SumTables(string attTable, string usTable)
         {
             throw new NotImplementedException();
             /*
             string calcTable = string.Format("{0}_{1}_calc", attTable, usTable);
             throwIfInvalidSql(attTable, usTable, calcTable);
 
-            DefaultContext dbContext = DefaultContext.GetInstance();
-
-            var rsult = dbContext.Database.ExecuteSqlCommand(
-                "SHOW COLUMNS FROM {0}", 
-                attTable,
-                new SqlParameter("rsult", System.Data.SqlDbType.) { Direction = System.Data.ParameterDirection.ReturnValue });
-            if(rsult == null)
-                throw new Exception("Query to show fields from table failed.");
-
-            var f_num = 0; // mysql_num_fields($rsult)
-            var comm_f1 = "";
-            var head_f1 = "";
-            var comm_f2 = "";
-            var head_f2 = "";
-
-            if (0 > 0) //mysql_num_rows($rsult) > 0
+            string[] fields = new string[]
             {
-                var row = "";
-	            while (false) //(row = mysql_fetch_row($rsult)) != null 
-                { 
-		            var r = row[0];
-		            if (r != "ID" && r != "ARCID" && r != "OBJECTID" && r != "uni")
-                    {
-			            comm_f1 += ", SUM(" + r + ")";
-			            head_f1 += ", " + r;
+                "SUM(GRID_CODE)",
+		        "SUM(LCOVV11)",
+		        "SUM(LCOVV12)",
+		        "SUM(LCOVV21)",
+		        "SUM(LCOVV22)",
+		        "SUM(LCOVV23)",
+		        "SUM(LCOVV24)",
+		        "SUM(LCOVV31)",
+		        "SUM(LCOVV41)",
+		        "SUM(LCOVV42)",
+		        "SUM(LCOVV43)",
+		        "SUM(LCOVV52)",
+		        "SUM(LCOVV71)",
+		        "SUM(LCOVV81)",
+		        "SUM(LCOVV82)",
+		        "SUM(LCOVV90)",
+		        "SUM(LCOVV95)",
+		        "SUM(LCOVV127)",
+		        "SUM(Area)",
+		        "SUM(HydroID_1)",
+		        "SUM(LCOV11)",
+		        "SUM(LCOV12)",
+		        "SUM(LCOV21)",
+		        "SUM(LCOV22)",
+		        "SUM(LCOV23)",
+		        "SUM(LCOV24)",
+		        "SUM(LCOV31)",
+		        "SUM(LCOV41)",
+		        "SUM(LCOV42)",
+		        "SUM(LCOV43)",
+		        "SUM(LCOV52)",
+		        "SUM(LCOV71)",
+		        "SUM(LCOV81)",
+		        "SUM(LCOV82)", 
+		        "SUM(LCOV90)", 
+		        "SUM(LCOV95)", 
+		        "SUM(LCOV127)", 
+		        "SUM(MUKEY)",
+		        "SUM(slopegradd)",
+		        "SUM(slopegradw)",
+		        "SUM(slope_l)",
+		        "SUM(slope_r)",
+		        "SUM(slope_h)",
+		        "SUM(tfact)",
+		        "SUM(weg)",
+		        "SUM(cokey)", 
+		        "SUM(om_l)", 
+		        "SUM(om_r)", 
+		        "SUM(om_h)", 
+		        "SUM(dbthirdbar)", 
+		        "SUM(dbthirdb_1)", 
+		        "SUM(dbthirdb_2)",
+		        "SUM(ksat_l)", 
+		        "SUM(ksat_r)", 
+		        "SUM(ksat_h)",
+		        "SUM(awc_l)", 
+		        "SUM(awc_r)",
+		        "SUM(awc_h)",
+		        "SUM(kffact)",
+		        "SUM(brock)",
+		        "SUM(wt)",
+		        "SUM(Fnode)",
+		        "SUM(Tnode)",
+		        "SUM(CatchID)",
+		        "SUM(Strahler)",
+		        "SUM(Segment)"
+            };
 
-                        comm_f2 += ", " + r;
-                        head_f2 += ", " + r;
-		            }
-	            }
-	        }
-
-            dbContext.Database.ExecuteSqlCommand(
-                "SELECT POLYLINEID, ARCID, US_POLYID" + comm_f1
+            DefaultContext dbContext = DefaultContext.GetInstance();
+            try
+            {
+                string cmd = "SELECT POLYLINEID, ARCID, US_POLYID" + comm_f1
                     + "FROM (SELECT POLYLINEID, ARCID, US_POLYID" + comm_f2
-		    	        + "FROM {1}, {2}"
+		    	        + "FROM " + attTable +  ", " + usTable + " "
 		    	        + "WHERE ARCID = US_POLYID) Prod"
 		            + "GROUP BY Prod.POLYLINEID"
-		            + "LIMIT 40",
-                    calcTable, attTable, usTable);
-
-            DefaultContext.Release();
-            Logger.Log("Created calc table " + calcTable);
-             */
+		            + "LIMIT 40";
+                dbContext.Database.ExecuteSqlCommand(cmd);
+                dbContext.Set<TableIndex>().Add(new TableIndex()
+                {
+                    Name = calcTable,
+                    Type = TableTypes.CALC
+                });
+                dbContext.SaveChanges();
+                LoggerFactory.Logger.Log("Sum table " + calcTable + "created.");
+            }
+            finally
+            {
+                DefaultContext.Release();
+            }
+             * */
         }
 
-        private static void throwIfInvalidSql(params string[] args)
-        {
-            //TODO implement
-        }
+        
     }
 }
