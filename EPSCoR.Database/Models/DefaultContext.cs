@@ -51,5 +51,16 @@ namespace EPSCoR.Database.Models
         {
             return this.Database.SqlQuery<UpstreamData>("SELECT * FROM " + usTable);
         }
+
+        public void DeleteTable(string table)
+        {
+            TableIndex tableIndex = Tables.Where((t) => t.Name == table).FirstOrDefault();
+            if (tableIndex != null)
+            {
+                this.Database.ExecuteSqlCommand("DROP TABLE " + table);
+                Tables.Remove(tableIndex);
+                SaveChanges();
+            }
+        }
     }
 }

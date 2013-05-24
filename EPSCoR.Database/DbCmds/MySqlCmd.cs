@@ -105,89 +105,38 @@ namespace EPSCoR.Database.DbCmds
         /// <param name="usTable">Upstream Table</param>
         public override void SumTables(string attTable, string usTable)
         {
-            throw new NotImplementedException();
-            /*
             string calcTable = string.Format("{0}_{1}_calc", attTable, usTable);
-            throwIfInvalidSql(attTable, usTable, calcTable);
-
-            string[] fields = new string[]
-            {
-                "SUM(GRID_CODE)",
-		        "SUM(LCOVV11)",
-		        "SUM(LCOVV12)",
-		        "SUM(LCOVV21)",
-		        "SUM(LCOVV22)",
-		        "SUM(LCOVV23)",
-		        "SUM(LCOVV24)",
-		        "SUM(LCOVV31)",
-		        "SUM(LCOVV41)",
-		        "SUM(LCOVV42)",
-		        "SUM(LCOVV43)",
-		        "SUM(LCOVV52)",
-		        "SUM(LCOVV71)",
-		        "SUM(LCOVV81)",
-		        "SUM(LCOVV82)",
-		        "SUM(LCOVV90)",
-		        "SUM(LCOVV95)",
-		        "SUM(LCOVV127)",
-		        "SUM(Area)",
-		        "SUM(HydroID_1)",
-		        "SUM(LCOV11)",
-		        "SUM(LCOV12)",
-		        "SUM(LCOV21)",
-		        "SUM(LCOV22)",
-		        "SUM(LCOV23)",
-		        "SUM(LCOV24)",
-		        "SUM(LCOV31)",
-		        "SUM(LCOV41)",
-		        "SUM(LCOV42)",
-		        "SUM(LCOV43)",
-		        "SUM(LCOV52)",
-		        "SUM(LCOV71)",
-		        "SUM(LCOV81)",
-		        "SUM(LCOV82)", 
-		        "SUM(LCOV90)", 
-		        "SUM(LCOV95)", 
-		        "SUM(LCOV127)", 
-		        "SUM(MUKEY)",
-		        "SUM(slopegradd)",
-		        "SUM(slopegradw)",
-		        "SUM(slope_l)",
-		        "SUM(slope_r)",
-		        "SUM(slope_h)",
-		        "SUM(tfact)",
-		        "SUM(weg)",
-		        "SUM(cokey)", 
-		        "SUM(om_l)", 
-		        "SUM(om_r)", 
-		        "SUM(om_h)", 
-		        "SUM(dbthirdbar)", 
-		        "SUM(dbthirdb_1)", 
-		        "SUM(dbthirdb_2)",
-		        "SUM(ksat_l)", 
-		        "SUM(ksat_r)", 
-		        "SUM(ksat_h)",
-		        "SUM(awc_l)", 
-		        "SUM(awc_r)",
-		        "SUM(awc_h)",
-		        "SUM(kffact)",
-		        "SUM(brock)",
-		        "SUM(wt)",
-		        "SUM(Fnode)",
-		        "SUM(Tnode)",
-		        "SUM(CatchID)",
-		        "SUM(Strahler)",
-		        "SUM(Segment)"
-            };
+            ThrowIfInvalidSql(attTable, usTable, calcTable);
 
             DefaultContext dbContext = DefaultContext.GetInstance();
             try
             {
-                string cmd = "SELECT POLYLINEID, ARCID, US_POLYID" + comm_f1
-                    + "FROM (SELECT POLYLINEID, ARCID, US_POLYID" + comm_f2
+                // Get columns
+                string showColumns = "SHOW COLUMNS FROM " + attTable;
+	            IEnumerable<string> columns = dbContext.Database.SqlQuery<string>(showColumns);
+	            if (columns == null || columns.Count() == 0) 
+                {
+	                throw new Exception("Query to show fields from table failed");
+	            }
+	            
+                //Build two strings. One that has each column name separated by commas and once that has each column name wrapped in SUM()
+                StringBuilder newColumns = new StringBuilder();
+	            StringBuilder curColumns = new StringBuilder();
+	            foreach(string column in columns)
+                {
+		            if (column != "ID" && column != "ARCID" && column != "OBJECTID" && column != "uni")
+                    {
+			            newColumns.Append(", SUM(" + column + ")");
+                        curColumns.Append(", " + column);
+                    }
+                }
+            
+                string cmd = "CREATE TABLE " + calcTable + " "
+                    + "SELECT POLYLINEID, ARCID, US_POLYID" + newColumns
+                    + "FROM (SELECT POLYLINEID, ARCID, US_POLYID" + curColumns + " "
 		    	        + "FROM " + attTable +  ", " + usTable + " "
-		    	        + "WHERE ARCID = US_POLYID) Prod"
-		            + "GROUP BY Prod.POLYLINEID"
+		    	        + "WHERE ARCID = US_POLYID) Prod "
+		            + "GROUP BY Prod.POLYLINEID "
 		            + "LIMIT 40";
                 dbContext.Database.ExecuteSqlCommand(cmd);
                 dbContext.Set<TableIndex>().Add(new TableIndex()
@@ -196,15 +145,12 @@ namespace EPSCoR.Database.DbCmds
                     Type = TableTypes.CALC
                 });
                 dbContext.SaveChanges();
-                LoggerFactory.Logger.Log("Sum table " + calcTable + "created.");
+                LoggerFactory.Log("Sum table " + calcTable + "created.");
             }
             finally
             {
                 DefaultContext.Release();
             }
-             * */
         }
-
-        
     }
 }

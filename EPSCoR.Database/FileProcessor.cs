@@ -21,6 +21,7 @@ namespace EPSCoR.Database
     /// <summary>
     /// The file processor coverts any uploaded files into csv file and moves them to the archive folder.
     /// </summary>
+    /// <remarks>This needs to be refactored to run as an independent application.</remarks>
     public class FileProcessor
     {
         static FileProcessor()

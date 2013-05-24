@@ -29,7 +29,7 @@ namespace EPSCoR.Database.DbCmds
         {
             foreach (string arg in args)
             {
-                if (!Regex.IsMatch(arg, @"^[a-zA-Z0-9_]+$"))
+                if (!Regex.IsMatch(arg.Trim(), @"^[a-zA-Z0-9_]+$", RegexOptions.IgnorePatternWhitespace))
                     throw new InvalidFileException(file, arg + " contains invalid characters");
             }
         }
@@ -42,7 +42,7 @@ namespace EPSCoR.Database.DbCmds
         {
             foreach (string arg in args)
             {
-                if (!Regex.IsMatch(arg, @"^[a-zA-Z0-9_]+$"))
+                if (!Regex.IsMatch(arg.Trim(), @"^[a-zA-Z0-9_]+$", RegexOptions.IgnorePatternWhitespace))
                     throw new Exception(arg + " contains invalid characters");
             }
         }
