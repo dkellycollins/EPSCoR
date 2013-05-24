@@ -57,6 +57,11 @@ namespace EPSCoR.Database.DbCmds
                     + "ENGINE = InnoDB"
                     + "DEFAULT CHARSET=latin1";
                 dbContext.Database.ExecuteSqlCommand(cmd);
+                dbContext.Set<TableIndex>().Add(new TableIndex()
+                {
+                    Name = tableName,
+                    Type = (tableName.Contains("_ATT")) ? TableTypes.ATTRIBUTE : TableTypes.UPSTREAM
+                });
                 LoggerFactory.Logger.Log("Table " + tableName + " added to the database.");
             }
             finally

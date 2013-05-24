@@ -38,3 +38,5 @@ _ReSharper*/
 *.ldf
 /TestingFiles
 /EPSCoR/App_Data
+
+/*.sql

@@ -33,6 +33,7 @@ namespace EPSCoR.Database.Models
         }
 
         public DbSet<TableIndex> Tables { get; set; }
+        public DbSet<TablePairIndex> TablePairs { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
 
         public DefaultContext()

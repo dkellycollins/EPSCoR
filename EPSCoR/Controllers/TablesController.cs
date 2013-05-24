@@ -15,17 +15,17 @@ namespace EPSCoR.Controllers
     public class TablesController : Controller
     {
         private IRepository<UserProfile> _userProfileRepo;
-        private IRepository<TableIndex> _tableIndexRepo;
+        private IRepository<TablePairIndex> _tableIndexRepo;
         private IFileAccessor _uploadFileAccessor;
 
         public TablesController()
         {
-            _tableIndexRepo = new BasicRepo<TableIndex>();
+            _tableIndexRepo = new BasicRepo<TablePairIndex>();
             _userProfileRepo = new BasicRepo<UserProfile>();
             _uploadFileAccessor = new BasicFileAccessor(BasicFileAccessor.UPLOAD_DIRECTORY, WebSecurity.CurrentUserName);
         }
 
-        public TablesController(IRepository<TableIndex> tableIndexRepo, IRepository<UserProfile> userProfileRepo, IFileAccessor uploadFileAccessor)
+        public TablesController(IRepository<TablePairIndex> tableIndexRepo, IRepository<UserProfile> userProfileRepo, IFileAccessor uploadFileAccessor)
         {
             _tableIndexRepo = tableIndexRepo;
             _userProfileRepo = userProfileRepo;
@@ -43,14 +43,14 @@ namespace EPSCoR.Controllers
             return View(createTableIndexViewModel(tables.ToList()));
         }
 
-        private TableIndexVM createTableIndexViewModel(List<TableIndex> tableIndexes)
+        private TableIndexVM createTableIndexViewModel(List<TablePairIndex> tableIndexes)
         {
             TableIndexVM vm = new TableIndexVM();
             vm.Tables = new List<string>();
             vm.CalcForm = new CalcFormVM();
             vm.CalcForm.AttributeTables = new List<string>();
             vm.CalcForm.UpstreamTables = new List<string>();
-            foreach (TableIndex index in tableIndexes)
+            foreach (TablePairIndex index in tableIndexes)
             {
                 vm.Tables.Add(index.AttributeTable);
                 vm.Tables.Add(index.UpstreamTable);
@@ -67,7 +67,7 @@ namespace EPSCoR.Controllers
         // GET: /Tables/Details/{Table.ID}
         public ActionResult Details(int id = 0)
         {
-            TableIndex table = _tableIndexRepo.Get(id);
+            TablePairIndex table = _tableIndexRepo.Get(id);
             if (table == null)
             {
                 return new HttpNotFoundResult();
@@ -85,9 +85,9 @@ namespace EPSCoR.Controllers
         //
         // POST: /Table/Upload/
         [HttpPost]
-        public ActionResult Upload(TableIndex table, HttpPostedFileBase attFile, HttpPostedFileBase usFile)
+        public ActionResult Upload(TablePairIndex table, HttpPostedFileBase attFile, HttpPostedFileBase usFile)
         {
-            TableIndex existingTable = _tableIndexRepo.GetAll().Where((t) => t.Name == table.Name && t.Version == table.Version).FirstOrDefault();
+            TablePairIndex existingTable = _tableIndexRepo.GetAll().Where((t) => t.Name == table.Name && t.Version == table.Version).FirstOrDefault();
             if (existingTable != null)
             {
                 TempData["StatusMessage"] = "Tables already exist";
