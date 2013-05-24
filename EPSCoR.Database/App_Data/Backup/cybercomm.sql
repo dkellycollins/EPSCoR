@@ -44,7 +44,7 @@ CREATE TABLE `my_aspnet_applications` (
 
 LOCK TABLES `my_aspnet_applications` WRITE;
 /*!40000 ALTER TABLE `my_aspnet_applications` DISABLE KEYS */;
-INSERT INTO `my_aspnet_applications` (`id`, `name`, `description`) VALUES (1,'/','MySQL Role provider');
+INSERT INTO `my_aspnet_applications` VALUES (1,'/','MySQL Role provider');
 /*!40000 ALTER TABLE `my_aspnet_applications` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -85,7 +85,7 @@ CREATE TABLE `my_aspnet_membership` (
 
 LOCK TABLES `my_aspnet_membership` WRITE;
 /*!40000 ALTER TABLE `my_aspnet_membership` DISABLE KEYS */;
-INSERT INTO `my_aspnet_membership` (`userId`, `Email`, `Comment`, `Password`, `PasswordKey`, `PasswordFormat`, `PasswordQuestion`, `PasswordAnswer`, `IsApproved`, `LastActivityDate`, `LastLoginDate`, `LastPasswordChangedDate`, `CreationDate`, `IsLockedOut`, `LastLockedOutDate`, `FailedPasswordAttemptCount`, `FailedPasswordAttemptWindowStart`, `FailedPasswordAnswerAttemptCount`, `FailedPasswordAnswerAttemptWindowStart`) VALUES (1,'dummy@dummy.com','','WsVz/6YAhJrdEbFnSp4qlsZYtGnEwN8Pr+5W7hxP0/s=','m6yMQT+rg1j+u/EOcwa6xg==',1,NULL,NULL,1,'2013-05-22 16:58:15','2013-05-22 16:58:15','2013-05-22 16:58:15','2013-05-22 16:58:15',0,'2013-05-22 16:58:15',0,'2013-05-22 16:58:15',0,'2013-05-22 16:58:15');
+INSERT INTO `my_aspnet_membership` VALUES (1,'dummy@dummy.com','','WsVz/6YAhJrdEbFnSp4qlsZYtGnEwN8Pr+5W7hxP0/s=','m6yMQT+rg1j+u/EOcwa6xg==',1,NULL,NULL,1,'2013-05-22 16:58:15','2013-05-22 16:58:15','2013-05-22 16:58:15','2013-05-22 16:58:15',0,'2013-05-22 16:58:15',0,'2013-05-22 16:58:15',0,'2013-05-22 16:58:15');
 /*!40000 ALTER TABLE `my_aspnet_membership` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -136,7 +136,7 @@ CREATE TABLE `my_aspnet_roles` (
 
 LOCK TABLES `my_aspnet_roles` WRITE;
 /*!40000 ALTER TABLE `my_aspnet_roles` DISABLE KEYS */;
-INSERT INTO `my_aspnet_roles` (`id`, `applicationId`, `name`) VALUES (1,1,'admin');
+INSERT INTO `my_aspnet_roles` VALUES (1,1,'admin');
 /*!40000 ALTER TABLE `my_aspnet_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -158,7 +158,7 @@ CREATE TABLE `my_aspnet_schemaversion` (
 
 LOCK TABLES `my_aspnet_schemaversion` WRITE;
 /*!40000 ALTER TABLE `my_aspnet_schemaversion` DISABLE KEYS */;
-INSERT INTO `my_aspnet_schemaversion` (`version`) VALUES (8);
+INSERT INTO `my_aspnet_schemaversion` VALUES (8);
 /*!40000 ALTER TABLE `my_aspnet_schemaversion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -240,7 +240,7 @@ CREATE TABLE `my_aspnet_users` (
 
 LOCK TABLES `my_aspnet_users` WRITE;
 /*!40000 ALTER TABLE `my_aspnet_users` DISABLE KEYS */;
-INSERT INTO `my_aspnet_users` (`id`, `applicationId`, `name`, `isAnonymous`, `lastActivityDate`) VALUES (1,1,'ram',0,'2013-05-22 16:58:15');
+INSERT INTO `my_aspnet_users` VALUES (1,1,'ram',0,'2013-05-22 16:58:15');
 /*!40000 ALTER TABLE `my_aspnet_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -264,7 +264,7 @@ CREATE TABLE `my_aspnet_usersinroles` (
 
 LOCK TABLES `my_aspnet_usersinroles` WRITE;
 /*!40000 ALTER TABLE `my_aspnet_usersinroles` DISABLE KEYS */;
-INSERT INTO `my_aspnet_usersinroles` (`userId`, `roleId`) VALUES (1,1);
+INSERT INTO `my_aspnet_usersinroles` VALUES (1,1);
 /*!40000 ALTER TABLE `my_aspnet_usersinroles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -317,7 +317,6 @@ CREATE TABLE `tablepairindexes` (
 
 LOCK TABLES `tablepairindexes` WRITE;
 /*!40000 ALTER TABLE `tablepairindexes` DISABLE KEYS */;
-INSERT INTO `tablepairindexes` (`ID`, `Name`, `Version`, `Region`, `UpstreamTable`, `AttributeTable`, `User`) VALUES (3,'test1','1','test','KS_US','CC_US',NULL),(4,'test2','2','test','KS_US','CC_US',NULL);
 /*!40000 ALTER TABLE `tablepairindexes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -354,4 +353,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-05-24  9:28:54
+-- Dump completed on 2013-05-24 12:15:27
