@@ -7,21 +7,25 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EPSCoR.Database.Exceptions;
 using EPSCoR.Database.Models;
+using EPSCoR.Database.Services.Log;
 
-namespace EPSCoR.Database
+namespace EPSCoR.Database.DbCmds
 {
     /// <summary>
     /// Performs database actions using MsSql commands.
     /// </summary>
-    internal class SqlServerCmd
+    internal class SqlServerCmd : DbCmd
     {
+        public SqlServerCmd() : base() {}
+
         /// <summary>
         /// Creates a new table based on the file provided.
         /// </summary>
         /// <param name="file">CSV file.</param>
         /// <param name="dbContext">Reference to thte database.</param>
-        public static void AddTableFromFile(string file)
+        public override void AddTableFromFile(string file)
         {
             DefaultContext dbContext = DefaultContext.GetInstance();
 
@@ -48,15 +52,15 @@ namespace EPSCoR.Database
                 );
 
             DefaultContext.Release();
-            Logger.Log("Table " + Path.GetFileNameWithoutExtension(file) + " added to the database.");
+            LoggerFactory.Log("Table " + Path.GetFileNameWithoutExtension(file) + " added to the database.");
         }
 
-        /// <summary>
-        /// Populates the table with same name as the file with the data in the file.
-        /// </summary>
-        /// <param name="file">CSV file</param>
-        /// <param name="dbContext">The reference to the database.</param>
-        public static void PopulateTableFromFile(string file)
+        public override void PopulateTableFromFile(string file)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SumTables(string attTable, string usTable)
         {
             throw new NotImplementedException();
         }

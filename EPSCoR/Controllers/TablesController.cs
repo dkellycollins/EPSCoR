@@ -13,24 +13,35 @@ using WebMatrix.WebData;
 namespace EPSCoR.Controllers
 {
     //[Authorize]
-    public class TablesController : Controller
+    public class TablesController : BootstrapBaseController
     {
         private IRepository<UserProfile> _userProfileRepo;
+        private IRepository<TablePairIndex> _tablePairIndexRepo;
         private IRepository<TableIndex> _tableIndexRepo;
         private IFileAccessor _uploadFileAccessor;
+        private IFileAccessor _conversionFileAccessor;
 
         public TablesController()
         {
-            _tableIndexRepo = new BasicRepo<TableIndex>();
+            _tablePairIndexRepo = new BasicRepo<TablePairIndex>();
             _userProfileRepo = new BasicRepo<UserProfile>();
+            _tableIndexRepo = new BasicRepo<TableIndex>();
             _uploadFileAccessor = new BasicFileAccessor(BasicFileAccessor.UPLOAD_DIRECTORY, WebSecurity.CurrentUserName);
+            _conversionFileAccessor = new BasicFileAccessor(BasicFileAccessor.CONVERTION_DIRECTORY, WebSecurity.CurrentUserName);
         }
 
-        public TablesController(IRepository<TableIndex> tableIndexRepo, IRepository<UserProfile> userProfileRepo, IFileAccessor uploadFileAccessor)
+        public TablesController(
+            IRepository<TableIndex> tableIndexRepo,
+            IRepository<TablePairIndex> tablePairIndexRepo, 
+            IRepository<UserProfile> userProfileRepo, 
+            IFileAccessor uploadFileAccessor, 
+            IFileAccessor conversionFileAccessor)
         {
             _tableIndexRepo = tableIndexRepo;
+            _tablePairIndexRepo = tablePairIndexRepo;
             _userProfileRepo = userProfileRepo;
             _uploadFileAccessor = uploadFileAccessor;
+            _conversionFileAccessor = conversionFileAccessor;
         }
 
         //
@@ -38,8 +49,9 @@ namespace EPSCoR.Controllers
         public ActionResult Index()
         {
             var tables = from t in _tableIndexRepo.GetAll() select t;
+            //UserProfile userProfile = _userProfileRepo.GetAll().Where((u) => u.UserName == WebSecurity.CurrentUserName).FirstOrDefault();
             //if(!this.User.IsInRole("admin"))
-                //tables = tables.Where((t) => t.User == this.User);
+                //tables = tables.Where((t) => t. == this.User);
 
             return View(createTableIndexViewModel(tables.ToList()));
         }
@@ -53,13 +65,25 @@ namespace EPSCoR.Controllers
             vm.CalcForm.UpstreamTables = new List<string>();
             foreach (TableIndex index in tableIndexes)
             {
-                vm.Tables.Add(index.AttributeTable);
-                vm.Tables.Add(index.UpstreamTable);
-                vm.CalcForm.AttributeTables.Add(index.AttributeTable);
-                vm.CalcForm.UpstreamTables.Add(index.UpstreamTable);
+                vm.Tables.Add(index.Name);
+                if (index.Type == TableTypes.ATTRIBUTE)
+                    vm.CalcForm.AttributeTables.Add(index.Name);
+                else if (index.Type == TableTypes.UPSTREAM)
+                    vm.CalcForm.UpstreamTables.Add(index.Name);
             }
 
             vm.ConvertedTables = new List<ConvertedTablesVM>();
+            foreach (string convertedFile in _conversionFileAccessor.GetFiles())
+            {
+                vm.ConvertedTables.Add(new ConvertedTablesVM()
+                {
+                    TableID = 0,
+                    Table = Path.GetFileNameWithoutExtension(convertedFile),
+                    Issuer = "",
+                    Time = "",
+                    Type = ""
+                });
+            }
 
             return vm;
         }
@@ -68,7 +92,7 @@ namespace EPSCoR.Controllers
         // GET: /Tables/Details/{Table.ID}
         public ActionResult Details(int id = 0)
         {
-            TableIndex table = _tableIndexRepo.Get(id);
+            TablePairIndex table = _tablePairIndexRepo.Get(id);
             if (table == null)
             {
                 return new HttpNotFoundResult();
@@ -86,12 +110,12 @@ namespace EPSCoR.Controllers
         //
         // POST: /Table/Upload/
         [HttpPost]
-        public ActionResult Upload(TableIndex table, HttpPostedFileBase attFile, HttpPostedFileBase usFile)
+        public ActionResult Upload(TablePairIndex table, HttpPostedFileBase attFile, HttpPostedFileBase usFile)
         {
-            TableIndex existingTable = _tableIndexRepo.GetAll().Where((t) => t.Name == table.Name && t.Version == table.Version).FirstOrDefault();
+            TablePairIndex existingTable = _tablePairIndexRepo.GetAll().Where((t) => t.Name == table.Name && t.Version == table.Version).FirstOrDefault();
             if (existingTable != null)
             {
-                TempData.Add(Alerts.ATTENTION, "Tables already exist.");
+                DisplayAttention("Tables already exist.");
                 return RedirectToAction("Upload");
             }
 
@@ -103,12 +127,12 @@ namespace EPSCoR.Controllers
                 table.AttributeTable = Path.GetFileNameWithoutExtension(attFile.FileName);
                 table.UpstreamTable = Path.GetFileNameWithoutExtension(usFile.FileName);
 
-                _tableIndexRepo.Create(table);
-                TempData.Add(Alerts.SUCCESS, "Upload Sucessful!");
+                _tablePairIndexRepo.Create(table);
+                DisplaySuccess("Upload Sucessful!");
             }
             else
             {
-                TempData.Add(Alerts.ERROR, "Upload Failed");
+                DisplayError("Upload Failed");
             }
 
             return RedirectToAction("Index");
@@ -131,7 +155,7 @@ namespace EPSCoR.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            _tableIndexRepo.Dispose();
+            _tablePairIndexRepo.Dispose();
             _userProfileRepo.Dispose();
             base.Dispose(disposing);
         }
