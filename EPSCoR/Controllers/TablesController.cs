@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using BootstrapSupport;
 using EPSCoR.Database.Models;
 using EPSCoR.Repositories;
 using EPSCoR.ViewModels;
@@ -90,7 +91,7 @@ namespace EPSCoR.Controllers
             TableIndex existingTable = _tableIndexRepo.GetAll().Where((t) => t.Name == table.Name && t.Version == table.Version).FirstOrDefault();
             if (existingTable != null)
             {
-                TempData["StatusMessage"] = "Tables already exist";
+                TempData.Add(Alerts.ATTENTION, "Tables already exist.");
                 return RedirectToAction("Upload");
             }
 
@@ -103,11 +104,11 @@ namespace EPSCoR.Controllers
                 table.UpstreamTable = Path.GetFileNameWithoutExtension(usFile.FileName);
 
                 _tableIndexRepo.Create(table);
-                TempData["StatusMessage"] = "Upload Sucessful!";
+                TempData.Add(Alerts.SUCCESS, "Upload Sucessful!");
             }
             else
             {
-                TempData["StatusMessage"] = "Upload Failed.";
+                TempData.Add(Alerts.ERROR, "Upload Failed");
             }
 
             return RedirectToAction("Index");
