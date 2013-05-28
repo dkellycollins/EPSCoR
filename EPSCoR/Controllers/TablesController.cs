@@ -104,7 +104,7 @@ namespace EPSCoR.Controllers
         // GET: /Table/Upload/
         public ActionResult Upload()
         {
-            return View();
+            return View(_uploadFileAccessor.GetFiles());
         }
 
         //

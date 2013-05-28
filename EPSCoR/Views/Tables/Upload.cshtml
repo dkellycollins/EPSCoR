@@ -1,21 +1,59 @@
-﻿@model EPSCoR.Database.Models.TablePairIndex
+﻿@model IEnumerable<string>
 @{
     ViewBag.Title = "Upload";
 }
 
 <h2>Upload</h2>
 
-<div id ="jquery-wrapped-fine-uploader"></div>
+<div id ="fineUploader">
+    <!-- This will be filled in by the javascript -->
+</div>
+<div id ="triggerUpload" class="btn btn-success">
+    <i class="icon-upload icon-white"></i> Upload Now
+</div>
+
+<h2>Files waiting to be converted</h2>
+<table>
+    @foreach(var file in Model)
+    {
+        <tr>
+            <td>
+                @file
+            </td>
+        </tr>
+    }
+</table>
 
 @Styles.Render("~/Content/fineuploader")
 @section Scripts {
     <script src=@Scripts.Url("~/bundles/fineuploader")></script>
     <script>
         $(document).ready(function () {
-            $('#jquery-wrapped-fine-uploader').fineUploader({
-              request: {
-                endpoint: 'Table/Upload'
-              }
+            var manualuploader = $('#fineUploader').fineUploader({
+                request: {
+                    endpoint: 'tables/upload'
+                },
+                autoUpload: false,
+                text: {
+                    uploadButton: '<i class="icon-plus icon-white"></i> Select Files'
+                },
+                validation: {
+                    allowedExtensions: ['csv']
+                },
+                template: '<div class="qq-uploader span12">' +
+                            '<pre class="qq-upload-drop-area span12"><span>{dragZoneText}</span></pre>' +
+                            '<div class="qq-upload-button btn btn-success" style="width: auto;">{uploadButtonText}</div>' +
+                            '<span class="qq-drop-processing"><span>{dropProcessingText}</span><span class="qq-drop-processing-spinner"></span></span>' +
+                            '<ul class="qq-upload-list" style="margin-top: 10px; text-align: center;"></ul>' +
+                          '</div>',
+                classes: {
+                    success: 'alert alert-success',
+                    fail: 'alert alert-error'
+                }
+            });
+
+            $('#triggerUpload').click(function () {
+                manualuploader.fineUploader('uploadStoredFiles');
             });
         });
     </script>

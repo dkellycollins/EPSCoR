@@ -56,6 +56,8 @@
     margin: 0;
     padding: 0;
     list-style: none;
+    /* Added by Devin Kelly-Collins */
+    text-align: left;
 }
 .qq-upload-list li {
     margin: 0;
@@ -144,4 +146,17 @@
     border-radius: 6px;
     margin-bottom: 3px;
     display: none;
+}
+
+/* For the bootstrapped demos */
+li.alert-success {
+    background-color: #DFF0D8;
+}
+ 
+li.alert-error {
+    background-color: #F2DEDE;
+}
+ 
+.alert-error .qq-upload-failed-text {
+    display: inline;
 }
