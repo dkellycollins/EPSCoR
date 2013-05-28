@@ -7,8 +7,9 @@
 
 <div id ="jquery-wrapped-fine-uploader"></div>
 
-@Scripts.Render("~/bundles/fineuploader")
+@Styles.Render("~/Content/fineuploader")
 @section Scripts {
+    <script src=@Scripts.Url("~/bundles/fineuploader")></script>
     <script>
         $(document).ready(function () {
             $('#jquery-wrapped-fine-uploader').fineUploader({
