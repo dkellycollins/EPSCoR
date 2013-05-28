@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading;
 using System.Web;
+using EPSCoR.Database.DbCmds;
 
 namespace EPSCoR.Database.Models
 {
@@ -33,11 +34,33 @@ namespace EPSCoR.Database.Models
         }
 
         public DbSet<TableIndex> Tables { get; set; }
-        //public DbSet<UserProfile> UserProfiles { get; set; }
+        public DbSet<TablePairIndex> TablePairs { get; set; }
+        public DbSet<UserProfile> UserProfiles { get; set; }
 
         public DefaultContext()
             : base("MySqlConnection")
         {
+        }
+
+        public IEnumerable<AttributeData> GetAllFromAttributeTable(string attTable)
+        {
+            return this.Database.SqlQuery<AttributeData>("SELECT * FROM " + attTable);
+        }
+
+        public IEnumerable<UpstreamData> GetAllFromUpstreamTable(string usTable)
+        {
+            return this.Database.SqlQuery<UpstreamData>("SELECT * FROM " + usTable);
+        }
+
+        public void DeleteTable(string table)
+        {
+            TableIndex tableIndex = Tables.Where((t) => t.Name == table).FirstOrDefault();
+            if (tableIndex != null)
+            {
+                this.Database.ExecuteSqlCommand("DROP TABLE " + table);
+                Tables.Remove(tableIndex);
+                SaveChanges();
+            }
         }
     }
 }

@@ -57,17 +57,26 @@
     <Reference Include="WebMatrix.WebData, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DirectoryManager.cs" />
+    <Compile Include="CSVFileConverter.cs" />
+    <Compile Include="DbCmds\DbCmd.cs" />
+    <Compile Include="FileConverter.cs" />
+    <Compile Include="IFileConverter.cs" />
+    <Compile Include="Models\CalcData.cs" />
+    <Compile Include="Models\TableIndex.cs" />
+    <Compile Include="Services\DirectoryManager.cs" />
     <Compile Include="FileProcessor.cs" />
-    <Compile Include="InvalidFileException.cs" />
-    <Compile Include="Logger.cs" />
-    <Compile Include="Models\AccountModels.cs" />
+    <Compile Include="Exceptions\InvalidFileException.cs" />
+    <Compile Include="Services\Log\ConsoleLogger.cs" />
+    <Compile Include="Services\Log\FileLogger.cs" />
+    <Compile Include="Models\UserProfile.cs" />
     <Compile Include="Models\AttributeData.cs" />
     <Compile Include="Models\DefaultContext.cs" />
-    <Compile Include="Models\TableIndex.cs" />
+    <Compile Include="Models\TablePairIndex.cs" />
     <Compile Include="Models\UpstreamData.cs" />
-    <Compile Include="SqlServerCmd.cs" />
-    <Compile Include="MySqlCmd.cs" />
+    <Compile Include="Services\Log\ILogger.cs" />
+    <Compile Include="Services\Log\LoggerFactory.cs" />
+    <Compile Include="DbCmds\SqlServerCmd.cs" />
+    <Compile Include="DbCmds\MySqlCmd.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
