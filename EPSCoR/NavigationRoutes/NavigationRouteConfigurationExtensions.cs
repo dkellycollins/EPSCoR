@@ -1,4 +1,6 @@
-﻿using Microsoft.Web.Mvc; //nuget:mvc4futures
+﻿/// This file was provided by bootstrap mvc framework. See here: https://github.com/erichexter/twitter.bootstrap.mvc 
+
+using Microsoft.Web.Mvc; //nuget:mvc4futures
 using System;
 using System.Collections.Generic;
 using System.Linq;

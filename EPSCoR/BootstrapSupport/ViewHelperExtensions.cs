@@ -1,4 +1,6 @@
-﻿using System;
+﻿/// This file was provided by bootstrap mvc framework. See here: https://github.com/erichexter/twitter.bootstrap.mvc 
+
+using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Linq;
