@@ -7,13 +7,11 @@
 <h2>Index</h2>
 
 <div id="calc">
-    <h2>Calculations</h2>
-    @Html.Partial("CalcForm")
+    @Html.Partial("CalcForm", Model.CalcForm)
 </div>
 
 <div id="convertedTbls">
-    <h2>Converted Tables</h2>
-    @Html.Partial("ConvertedTablesForm")
+    @Html.Partial("ConvertedTablesForm", Model.ConvertedTables)
 </div>
 
 <select id="tableSelect">
