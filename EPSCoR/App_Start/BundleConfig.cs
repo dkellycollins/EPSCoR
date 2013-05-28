@@ -23,7 +23,8 @@ namespace EPSCoR
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
                         "~/Scripts/modernizr-*"));
 
-            bundles.Add(new StyleBundle("~/Content/css").Include("~/Content/style.css"));
+            bundles.Add(new StyleBundle("~/Content/css").Include(
+                        "~/Content/style.css"));
 
             bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(
                         "~/Content/themes/base/jquery.ui.core.css",
@@ -38,6 +39,24 @@ namespace EPSCoR
                         "~/Content/themes/base/jquery.ui.datepicker.css",
                         "~/Content/themes/base/jquery.ui.progressbar.css",
                         "~/Content/themes/base/jquery.ui.theme.css"));
+
+            //Bootstrap bundles.
+
+            bundles.Add(new ScriptBundle("~/js").Include(
+                "~/Scripts/jquery-{version}.js",
+                "~/Scripts/jquery-migrate-{version}.js",
+                "~/Scripts/bootstrap.js",
+                "~/Scripts/jquery.validate.js",
+                "~/scripts/jquery.validate.unobtrusive.js",
+                "~/Scripts/jquery.validate.unobtrusive-custom-for-bootstrap.js"
+                ));
+
+            bundles.Add(new StyleBundle("~/content/css").Include(
+                "~/Content/bootstrap.css",
+                "~/Content/body.css",
+                "~/Content/bootstrap-responsive.css",
+                "~/Content/bootstrap-mvc-validation.css"
+                ));
         }
     }
 }
