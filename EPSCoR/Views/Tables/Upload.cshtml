@@ -1,31 +1,76 @@
-﻿@model EPSCoR.Database.Models.TablePairIndex
+﻿@model IEnumerable<string>
 @{
     ViewBag.Title = "Upload";
 }
 
 <h2>Upload</h2>
 
-@using (Html.BeginForm("Upload", "Tables", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    <label for ="attFile">Attribute Table:</label>
-    <input type="file" name="attFile" />
-    <br/>
+<div id ="fineUploader">
+    @using (Html.BeginForm("Upload", "Tables", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <input type="file" name="file" />
+        <br/>
     
-    <label for="usFile">Upstream Table:</label>
-    <input type="file" name="usFile" />
-    <br/>
-    
-    @Html.LabelFor(model => model.Name)
-    @Html.EditorFor(model => model.Name)
-    <br />
-    
-    @Html.LabelFor(model => model.Region)
-    @Html.EditorFor(model => model.Region)
-    <br />
-    
-    @Html.LabelFor(model => model.Version)
-    @Html.EditorFor(model => model.Version)
-    <br />
-    
-    <input type="submit" />
+        <input type="submit" value="Upload" class="btn btn-success"/>
+    }
+</div>
+
+<h2>Files waiting to be converted</h2>
+<table>
+    @foreach(var file in Model)
+    {
+        <tr>
+            <td>
+                @file
+            </td>
+        </tr>
+    }
+</table>
+
+@section Styles {
+    <link href="@Styles.Url("~/content/fineuploader")" rel="stylesheet"/>
+}
+@section Scripts {
+    <script src=@Scripts.Url("~/js/fineuploader")></script>
+    <script>
+        $(document).ready(function () {
+            var manualuploader = $('#fineUploader').fineUploader({
+                request: {
+                    endpoint: 'http://localhost:6615/tables/fupload'
+                },
+                autoUpload: false,
+                text: {
+                    uploadButton: '<i class="icon-plus icon-white"></i> Select Files'
+                },
+                validation: {
+                    allowedExtensions: ['csv']
+                },
+                template: '<div class="qq-uploader span12">' +
+                            '<pre class="qq-upload-drop-area span12"><span>{dragZoneText}</span></pre>' +
+                            '<div id="btnSelectFiles" class="btn btn-primary qq-upload-button">{uploadButtonText}</div>' +
+                            '<span class="qq-drop-processing"><span>{dropProcessingText}</span><span class="qq-drop-processing-spinner"></span></span>' +
+                            '<ul class="qq-upload-list" style="margin-top: 10px; text-align: center;"></ul>' +
+                          '</div>',
+                classes: {
+                    success: 'alert alert-success',
+                    fail: 'alert alert-error'
+                },
+                chunking: {
+                    enabled: true
+                },
+                resume: {
+                    enabled: true
+                }
+            });
+
+            var triggerUpload = '<div id ="triggerUpload" class="btn btn-success">' +
+                                    '<i class="icon-upload icon-white"></i> Upload Now' +
+                                '</div>';
+
+            $(triggerUpload).insertAfter('#btnSelectFiles');
+            $('#triggerUpload').click(function () {
+                manualuploader.fineUploader('uploadStoredFiles');
+            });
+        });
+    </script>
 }

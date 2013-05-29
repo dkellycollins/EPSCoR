@@ -25,6 +25,11 @@ namespace EPSCoR.Repositories
         /// </summary>
         public const string ARCHIVE_DIRECTORY = "~/App_Data/Archive";
 
+        /// <summary>
+        /// Temp directory is where we store parts of files while we are uploading.
+        /// </summary>
+        public const string TEMP_DIRECTORY = "~/App_Data/Temp";
+
         //Just a way to make access the server context easier.
         private static HttpServerUtility Server
         {
@@ -50,12 +55,12 @@ namespace EPSCoR.Repositories
 
         #region IFileAccessor Members
 
-        public bool SaveFiles(params HttpPostedFileBase[] files)
+        public bool SaveFiles(params FileStreamWrapper[] files)
         {
             waitForLock();
 
             bool result = true;
-            foreach (HttpPostedFileBase file in files)
+            foreach (FileStreamWrapper file in files)
             {
                 if (!saveFile(file))
                 {
@@ -71,9 +76,6 @@ namespace EPSCoR.Repositories
 
         public FileStream OpenFile(string fileName)
         {
-            //Might not even need this function. It wont work since I have no way of releasing the lock before returning.
-            throw new NotImplementedException();
-
             string path = Path.Combine(_serverPath, fileName);
 
             FileStream fileStream;
@@ -116,7 +118,7 @@ namespace EPSCoR.Repositories
 
         #region Private Members
 
-        private bool saveFile(HttpPostedFileBase file)
+        private bool saveFile(FileStreamWrapper file)
         {
             bool result = true;
             var fileName = Path.GetFileName(file.FileName);
@@ -124,7 +126,8 @@ namespace EPSCoR.Repositories
 
             try
             {
-                file.SaveAs(path);
+                using (FileStream fs = new FileStream(path, FileMode.Create))
+                    file.InputStream.CopyTo(fs);
             }
             catch (Exception e)
             {
