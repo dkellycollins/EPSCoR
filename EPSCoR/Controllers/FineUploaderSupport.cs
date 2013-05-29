@@ -13,7 +13,18 @@ namespace EPSCoR.Controllers
     [ModelBinder(typeof(ModelBinder))]
     public class FineUpload
     {
+        private const String FILENAME_PARAM = "qqfile";
+        private const String PART_INDEX_PARAM = "qqpartindex";
+        private const String FILE_SIZE_PARAM = "qqtotalfilesize";
+        private const String TOTAL_PARTS_PARAM = "qqtotalparts";
+        private const String UUID_PARAM = "qquuid";
+        private const String PART_FILENAME_PARAM = "qqfilename";
+        private const String BLOB_NAME_PARAM = "qqblobname";
+        private const String GENERATE_ERROR_PARAM = "generateError";
+
         public string FileName { get; set; }
+        public int PartIndex { get; set; }
+        public int TotalParts { get; set; }
         public Stream InputStream { get; set; }
 
         public void SaveAs(string destination, bool overwrite = false, bool autoCreateDirectory = true)
@@ -36,14 +47,16 @@ namespace EPSCoR.Controllers
                 var formUpload = request.Files.Count > 0;
 
                 // find filename
-                var xFileName = request.Headers["X-File-Name"];
-                var qqFile = request["qqfile"];
-                var formFilename = formUpload ? request.Files[0].FileName : null;
+                var fileName = request.Params[PART_FILENAME_PARAM];
+                var part = request.Params[PART_INDEX_PARAM];
+                var totalparts = request.Params[TOTAL_PARTS_PARAM];
 
                 var upload = new FineUpload
                 {
-                    FileName = xFileName ?? qqFile ?? formFilename,
-                    InputStream = formUpload ? request.Files[0].InputStream : request.InputStream
+                    FileName = fileName,
+                    InputStream = formUpload ? request.Files[0].InputStream : request.InputStream,
+                    PartIndex = Convert.ToInt32(part),
+                    TotalParts = Convert.ToInt32(totalparts)
                 };
 
                 return upload;
