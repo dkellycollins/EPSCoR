@@ -8,6 +8,7 @@ using BootstrapSupport;
 using EPSCoR.Database.Models;
 using EPSCoR.Repositories;
 using EPSCoR.ViewModels;
+using Newtonsoft.Json.Linq;
 using WebMatrix.WebData;
 
 namespace EPSCoR.Controllers
@@ -104,38 +105,55 @@ namespace EPSCoR.Controllers
         // GET: /Table/Upload/
         public ActionResult Upload()
         {
-            return View(_uploadFileAccessor.GetFiles());
+            List<string> fileNames = new List<string>();
+            foreach(string fullFilePath in _uploadFileAccessor.GetFiles())
+                fileNames.Add(Path.GetFileName(fullFilePath));
+            return View(fileNames);
+        }
+
+        [HttpPost]
+        public ActionResult Upload(HttpPostedFileBase file)
+        {
+            string tableName = Path.GetFileNameWithoutExtension(file.FileName);
+            TableIndex existingTable = _tableIndexRepo.GetAll().Where(t => t.Name == tableName).FirstOrDefault();
+            if (existingTable != null)
+            {
+                DisplayAttention("Table already exist. Remove existing table before uploading the new one.");
+                return RedirectToAction("Upload");
+            }
+
+            bool saveSuccessfull = _uploadFileAccessor.SaveFiles(FileStreamWrapper.FromHttpPostedFile(file));
+
+            if (saveSuccessfull)
+            {
+                DisplaySuccess("Upload Successful!");
+            }
+            else
+            {
+                DisplayError("Upload failed.");
+            }
+
+            return RedirectToAction("Upload");
         }
 
         //
         // POST: /Table/Upload/
         [HttpPost]
-        public ActionResult Upload(TablePairIndex table, HttpPostedFileBase attFile, HttpPostedFileBase usFile)
+        public ActionResult fUpload(FineUpload file)
         {
-            TablePairIndex existingTable = _tablePairIndexRepo.GetAll().Where((t) => t.Name == table.Name && t.Version == table.Version).FirstOrDefault();
+            string tableName = Path.GetFileNameWithoutExtension(file.FileName);
+            TableIndex existingTable = _tableIndexRepo.GetAll().Where((t) => t.Name == tableName).FirstOrDefault();
             if (existingTable != null)
             {
-                DisplayAttention("Tables already exist.");
-                return RedirectToAction("Upload");
+                //DisplayAttention("Table already exist. Remove existing table before uploading the new one.");
+                //return RedirectToAction("Upload");
+                return new FineUploaderResult(false, error: "Table already exist. Remove existing table before uploading the new one.");
             }
 
             //UserProfile userProfile = _userProfileRepo.GetAll().Where((u) => u.UserName == WebSecurity.CurrentUserName).FirstOrDefault();
-            bool saveSuccessful = _uploadFileAccessor.SaveFiles(attFile, usFile);
+            bool saveSuccessful = _uploadFileAccessor.SaveFiles(FileStreamWrapper.FromFineUpload(file));
 
-            if (saveSuccessful)
-            {
-                table.AttributeTable = Path.GetFileNameWithoutExtension(attFile.FileName);
-                table.UpstreamTable = Path.GetFileNameWithoutExtension(usFile.FileName);
-
-                _tablePairIndexRepo.Create(table);
-                DisplaySuccess("Upload Sucessful!");
-            }
-            else
-            {
-                DisplayError("Upload Failed");
-            }
-
-            return RedirectToAction("Index");
+            return new FineUploaderResult(saveSuccessful);
         }
 
         //

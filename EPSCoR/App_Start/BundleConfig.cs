@@ -8,25 +8,25 @@ namespace EPSCoR
         // For more information on Bundling, visit http://go.microsoft.com/fwlink/?LinkId=254725
         public static void RegisterBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
+            bundles.Add(new ScriptBundle("~/js/jquery").Include(
                         "~/Scripts/jquery-{version}.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/jqueryui").Include(
+            bundles.Add(new ScriptBundle("~/js/jqueryui").Include(
                         "~/Scripts/jquery-ui-{version}.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
+            bundles.Add(new ScriptBundle("~/js/jqueryval").Include(
                         "~/Scripts/jquery.unobtrusive*",
                         "~/Scripts/jquery.validate*"));
 
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
-            bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
+            bundles.Add(new ScriptBundle("~/js/modernizr").Include(
                         "~/Scripts/modernizr-*"));
 
-            bundles.Add(new StyleBundle("~/Content/css").Include(
-                        "~/Content/style.css"));
+            bundles.Add(new StyleBundle("~/content/css").Include(
+                        "~/Content/Site.css"));
 
-            bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(
+            bundles.Add(new StyleBundle("~/content/jqueryui").Include(
                         "~/Content/themes/base/jquery.ui.core.css",
                         "~/Content/themes/base/jquery.ui.resizable.css",
                         "~/Content/themes/base/jquery.ui.selectable.css",
@@ -42,7 +42,7 @@ namespace EPSCoR
 
             //Bootstrap bundles.
 
-            bundles.Add(new ScriptBundle("~/js").Include(
+            bundles.Add(new ScriptBundle("~/js/bootstrap").Include(
                 "~/Scripts/jquery-{version}.js",
                 "~/Scripts/jquery-migrate-{version}.js",
                 "~/Scripts/bootstrap.js",
@@ -51,17 +51,19 @@ namespace EPSCoR
                 "~/Scripts/jquery.validate.unobtrusive-custom-for-bootstrap.js"
                 ));
 
-            bundles.Add(new StyleBundle("~/content/css").Include(
+            bundles.Add(new StyleBundle("~/content/bootstrap").Include(
                 "~/Content/bootstrap.css",
                 "~/Content/body.css",
                 "~/Content/bootstrap-responsive.css",
                 "~/Content/bootstrap-mvc-validation.css"
                 ));
 
-            bundles.Add(new StyleBundle("~/Content/fineuploader").Include(
+            //Fine uploader bundles.
+
+            bundles.Add(new StyleBundle("~/content/fineuploader").Include(
                         "~/Content/fineuploader-{version}.css"));
 
-            bundles.Add(new ScriptBundle("~/bundles/fineuploader").Include(
+            bundles.Add(new ScriptBundle("~/js/fineuploader").Include(
                         "~/Scripts/FineUploader/jquery.fineuploader-{version}.js"));
         }
     }

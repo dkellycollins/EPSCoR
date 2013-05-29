@@ -6,10 +6,13 @@
 <h2>Upload</h2>
 
 <div id ="fineUploader">
-    <!-- This will be filled in by the javascript -->
-</div>
-<div id ="triggerUpload" class="btn btn-success">
-    <i class="icon-upload icon-white"></i> Upload Now
+    @using (Html.BeginForm("Upload", "Tables", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <input type="file" name="file" />
+        <br/>
+    
+        <input type="submit" value="Upload" class="btn btn-success"/>
+    }
 </div>
 
 <h2>Files waiting to be converted</h2>
@@ -24,14 +27,16 @@
     }
 </table>
 
-@Styles.Render("~/Content/fineuploader")
+@section Styles {
+    <link href="@Styles.Url("~/content/fineuploader")" rel="stylesheet"/>
+}
 @section Scripts {
-    <script src=@Scripts.Url("~/bundles/fineuploader")></script>
+    <script src=@Scripts.Url("~/js/fineuploader")></script>
     <script>
         $(document).ready(function () {
             var manualuploader = $('#fineUploader').fineUploader({
                 request: {
-                    endpoint: 'tables/upload'
+                    endpoint: 'http://localhost:6615/tables/fupload'
                 },
                 autoUpload: false,
                 text: {
@@ -42,7 +47,7 @@
                 },
                 template: '<div class="qq-uploader span12">' +
                             '<pre class="qq-upload-drop-area span12"><span>{dragZoneText}</span></pre>' +
-                            '<div class="qq-upload-button btn btn-success" style="width: auto;">{uploadButtonText}</div>' +
+                            '<div id="btnSelectFiles" class="btn btn-primary qq-upload-button">{uploadButtonText}</div>' +
                             '<span class="qq-drop-processing"><span>{dropProcessingText}</span><span class="qq-drop-processing-spinner"></span></span>' +
                             '<ul class="qq-upload-list" style="margin-top: 10px; text-align: center;"></ul>' +
                           '</div>',
@@ -52,6 +57,11 @@
                 }
             });
 
+            var triggerUpload = '<div id ="triggerUpload" class="btn btn-success">' +
+                                    '<i class="icon-upload icon-white"></i> Upload Now' +
+                                '</div>';
+
+            $(triggerUpload).insertAfter('#btnSelectFiles');
             $('#triggerUpload').click(function () {
                 manualuploader.fineUploader('uploadStoredFiles');
             });

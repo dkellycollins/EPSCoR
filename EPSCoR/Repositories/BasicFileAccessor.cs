@@ -50,12 +50,12 @@ namespace EPSCoR.Repositories
 
         #region IFileAccessor Members
 
-        public bool SaveFiles(params HttpPostedFileBase[] files)
+        public bool SaveFiles(params FileStreamWrapper[] files)
         {
             waitForLock();
 
             bool result = true;
-            foreach (HttpPostedFileBase file in files)
+            foreach (FileStreamWrapper file in files)
             {
                 if (!saveFile(file))
                 {
@@ -116,7 +116,7 @@ namespace EPSCoR.Repositories
 
         #region Private Members
 
-        private bool saveFile(HttpPostedFileBase file)
+        private bool saveFile(FileStreamWrapper file)
         {
             bool result = true;
             var fileName = Path.GetFileName(file.FileName);
@@ -124,7 +124,8 @@ namespace EPSCoR.Repositories
 
             try
             {
-                file.SaveAs(path);
+                using (FileStream fs = new FileStream(path, FileMode.Create))
+                    file.InputStream.CopyTo(fs);
             }
             catch (Exception e)
             {

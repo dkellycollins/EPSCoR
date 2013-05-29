@@ -1,0 +1,16 @@
+﻿/*Override for bootstrap .btn */
+.btn
+{
+    margin: 2px;
+}
+
+/* Override for bootstrap .navbar-fixed-top */
+.navbar-fixed-top
+{
+    position: inherit;
+}
+
+.navbar .headerImg 
+{
+    width: 100%;
+}

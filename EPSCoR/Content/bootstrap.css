@@ -4462,11 +4462,6 @@ input[type="submit"].btn.btn-mini {
   margin-top: 0;
 }
 
-/* Added by Devin Kelly-Collins */ 
-.navbar .headerImg {
-    width: 100%;
-}
-
 .navbar-form {
   margin-bottom: 0;
   *zoom: 1;
@@ -4546,7 +4541,7 @@ input[type="submit"].btn.btn-mini {
 
 .navbar-fixed-top,
 .navbar-fixed-bottom {
-  /* position: fixed; Modifed by Devin Kelly-Collins */
+  position: fixed;
   right: 0;
   left: 0;
   z-index: 1030;
