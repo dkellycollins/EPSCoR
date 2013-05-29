@@ -61,7 +61,6 @@ namespace EPSCoR.Database
         {
             while (!_cancel)
             {
-                string lockFile = null;
                 try
                 {
                     foreach (string userDirectory in Directory.GetDirectories(DirectoryManager.UploadDir))
@@ -70,15 +69,12 @@ namespace EPSCoR.Database
                         if (_cancel)
                             break;
 
-                        //Create a lock file if we can/need to. Otherwise move on.
-                        string l = Path.Combine(userDirectory, "lock");
                         string[] files = Directory.GetFiles(userDirectory);
-                        if (files.Count() > 0 && !files.Contains(l))
-                        {
-                            lockFile = l;
-                            File.Create(lockFile).Close();
-                        }
-                        else
+
+                        //If a lock file exist in the user directory, it mean that the user is uploading file.
+                        //We want to wait until the user is done uploading file, so just move on if there is a lock file.
+                        string lockFile = Path.Combine(userDirectory, "lock");
+                        if (files.Contains(lockFile))
                         {
                             continue;
                         }
@@ -123,12 +119,6 @@ namespace EPSCoR.Database
                     LoggerFactory.Log("Exception while processing files", e);
                     //Once we hit an exception we don't want to keep going.
                     _cancel = true;
-                }
-                finally
-                {
-                    //This makes sure we release the lock if we were canceled or hit an exception.
-                    if (lockFile != null)
-                        File.Delete(lockFile);
                 }
 #if DEBUG
                 //In debug mode only run once.

@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using BootstrapSupport;
 using EPSCoR.Database.Models;
 using EPSCoR.Repositories;
 using EPSCoR.ViewModels;
+using Newtonsoft.Json.Linq;
 using WebMatrix.WebData;
 
 namespace EPSCoR.Controllers
@@ -16,18 +18,18 @@ namespace EPSCoR.Controllers
     public class TablesController : BootstrapBaseController
     {
         private IRepository<UserProfile> _userProfileRepo;
-        private IRepository<TablePairIndex> _tablePairIndexRepo;
         private IRepository<TableIndex> _tableIndexRepo;
         private IFileAccessor _uploadFileAccessor;
         private IFileAccessor _conversionFileAccessor;
+        private IFileAccessor _tempFileAccessor;
 
         public TablesController()
         {
-            _tablePairIndexRepo = new BasicRepo<TablePairIndex>();
             _userProfileRepo = new BasicRepo<UserProfile>();
             _tableIndexRepo = new BasicRepo<TableIndex>();
             _uploadFileAccessor = new BasicFileAccessor(BasicFileAccessor.UPLOAD_DIRECTORY, WebSecurity.CurrentUserName);
             _conversionFileAccessor = new BasicFileAccessor(BasicFileAccessor.CONVERTION_DIRECTORY, WebSecurity.CurrentUserName);
+            _tempFileAccessor = new BasicFileAccessor(BasicFileAccessor.TEMP_DIRECTORY, WebSecurity.CurrentUserName);
         }
 
         public TablesController(
@@ -38,7 +40,6 @@ namespace EPSCoR.Controllers
             IFileAccessor conversionFileAccessor)
         {
             _tableIndexRepo = tableIndexRepo;
-            _tablePairIndexRepo = tablePairIndexRepo;
             _userProfileRepo = userProfileRepo;
             _uploadFileAccessor = uploadFileAccessor;
             _conversionFileAccessor = conversionFileAccessor;
@@ -55,6 +56,110 @@ namespace EPSCoR.Controllers
 
             return View(createTableIndexViewModel(tables.ToList()));
         }
+
+        //
+        // GET: /Tables/Details/{Table.ID}
+        public ActionResult Details(int id = 0)
+        {
+            TableIndex table = _tableIndexRepo.Get(id);
+            if (table == null)
+            {
+                return new HttpNotFoundResult();
+            }
+            return View(table);
+        }
+
+        //
+        // GET: /Table/Upload/
+        public ActionResult Upload()
+        {
+            List<string> fileNames = new List<string>();
+            foreach(string fullFilePath in _uploadFileAccessor.GetFiles())
+                fileNames.Add(Path.GetFileName(fullFilePath));
+            return View(fileNames);
+        }
+
+        [HttpPost]
+        public ActionResult Upload(HttpPostedFileBase file)
+        {
+            string tableName = Path.GetFileNameWithoutExtension(file.FileName);
+            TableIndex existingTable = _tableIndexRepo.GetAll().Where(t => t.Name == tableName).FirstOrDefault();
+            if (existingTable != null)
+            {
+                DisplayAttention("Table already exist. Remove existing table before uploading the new one.");
+                return RedirectToAction("Upload");
+            }
+
+            bool saveSuccessfull = _uploadFileAccessor.SaveFiles(FileStreamWrapper.FromHttpPostedFile(file));
+
+            if (saveSuccessfull)
+            {
+                DisplaySuccess("Upload Successful!");
+            }
+            else
+            {
+                DisplayError("Upload failed.");
+            }
+
+            return RedirectToAction("Upload");
+        }
+
+        private Dictionary<string, int> _chunksUploaded = new Dictionary<string, int>();
+
+        //
+        // POST: /Table/Upload/
+        [HttpPost]
+        public ActionResult fUpload(FineUpload file)
+        {
+            string fileName = Path.GetFileNameWithoutExtension(file.FileName);
+
+            //Save the chunk.
+            FileStreamWrapper wrapper = new FileStreamWrapper()
+            {
+                FileName = fileName + file.PartIndex,
+                InputStream = file.InputStream
+            };
+            bool saveSuccessful = _tempFileAccessor.SaveFiles(wrapper);
+
+            //If this was the last chunk, save the complete file.
+            if (saveSuccessful && file.PartIndex == file.TotalParts - 1)
+            {
+                //Check to see if this table already exis
+                TableIndex existingTable = _tableIndexRepo.GetAll().Where((t) => t.Name == fileName).FirstOrDefault();
+                if (existingTable != null)
+                {
+                    return new FineUploaderResult(false, error: "Table already exist. Remove existing table before uploading the new one.");
+                }
+
+                saveSuccessful = mergeTempFiles(file.FileName, file.TotalParts);
+                deleteTempFiles(fileName, file.TotalParts);
+            }
+            
+            return new FineUploaderResult(saveSuccessful);
+        }
+
+        //
+        // GET: /Table/Delete/{Table.ID}
+        public ActionResult Delete()
+        {
+            return View();
+        }
+
+        //
+        // POST: /Table/Delete/{Table.ID}
+        [HttpPost]
+        public ActionResult Delete(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            _userProfileRepo.Dispose();
+            base.Dispose(disposing);
+        }
+
+        #region Helpers
 
         private TableIndexVM createTableIndexViewModel(List<TableIndex> tableIndexes)
         {
@@ -88,76 +193,42 @@ namespace EPSCoR.Controllers
             return vm;
         }
 
-        //
-        // GET: /Tables/Details/{Table.ID}
-        public ActionResult Details(int id = 0)
+        private bool mergeTempFiles(string fullFileName, int totalParts)
         {
-            TablePairIndex table = _tablePairIndexRepo.Get(id);
-            if (table == null)
+            string fileName = Path.GetFileNameWithoutExtension(fullFileName);
+            MemoryStream completeFileStream = new MemoryStream();
+            byte[] b = new byte[1024];
+
+            //Write each temp file to the stream.
+            for (int i = 0; i < totalParts; i++)
             {
-                return new HttpNotFoundResult();
+                FileStream tempFileStream = _tempFileAccessor.OpenFile(fileName + i);
+                while (tempFileStream.Read(b, 0, b.Length) != 0)
+                    completeFileStream.Write(b, 0, b.Length);
+                tempFileStream.Close();
             }
-            return View(table);
-        }
+            //Set the stream back at the begining.
+            completeFileStream.Seek(0, SeekOrigin.Begin);
 
-        //
-        // GET: /Table/Upload/
-        public ActionResult Upload()
-        {
-            return View();
-        }
-
-        //
-        // POST: /Table/Upload/
-        [HttpPost]
-        public ActionResult Upload(TablePairIndex table, HttpPostedFileBase attFile, HttpPostedFileBase usFile)
-        {
-            TablePairIndex existingTable = _tablePairIndexRepo.GetAll().Where((t) => t.Name == table.Name && t.Version == table.Version).FirstOrDefault();
-            if (existingTable != null)
+            //Save complete file.
+            FileStreamWrapper wrapper = new FileStreamWrapper()
             {
-                DisplayAttention("Tables already exist.");
-                return RedirectToAction("Upload");
-            }
+                FileName = fullFileName,
+                InputStream = completeFileStream
+            };
+            return _uploadFileAccessor.SaveFiles(wrapper);
+        }
 
-            //UserProfile userProfile = _userProfileRepo.GetAll().Where((u) => u.UserName == WebSecurity.CurrentUserName).FirstOrDefault();
-            bool saveSuccessful = _uploadFileAccessor.SaveFiles(attFile, usFile);
-
-            if (saveSuccessful)
+        private void deleteTempFiles(string fileName, int totalParts)
+        {
+            string[] tempFileNames = new string[totalParts];
+            for (int i = 0; i < totalParts; i++)
             {
-                table.AttributeTable = Path.GetFileNameWithoutExtension(attFile.FileName);
-                table.UpstreamTable = Path.GetFileNameWithoutExtension(usFile.FileName);
-
-                _tablePairIndexRepo.Create(table);
-                DisplaySuccess("Upload Sucessful!");
+                tempFileNames[i] = fileName + i;
             }
-            else
-            {
-                DisplayError("Upload Failed");
-            }
-
-            return RedirectToAction("Index");
+            _tempFileAccessor.DeleteFiles(tempFileNames);
         }
 
-        //
-        // GET: /Table/Delete/{Table.ID}
-        public ActionResult Delete()
-        {
-            return View();
-        }
-
-        //
-        // POST: /Table/Delete/{Table.ID}
-        [HttpPost]
-        public ActionResult Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            _tablePairIndexRepo.Dispose();
-            _userProfileRepo.Dispose();
-            base.Dispose(disposing);
-        }
+        #endregion Helpers
     }
 }
