@@ -192,6 +192,9 @@
     <Content Include="Content\Bootstrap\bootstrap-responsive.min.css" />
     <Content Include="Content\Bootstrap\bootstrap.css" />
     <Content Include="Content\Bootstrap\bootstrap.min.css" />
+    <Content Include="Content\FineUploader\fineuploader-3.5.0.css" />
+    <Content Include="Content\FineUploader\images\loading.gif" />
+    <Content Include="Content\FineUploader\images\processing.gif" />
     <Content Include="Content\images\footer.jpeg" />
     <Content Include="Content\Bootstrap\images\glyphicons-halflings-white.png" />
     <Content Include="Content\Bootstrap\images\glyphicons-halflings.png" />
@@ -267,6 +270,9 @@
     <Content Include="Scripts\Bootstrap\bootstrap.js" />
     <Content Include="Scripts\Bootstrap\bootstrap.min.js" />
     <Content Include="Scripts\Bootstrap\html5shiv.js" />
+    <Content Include="Scripts\FineUploader\iframe.xss.response-3.5.0.js" />
+    <Content Include="Scripts\FineUploader\jquery.fineuploader-3.5.0.js" />
+    <Content Include="Scripts\FineUploader\jquery.fineuploader-3.5.0.min.js" />
     <Content Include="Scripts\jQueryFileUpload\app.js" />
     <Content Include="Scripts\jQueryFileUpload\cors\jquery.postmessage-transport.js" />
     <Content Include="Scripts\jQueryFileUpload\cors\jquery.xdr-transport.js" />
@@ -324,7 +330,7 @@
     <Content Include="Views\Account\_RemoveExternalLoginsPartial.cshtml" />
     <Content Include="Views\Account\_SetPasswordPartial.cshtml" />
     <Content Include="Views\Tables\Index.cshtml" />
-    <Content Include="Views\Tables\Upload.cshtml" />
+    <Content Include="Views\Tables\jQueryUpload.cshtml" />
     <Content Include="Views\Tables\DetailsPartial.cshtml" />
     <Content Include="Views\Tables\Delete.cshtml" />
     <Content Include="Views\Tables\Details.cshtml" />
@@ -339,6 +345,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Shared\_alerts.cshtml" />
     <Content Include="Scripts\jQuery\jquery-1.9.1.min.map" />
+    <Content Include="Views\Tables\fineUpload.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

@@ -73,7 +73,7 @@ namespace EPSCoR.Controllers
             List<string> fileNames = new List<string>();
             foreach(string fullFilePath in _uploadFileAccessor.GetFiles())
                 fileNames.Add(Path.GetFileName(fullFilePath));
-            return View(fileNames);
+            return View("fineUpload", fileNames);
         }
 
         [HttpPost]
