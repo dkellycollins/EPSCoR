@@ -45,7 +45,7 @@ namespace EPSCoR
             bundles.Add(new ScriptBundle("~/js/bootstrap").Include(
                 "~/Scripts/jquery-{version}.js",
                 "~/Scripts/jquery-migrate-{version}.js",
-                "~/Scripts/bootstrap.js",
+                "~/Scripts/bootstrap/bootstrap.js",
                 "~/Scripts/jquery.validate.js",
                 "~/scripts/jquery.validate.unobtrusive.js",
                 "~/Scripts/jquery.validate.unobtrusive-custom-for-bootstrap.js"
@@ -56,6 +56,14 @@ namespace EPSCoR
                 "~/Content/bootstrap/body.css",
                 "~/Content/bootstrap/bootstrap-responsive.css",
                 "~/Content/bootstrap/bootstrap-mvc-validation.css"
+                ));
+
+            //jQueryFileUpload bundles
+
+            bundles.Add(new ScriptBundle("~/js/jQueryFileUpload").Include(
+                ));
+
+            bundles.Add(new StyleBundle("~/content/jQueryFileUpload").Include(
                 ));
         }
     }
