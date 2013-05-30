@@ -74,23 +74,25 @@ namespace EPSCoR.Repositories
             return result;
         }
 
-        public FileStream OpenFile(string fileName)
+        public MemoryStream OpenFile(string fileName)
         {
             string path = Path.Combine(_serverPath, fileName);
-
             FileStream fileStream;
+            MemoryStream returnStream = new MemoryStream();
+            
             try
             {
-                if (!File.Exists(path))
-                    fileStream = File.Create(path);
                 fileStream = File.Open(path, FileMode.Open, FileAccess.Read);
+                fileStream.CopyTo(returnStream);
+                returnStream.Seek(0, SeekOrigin.Begin);
+                fileStream.Close();
+                return returnStream;
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e.ToString());
                 return null;
             }
-            return fileStream;
         }
 
         public IEnumerable<string> GetFiles()

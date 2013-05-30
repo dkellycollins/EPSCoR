@@ -6,6 +6,7 @@
 <h2>Upload</h2>
 
 <div id ="fineUploader">
+    <p class="alert">The upload form depends on Javascript. If you have javascript disabled please enabled it.</p>
     @using (Html.BeginForm("Upload", "Tables", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         <input type="file" name="file" />
@@ -15,17 +16,24 @@
     }
 </div>
 
-<h2>Files waiting to be converted</h2>
-<table>
-    @foreach(var file in Model)
-    {
-        <tr>
-            <td>
-                @file
-            </td>
-        </tr>
-    }
-</table>
+<h4>Files waiting to be processed.</h4>
+@if (Model.Count() == 0)
+{
+    <p>None</p>
+} 
+else 
+{
+    <table>
+        @foreach(var file in Model)
+        {
+            <tr>
+                <td>
+                    @file
+                </td>
+            </tr>
+        }
+    </table>
+}
 
 @section Styles {
     <link href="@Styles.Url("~/content/fineuploader")" rel="stylesheet"/>

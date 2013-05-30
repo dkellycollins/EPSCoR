@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
@@ -34,15 +35,16 @@ namespace EPSCoR.Controllers
 
         public TablesController(
             IRepository<TableIndex> tableIndexRepo,
-            IRepository<TablePairIndex> tablePairIndexRepo, 
             IRepository<UserProfile> userProfileRepo, 
             IFileAccessor uploadFileAccessor, 
-            IFileAccessor conversionFileAccessor)
+            IFileAccessor conversionFileAccessor,
+            IFileAccessor tempFileAccessor)
         {
             _tableIndexRepo = tableIndexRepo;
             _userProfileRepo = userProfileRepo;
             _uploadFileAccessor = uploadFileAccessor;
             _conversionFileAccessor = conversionFileAccessor;
+            _tempFileAccessor = tempFileAccessor;
         }
 
         //
@@ -59,14 +61,9 @@ namespace EPSCoR.Controllers
 
         //
         // GET: /Tables/Details/{Table.ID}
-        public ActionResult Details(int id = 0)
+        public ActionResult Details(string id)
         {
-            TableIndex table = _tableIndexRepo.Get(id);
-            if (table == null)
-            {
-                return new HttpNotFoundResult();
-            }
-            return View(table);
+            return new HttpNotFoundResult();
         }
 
         //
@@ -159,6 +156,39 @@ namespace EPSCoR.Controllers
             base.Dispose(disposing);
         }
 
+        [HttpPost]
+        public ActionResult Calc(FormCollection formCollection)
+        {
+            string attTable = formCollection["attTable"];
+            string usTable = formCollection["usTable"];
+            string calc = formCollection["calc"];
+
+            switch (calc)
+            {
+                case "Sum":
+                    //Pereform sum.
+                    break;
+                case "Avg":
+                    //Perform average.
+                    break;
+            }
+
+            DisplaySuccess("Calc table generated");
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult DownloadCsv(string id)
+        {
+            string fileName = id + ".csv";
+            var cd = new ContentDisposition
+            {
+                FileName = fileName,
+                Inline = false
+            };
+            Response.AppendHeader("Content-Disposition", cd.ToString());
+            return File(_conversionFileAccessor.OpenFile(fileName), "text/csv");
+        }
+
         #region Helpers
 
         private TableIndexVM createTableIndexViewModel(List<TableIndex> tableIndexes)
@@ -202,9 +232,8 @@ namespace EPSCoR.Controllers
             //Write each temp file to the stream.
             for (int i = 0; i < totalParts; i++)
             {
-                FileStream tempFileStream = _tempFileAccessor.OpenFile(fileName + i);
-                while (tempFileStream.Read(b, 0, b.Length) != 0)
-                    completeFileStream.Write(b, 0, b.Length);
+                MemoryStream tempFileStream = _tempFileAccessor.OpenFile(fileName + i);
+                tempFileStream.CopyTo(completeFileStream);
                 tempFileStream.Close();
             }
             //Set the stream back at the begining.
