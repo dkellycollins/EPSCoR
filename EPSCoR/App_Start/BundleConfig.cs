@@ -15,8 +15,14 @@ namespace EPSCoR
                         "~/Scripts/jquery-ui-{version}.js"));
 
             bundles.Add(new ScriptBundle("~/js/jqueryval").Include(
-                        "~/Scripts/jquery.unobtrusive*",
-                        "~/Scripts/jquery.validate*"));
+                        "~/Scripts/jquery.validate.js",
+                        "~/scripts/jquery.validate.unobtrusive.js",
+                        "~/Scripts/jquery.validate.unobtrusive-custom-for-bootstrap.js"
+                        ));
+
+            bundles.Add(new ScriptBundle("~/js/jquery-migrate").Include(
+                        "~/Scripts/jquery-migrate-{version}.js"
+                        ));
 
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
@@ -26,7 +32,7 @@ namespace EPSCoR
             bundles.Add(new StyleBundle("~/content/css").Include(
                         "~/Content/Site.css"));
 
-            bundles.Add(new StyleBundle("~/content/jqueryui").Include(
+            bundles.Add(new StyleBundle("~/content/jqueryui/jqueryui-css").Include(
                         "~/Content/jQueryUI/jquery.ui.core.css",
                         "~/Content/jQueryUI/jquery.ui.resizable.css",
                         "~/Content/jQueryUI/jquery.ui.selectable.css",
@@ -38,7 +44,8 @@ namespace EPSCoR
                         "~/Content/jQueryUI/jquery.ui.tabs.css",
                         "~/Content/jQueryUI/jquery.ui.datepicker.css",
                         "~/Content/jQueryUI/jquery.ui.progressbar.css",
-                        "~/Content/jQueryUI/jquery.ui.theme.css"));
+                        "~/Content/jQueryUI/jquery.ui.theme.css"
+                        ));
 
             //Bootstrap bundles.
 
@@ -51,7 +58,7 @@ namespace EPSCoR
                 "~/Scripts/jquery.validate.unobtrusive-custom-for-bootstrap.js"
                 ));
 
-            bundles.Add(new StyleBundle("~/content/bootstrap").Include(
+            bundles.Add(new StyleBundle("~/content/bootstrap/bootstrap-css").Include(
                 "~/Content/bootstrap/bootstrap.css",
                 "~/Content/bootstrap/body.css",
                 "~/Content/bootstrap/bootstrap-responsive.css",
@@ -61,9 +68,17 @@ namespace EPSCoR
             //jQueryFileUpload bundles
 
             bundles.Add(new ScriptBundle("~/js/jQueryFileUpload").Include(
+                "~/Scripts/jQueryFileUpload/jquery.iframe-transport.js",
+                "~/Scripts/jQueryFileUpload/jquery.fileupload.js",
+                "~/Scripts/jQueryFileUpload/jquery.fileupload-process.js",
+                "~/Scripts/jQueryFileUpload/jquery.fileupload-resize.js",
+                "~/Scripts/jQueryFileUpload/jquery.fileupload-validate.js",
+                "~/Scripts/jQueryFileUpload/jquery.fileupload-ui.js"
                 ));
 
-            bundles.Add(new StyleBundle("~/content/jQueryFileUpload").Include(
+            bundles.Add(new StyleBundle("~/content/jQueryFileUpload/fileUpload-css").Include(
+                "~/Content/jQueryFileUpload/jquery.fileupload-ui.css",
+                "~/Content/jQueryFileUpload/style.css"
                 ));
         }
     }
