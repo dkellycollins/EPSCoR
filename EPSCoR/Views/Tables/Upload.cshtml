@@ -46,11 +46,11 @@ else
 }
 
 @section Styles {
-    <link href="@Styles.Url("~/content/jQueryFileUpload/fileUpload-css")" rel="stylesheet"/>
+    @Styles.Render("~/content/jQueryFileUpload/fileUpload-css")
 }
 @section Scripts {
-    <script src=@Scripts.Url("~/js/jqueryui")></script>
-    <script src=@Scripts.Url("~/js/jQueryFileUpload")></script>
+    @Scripts.Render("~/scripts/jquery/jqueryui-js")
+    @Scripts.Render("~/scripts/jqueryfileupload/fileUpload-js")
     <script>
         /*jslint unparam: true */
         /*global window, $ */

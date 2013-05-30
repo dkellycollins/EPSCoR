@@ -8,8 +8,8 @@
         <title>@ViewBag.Title</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         @RenderSection("Styles", required: false)
-        <link href="@Styles.Url("~/content/bootstrap/bootstrap-css")" rel="stylesheet"/>
-        <link href="@Styles.Url("~/content/css")" rel="stylesheet"/>
+        @Styles.Render("~/content/bootstrap/bootstrap-css")
+        @Styles.Render("~/content/css")
         @Html.Partial("_html5shiv")
         @* favicons and touch icons go here *@
     </head>
@@ -40,7 +40,7 @@
                 <p>&copy; Kansas State University @System.DateTime.Now.ToString("yyyy")</p>
             </footer> 
         </div>
-        @Scripts.Render("~/js/bootstrap")
+        @Scripts.Render("~/scripts/bootstrap/bootstrap-js")
         @RenderSection("Scripts", required: false)
     </body>
 </html>

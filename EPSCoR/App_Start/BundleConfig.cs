@@ -8,29 +8,35 @@ namespace EPSCoR
         // For more information on Bundling, visit http://go.microsoft.com/fwlink/?LinkId=254725
         public static void RegisterBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/js/jquery").Include(
-                        "~/Scripts/jquery-{version}.js"));
+            //Custom bundles
 
-            bundles.Add(new ScriptBundle("~/js/jqueryui").Include(
-                        "~/Scripts/jquery-ui-{version}.js"));
+            bundles.Add(new StyleBundle("~/content/css").Include(
+                       "~/Content/Site.css"));
 
-            bundles.Add(new ScriptBundle("~/js/jqueryval").Include(
-                        "~/Scripts/jquery.validate.js",
-                        "~/scripts/jquery.validate.unobtrusive.js",
-                        "~/Scripts/jquery.validate.unobtrusive-custom-for-bootstrap.js"
+            //jQuery bundles
+
+            bundles.Add(new ScriptBundle("~/scripts/jquery/jquery").Include(
+                        "~/Scripts/jQuery/jquery-{version}.js"));
+
+            bundles.Add(new ScriptBundle("~/scripts/jquery/jqueryval").Include(
+                        "~/Scripts/jQuery/jquery.validate.js",
+                        "~/scripts/jQuery/jquery.validate.unobtrusive.js",
+                        "~/Scripts/jQuery/jquery.validate.unobtrusive-custom-for-bootstrap.js"
                         ));
 
-            bundles.Add(new ScriptBundle("~/js/jquery-migrate").Include(
-                        "~/Scripts/jquery-migrate-{version}.js"
+            bundles.Add(new ScriptBundle("~/scripts/jquery/jquery-migrate").Include(
+                        "~/Scripts/jQuery/jquery-migrate-{version}.js"
                         ));
 
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
-            bundles.Add(new ScriptBundle("~/js/modernizr").Include(
-                        "~/Scripts/modernizr-*"));
+            bundles.Add(new ScriptBundle("~/scripts/modernizr/modernizr").Include(
+                        "~/Scripts/Modernizr/modernizr-*"));
 
-            bundles.Add(new StyleBundle("~/content/css").Include(
-                        "~/Content/Site.css"));
+            //jQuery ui bundles
+
+            bundles.Add(new ScriptBundle("~/scripts/jquery/jqueryui-js").Include(
+                        "~/Scripts/jQuery/jquery-ui-{version}.js"));
 
             bundles.Add(new StyleBundle("~/content/jqueryui/jqueryui-css").Include(
                         "~/Content/jQueryUI/jquery.ui.core.css",
@@ -47,27 +53,27 @@ namespace EPSCoR
                         "~/Content/jQueryUI/jquery.ui.theme.css"
                         ));
 
-            //Bootstrap bundles.
+            //Bootstrap bundles
 
-            bundles.Add(new ScriptBundle("~/js/bootstrap").Include(
-                "~/Scripts/jquery-{version}.js",
-                "~/Scripts/jquery-migrate-{version}.js",
-                "~/Scripts/bootstrap/bootstrap.js",
-                "~/Scripts/jquery.validate.js",
-                "~/scripts/jquery.validate.unobtrusive.js",
-                "~/Scripts/jquery.validate.unobtrusive-custom-for-bootstrap.js"
+            bundles.Add(new ScriptBundle("~/scripts/bootstrap/bootstrap-js").Include(
+                "~/Scripts/jQuery/jquery-{version}.js",
+                "~/Scripts/jQuery/jquery-migrate-{version}.js",
+                "~/Scripts/Bootstrap/bootstrap.js",
+                "~/Scripts/jQuery/jquery.validate.js",
+                "~/scripts/jQuery/jquery.validate.unobtrusive.js",
+                "~/Scripts/jQuery/jquery.validate.unobtrusive-custom-for-bootstrap.js"
                 ));
 
             bundles.Add(new StyleBundle("~/content/bootstrap/bootstrap-css").Include(
-                "~/Content/bootstrap/bootstrap.css",
-                "~/Content/bootstrap/body.css",
-                "~/Content/bootstrap/bootstrap-responsive.css",
-                "~/Content/bootstrap/bootstrap-mvc-validation.css"
+                "~/Content/Bootstrap/bootstrap.css",
+                "~/Content/Bootstrap/body.css",
+                "~/Content/Bootstrap/bootstrap-responsive.css",
+                "~/Content/Bootstrap/bootstrap-mvc-validation.css"
                 ));
 
             //jQueryFileUpload bundles
 
-            bundles.Add(new ScriptBundle("~/js/jQueryFileUpload").Include(
+            bundles.Add(new ScriptBundle("~/scripts/jqueryfileupload/fileUpload-js").Include(
                 "~/Scripts/jQueryFileUpload/jquery.iframe-transport.js",
                 "~/Scripts/jQueryFileUpload/jquery.fileupload.js",
                 "~/Scripts/jQueryFileUpload/jquery.fileupload-process.js",
