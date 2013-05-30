@@ -27,18 +27,18 @@ namespace EPSCoR
                         "~/Content/Site.css"));
 
             bundles.Add(new StyleBundle("~/content/jqueryui").Include(
-                        "~/Content/themes/base/jquery.ui.core.css",
-                        "~/Content/themes/base/jquery.ui.resizable.css",
-                        "~/Content/themes/base/jquery.ui.selectable.css",
-                        "~/Content/themes/base/jquery.ui.accordion.css",
-                        "~/Content/themes/base/jquery.ui.autocomplete.css",
-                        "~/Content/themes/base/jquery.ui.button.css",
-                        "~/Content/themes/base/jquery.ui.dialog.css",
-                        "~/Content/themes/base/jquery.ui.slider.css",
-                        "~/Content/themes/base/jquery.ui.tabs.css",
-                        "~/Content/themes/base/jquery.ui.datepicker.css",
-                        "~/Content/themes/base/jquery.ui.progressbar.css",
-                        "~/Content/themes/base/jquery.ui.theme.css"));
+                        "~/Content/jQueryUI/jquery.ui.core.css",
+                        "~/Content/jQueryUI/jquery.ui.resizable.css",
+                        "~/Content/jQueryUI/jquery.ui.selectable.css",
+                        "~/Content/jQueryUI/jquery.ui.accordion.css",
+                        "~/Content/jQueryUI/jquery.ui.autocomplete.css",
+                        "~/Content/jQueryUI/jquery.ui.button.css",
+                        "~/Content/jQueryUI/jquery.ui.dialog.css",
+                        "~/Content/jQueryUI/jquery.ui.slider.css",
+                        "~/Content/jQueryUI/jquery.ui.tabs.css",
+                        "~/Content/jQueryUI/jquery.ui.datepicker.css",
+                        "~/Content/jQueryUI/jquery.ui.progressbar.css",
+                        "~/Content/jQueryUI/jquery.ui.theme.css"));
 
             //Bootstrap bundles.
 
@@ -52,19 +52,11 @@ namespace EPSCoR
                 ));
 
             bundles.Add(new StyleBundle("~/content/bootstrap").Include(
-                "~/Content/bootstrap.css",
-                "~/Content/body.css",
-                "~/Content/bootstrap-responsive.css",
-                "~/Content/bootstrap-mvc-validation.css"
+                "~/Content/bootstrap/bootstrap.css",
+                "~/Content/bootstrap/body.css",
+                "~/Content/bootstrap/bootstrap-responsive.css",
+                "~/Content/bootstrap/bootstrap-mvc-validation.css"
                 ));
-
-            //Fine uploader bundles.
-
-            bundles.Add(new StyleBundle("~/content/fineuploader").Include(
-                        "~/Content/fineuploader-{version}.css"));
-
-            bundles.Add(new ScriptBundle("~/js/fineuploader").Include(
-                        "~/Scripts/FineUploader/jquery.fineuploader-{version}.js"));
         }
     }
 }
