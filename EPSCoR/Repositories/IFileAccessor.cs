@@ -18,15 +18,6 @@ namespace EPSCoR.Repositories
                 InputStream = file.InputStream
             };
         }
-
-        public static FileStreamWrapper FromFineUpload(FineUpload file)
-        {
-            return new FileStreamWrapper()
-            {
-                FileName = file.FileName,
-                InputStream = file.InputStream
-            };
-        }
     }
 
     /// <summary>

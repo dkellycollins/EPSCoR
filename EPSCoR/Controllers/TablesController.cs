@@ -67,75 +67,6 @@ namespace EPSCoR.Controllers
         }
 
         //
-        // GET: /Table/Upload/
-        public ActionResult Upload()
-        {
-            List<string> fileNames = new List<string>();
-            foreach(string fullFilePath in _uploadFileAccessor.GetFiles())
-                fileNames.Add(Path.GetFileName(fullFilePath));
-            return View(fileNames);
-        }
-
-        [HttpPost]
-        public ActionResult Upload(HttpPostedFileBase file)
-        {
-            string tableName = Path.GetFileNameWithoutExtension(file.FileName);
-            TableIndex existingTable = _tableIndexRepo.GetAll().Where(t => t.Name == tableName).FirstOrDefault();
-            if (existingTable != null)
-            {
-                DisplayAttention("Table already exist. Remove existing table before uploading the new one.");
-                return RedirectToAction("Upload");
-            }
-
-            bool saveSuccessfull = _uploadFileAccessor.SaveFiles(FileStreamWrapper.FromHttpPostedFile(file));
-
-            if (saveSuccessfull)
-            {
-                DisplaySuccess("Upload Successful!");
-            }
-            else
-            {
-                DisplayError("Upload failed.");
-            }
-
-            return RedirectToAction("Upload");
-        }
-
-        private Dictionary<string, int> _chunksUploaded = new Dictionary<string, int>();
-
-        //
-        // POST: /Table/Upload/
-        [HttpPost]
-        public ActionResult fUpload(FineUpload file)
-        {
-            string fileName = Path.GetFileNameWithoutExtension(file.FileName);
-
-            //Save the chunk.
-            FileStreamWrapper wrapper = new FileStreamWrapper()
-            {
-                FileName = fileName + file.PartIndex,
-                InputStream = file.InputStream
-            };
-            bool saveSuccessful = _tempFileAccessor.SaveFiles(wrapper);
-
-            //If this was the last chunk, save the complete file.
-            if (saveSuccessful && file.PartIndex == file.TotalParts - 1)
-            {
-                //Check to see if this table already exis
-                TableIndex existingTable = _tableIndexRepo.GetAll().Where((t) => t.Name == fileName).FirstOrDefault();
-                if (existingTable != null)
-                {
-                    return new FineUploaderResult(false, error: "Table already exist. Remove existing table before uploading the new one.");
-                }
-
-                saveSuccessful = mergeTempFiles(file.FileName, file.TotalParts);
-                deleteTempFiles(fileName, file.TotalParts);
-            }
-            
-            return new FineUploaderResult(saveSuccessful);
-        }
-
-        //
         // GET: /Table/Delete/{Table.ID}
         public ActionResult Delete()
         {
@@ -221,41 +152,6 @@ namespace EPSCoR.Controllers
             }
 
             return vm;
-        }
-
-        private bool mergeTempFiles(string fullFileName, int totalParts)
-        {
-            string fileName = Path.GetFileNameWithoutExtension(fullFileName);
-            MemoryStream completeFileStream = new MemoryStream();
-            byte[] b = new byte[1024];
-
-            //Write each temp file to the stream.
-            for (int i = 0; i < totalParts; i++)
-            {
-                MemoryStream tempFileStream = _tempFileAccessor.OpenFile(fileName + i);
-                tempFileStream.CopyTo(completeFileStream);
-                tempFileStream.Close();
-            }
-            //Set the stream back at the begining.
-            completeFileStream.Seek(0, SeekOrigin.Begin);
-
-            //Save complete file.
-            FileStreamWrapper wrapper = new FileStreamWrapper()
-            {
-                FileName = fullFileName,
-                InputStream = completeFileStream
-            };
-            return _uploadFileAccessor.SaveFiles(wrapper);
-        }
-
-        private void deleteTempFiles(string fileName, int totalParts)
-        {
-            string[] tempFileNames = new string[totalParts];
-            for (int i = 0; i < totalParts; i++)
-            {
-                tempFileNames[i] = fileName + i;
-            }
-            _tempFileAccessor.DeleteFiles(tempFileNames);
         }
 
         #endregion Helpers

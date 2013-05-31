@@ -165,9 +165,9 @@
     <Compile Include="Controllers\AboutController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BootstrapBaseController.cs" />
-    <Compile Include="Controllers\FineUploaderSupport.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TablesController.cs" />
+    <Compile Include="Controllers\UploadController.cs" />
     <Compile Include="Filters\AuthorizeRoleAttribute.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
     <Compile Include="Global.asax.cs">
@@ -277,6 +277,7 @@
     <Content Include="Scripts\jQueryFileUpload\jquery.fileupload-validate.js" />
     <Content Include="Scripts\jQueryFileUpload\jquery.fileupload.js" />
     <Content Include="Scripts\jQueryFileUpload\jquery.iframe-transport.js" />
+    <Content Include="Scripts\jQueryFileUpload\main-demo.js" />
     <Content Include="Scripts\jQueryFileUpload\main.js" />
     <Content Include="Scripts\jQueryFileUpload\vendor\jquery.ui.widget.js" />
     <None Include="Scripts\jQuery\jquery-1.9.1.intellisense.js" />
@@ -339,6 +340,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Shared\_alerts.cshtml" />
     <Content Include="Scripts\jQuery\jquery-1.9.1.min.map" />
+    <Content Include="Views\Upload\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
