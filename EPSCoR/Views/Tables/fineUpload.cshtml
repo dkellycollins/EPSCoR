@@ -1,0 +1,84 @@
+﻿@model IEnumerable<string>
+@{
+    ViewBag.Title = "Upload";
+}
+
+<h2>Upload</h2>
+
+<div id ="fineUploader">
+    <p class="alert">The upload form depends on Javascript. If you have javascript disabled please enabled it.</p>
+    @using (Html.BeginForm("Upload", "Tables", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <input type="file" name="file" />
+        <br/>
+    
+        <input type="submit" value="Upload" class="btn btn-success"/>
+    }
+</div>
+
+<h4>Files waiting to be processed.</h4>
+@if (Model.Count() == 0)
+{
+    <p>None</p>
+} 
+else 
+{
+    <table>
+        @foreach(var file in Model)
+        {
+            <tr>
+                <td>
+                    @file
+                </td>
+            </tr>
+        }
+    </table>
+}
+
+@section Styles {
+    @Styles.Render("~/content/fineuploader/fineuploader-css")
+}
+@section Scripts {
+    @Scripts.Render("~/scripts/fineuploader/fineuploader-js")
+    <script>
+        $(document).ready(function () {
+            var manualuploader = $('#fineUploader').fineUploader({
+                request: {
+                    endpoint: 'http://localhost:6615/tables/fupload'
+                },
+                autoUpload: false,
+                text: {
+                    uploadButton: '<i class="icon-plus icon-white"></i> Select Files'
+                },
+                validation: {
+                    allowedExtensions: ['csv']
+                },
+                template: '<div class="qq-uploader span12">' +
+                            '<pre class="qq-upload-drop-area span12"><span>{dragZoneText}</span></pre>' +
+                            '<div id="btnSelectFiles" class="btn btn-primary qq-upload-button">{uploadButtonText}</div>' +
+                            '<span class="qq-drop-processing"><span>{dropProcessingText}</span><span class="qq-drop-processing-spinner"></span></span>' +
+                            '<ul class="qq-upload-list" style="margin-top: 10px; text-align: center;"></ul>' +
+                          '</div>',
+                classes: {
+                    success: 'alert alert-success',
+                    fail: 'alert alert-error'
+                },
+                chunking: {
+                    enabled: true
+                },
+                resume: {
+                    enabled: true
+                }
+            });
+
+            var triggerUpload = '<div id ="triggerUpload" class="btn btn-success">' +
+                                    '<i class="icon-upload icon-white"></i> Upload Now' +
+                                '</div>';
+
+            $(triggerUpload).insertAfter('#btnSelectFiles');
+            $('#triggerUpload').click(function () {
+                manualuploader.fineUploader('uploadStoredFiles');
+            });
+        });
+    </script>
+}
