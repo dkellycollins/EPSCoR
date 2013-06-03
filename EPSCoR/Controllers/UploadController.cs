@@ -101,11 +101,11 @@ namespace EPSCoR.Controllers
                     fileStream.Flush();
                     fileStream.Close();
 
-                    return new FileUploadResult(fileName, true);
+                    return new FileUploadResult(fileName);
                 }
                 catch(Exception e)
                 {
-                    return new FileUploadResult(fileName, false);
+                    return new FileUploadResult(fileName, e.Message);
                 }
             }
             else
@@ -117,11 +117,11 @@ namespace EPSCoR.Controllers
                     fileStream.Flush();
                     fileStream.Close();
 
-                    return new FileUploadResult(fileName, true);
+                    return new FileUploadResult(fileName);
                 }
                 catch (Exception e)
                 {
-                    return new FileUploadResult(fileName, false);
+                    return new FileUploadResult(fileName, e.Message);
                 }
             }
         }
@@ -218,7 +218,7 @@ namespace EPSCoR.Controllers
         public class FileStatus
         {
             public string Name { get; set; }
-            public bool Success { get; set; }
+            public string Error { get; set; }
         }
 
         private JavaScriptSerializer _serializer;
@@ -230,13 +230,13 @@ namespace EPSCoR.Controllers
             _status = status;
         }
 
-        public FileUploadResult(string FileName, bool success)
+        public FileUploadResult(string FileName, string error = null)
         {
             _serializer = new JavaScriptSerializer();
             _status = new FileStatus()
             {
                 Name = FileName,
-                Success = success
+                Error = error
             };
         }
 
