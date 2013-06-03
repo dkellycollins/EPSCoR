@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using EPSCoR.Database.Models;
 using EPSCoR.Repositories;
 using WebMatrix.WebData;
+using System.Web.Script.Serialization;
 
 namespace EPSCoR.Controllers
 {
@@ -80,37 +81,59 @@ namespace EPSCoR.Controllers
         [HttpPost]
         public ActionResult UploadFiles(FileUpload file)
         {
-            string fileName = Path.GetFileNameWithoutExtension(file.FileName);
+            string fileName = Path.GetFileName(file.FileName);
 
-            //Save the chunk.
-            FileStreamWrapper wrapper = new FileStreamWrapper()
+            //Circumventing the IFileAccesors for now.
+            string uploadDirectory = System.Web.HttpContext.Current.Server.MapPath("~/App_Data/Uploads");
+            string userDirecotry = Path.Combine(uploadDirectory, WebSecurity.CurrentUserName);
+            string filePath = Path.Combine(userDirecotry, fileName);
+            if (file.PartialFile)
             {
-                FileName = fileName + file.PartIndex,
-                InputStream = file.InputStream
-            };
-            bool saveSuccessful = _tempFileAccessor.SaveFiles(wrapper);
-
-            //If this was the last chunk, save the complete file.
-            if (saveSuccessful && file.PartIndex == file.TotalParts - 1)
-            {
-                //Check to see if this table already exis
-                TableIndex existingTable = _tableIndexRepo.GetAll().Where((t) => t.Name == fileName).FirstOrDefault();
-                if (existingTable != null)
+                try
                 {
-                    //return new FineUploaderResult(false, error: "Table already exist. Remove existing table before uploading the new one.");
-                }
+                    FileStream fileStream;
+                    if(System.IO.File.Exists(filePath))
+                        fileStream = System.IO.File.Open(filePath, FileMode.Append);
+                    else
+                        fileStream = System.IO.File.Create(filePath);
 
-                saveSuccessful = mergeTempFiles(file.FileName, file.TotalParts);
-                deleteTempFiles(fileName, file.TotalParts);
+                    file.InputStream.CopyTo(fileStream);
+                    fileStream.Flush();
+                    fileStream.Close();
+
+                    return new FileUploadResult(fileName, true);
+                }
+                catch(Exception e)
+                {
+                    return new FileUploadResult(fileName, false);
+                }
             }
-            
-            //return new FineUploaderResult(saveSuccessful);
-            return null;
+            else
+            {
+                try
+                {
+                    FileStream fileStream = System.IO.File.Create(filePath);
+                    file.InputStream.CopyTo(fileStream);
+                    fileStream.Flush();
+                    fileStream.Close();
+
+                    return new FileUploadResult(fileName, true);
+                }
+                catch (Exception e)
+                {
+                    return new FileUploadResult(fileName, false);
+                }
+            }
         }
 
         public ActionResult DownloadCsv(string id)
         {
             string fileName = id + ".csv";
+            if(!_conversionFileAccessor.FileExist(fileName))
+            {
+                return new HttpNotFoundResult();
+            }
+
             var cd = new ContentDisposition
             {
                 FileName = fileName,
@@ -161,19 +184,27 @@ namespace EPSCoR.Controllers
     {
         public string FileName { get; set; }
         public Stream InputStream { get; set; }
-        public int PartIndex { get; set; }
-        public int TotalParts { get; set; }
+        public bool PartialFile { get; set; }
 
         public class ModelBinder : IModelBinder
         {
             public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
             {
                 var request = controllerContext.RequestContext.HttpContext.Request;
-                var formUpload = request.Files.Count > 0;
+
+                bool partial = !string.IsNullOrEmpty(request.Headers["X-File-Name"]);
+                string fileName;
+                if(partial)
+                    fileName = request.Headers["X-File-Name"];
+                else
+                    fileName = request.Files[0].FileName;
+                Stream inputStream = request.Files[0].InputStream;
 
                 return new FileUpload()
                 {
-                    InputStream = request.Files[0].InputStream
+                    FileName = fileName,
+                    InputStream = inputStream,
+                    PartialFile = partial
                 };
             }
         }
@@ -181,9 +212,54 @@ namespace EPSCoR.Controllers
 
     public class FileUploadResult : ActionResult
     {
+        /// <summary>
+        /// This wraps up data to be serailized into the Json object returned.
+        /// </summary>
+        public class FileStatus
+        {
+            public string Name { get; set; }
+            public bool Success { get; set; }
+        }
+
+        private JavaScriptSerializer _serializer;
+        private FileStatus _status;
+
+        public FileUploadResult(FileStatus status)
+        {
+            _serializer = new JavaScriptSerializer();
+            _status = status;
+        }
+
+        public FileUploadResult(string FileName, bool success)
+        {
+            _serializer = new JavaScriptSerializer();
+            _status = new FileStatus()
+            {
+                Name = FileName,
+                Success = success
+            };
+        }
+
         public override void ExecuteResult(ControllerContext context)
         {
-            throw new NotImplementedException();
+            var request = context.HttpContext.Request;
+            var response = context.HttpContext.Response;
+
+            response.AddHeader("Vary", "Accept");
+            try
+            {
+                if (request["HTTP_ACCEPT"].Contains("application/json"))
+                    response.ContentType = "application/json";
+                else
+                    response.ContentType = "text/plain";
+            }
+            catch
+            {
+                response.ContentType = "text/plain";
+            }
+
+            var jsonObj = _serializer.Serialize(_status);
+            response.Write(jsonObj);
         }
     }
 }

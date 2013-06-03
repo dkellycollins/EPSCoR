@@ -267,7 +267,6 @@
     <Content Include="Scripts\Bootstrap\bootstrap.js" />
     <Content Include="Scripts\Bootstrap\bootstrap.min.js" />
     <Content Include="Scripts\Bootstrap\html5shiv.js" />
-    <Content Include="Scripts\jQueryFileUpload\app.js" />
     <Content Include="Scripts\jQueryFileUpload\cors\jquery.postmessage-transport.js" />
     <Content Include="Scripts\jQueryFileUpload\cors\jquery.xdr-transport.js" />
     <Content Include="Scripts\jQueryFileUpload\jquery.fileupload-angular.js" />
@@ -277,10 +276,8 @@
     <Content Include="Scripts\jQueryFileUpload\jquery.fileupload-validate.js" />
     <Content Include="Scripts\jQueryFileUpload\jquery.fileupload.js" />
     <Content Include="Scripts\jQueryFileUpload\jquery.iframe-transport.js" />
-    <Content Include="Scripts\jQueryFileUpload\main-demo.js" />
-    <Content Include="Scripts\jQueryFileUpload\main.js" />
-    <Content Include="Scripts\jQueryFileUpload\vendor\jquery.ui.widget.js" />
     <None Include="Scripts\jQuery\jquery-1.9.1.intellisense.js" />
+    <Content Include="Scripts\jQueryFileUpload\main.js" />
     <Content Include="Scripts\jQuery\jquery-1.9.1.js" />
     <Content Include="Scripts\jQuery\jquery-1.9.1.min.js" />
     <Content Include="Scripts\jQuery\jquery-migrate-1.1.1.js" />
