@@ -30,9 +30,9 @@ $(function () {
         dataType: 'json',
         autoUpload: false,
         acceptFileTypes: /(\.|\/)(csv)$/i,
-        //sequentialUploads: true,
+        sequentialUploads: true,
         //multipart: false,
-        //maxChunkSize: 5000000, // 5 MB
+        maxChunkSize: 5000000, // 5 MB
         add: function (e, data) {
             data.context = $('<div/>').appendTo('#files');
             $.each(data.files, function (index, file) {
@@ -75,7 +75,7 @@ $(function () {
                 .removeClass('progress-success')
                 .addClass('progress-danger');
             $(data.context)
-                .removedClass('alert-info')
+                .removeClass('alert-info')
                 .addClass('alert-error');
         }
     });
