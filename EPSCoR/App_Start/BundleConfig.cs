@@ -77,9 +77,9 @@ namespace EPSCoR
                 "~/Scripts/jQueryFileUpload/jquery.iframe-transport.js",
                 "~/Scripts/jQueryFileUpload/jquery.fileupload.js",
                 "~/Scripts/jQueryFileUpload/jquery.fileupload-process.js",
-                "~/Scripts/jQueryFileUpload/jquery.fileupload-resize.js",
                 "~/Scripts/jQueryFileUpload/jquery.fileupload-validate.js",
-                "~/Scripts/jQueryFileUpload/jquery.fileupload-ui.js"
+                "~/Scripts/jQueryFileUpload/jquery.fileupload-ui.js",
+                "~/Scripts/jQueryFileUpload/main.js"
                 ));
 
             bundles.Add(new StyleBundle("~/content/jQueryFileUpload/fileUpload-css").Include(
