@@ -14,6 +14,7 @@ namespace EPSCoR.Controllers
     {
         //
         // GET: /About/
+        [OutputCache(Duration=0)]
         public ActionResult Index()
         {
             return HowToUpload();
@@ -21,6 +22,7 @@ namespace EPSCoR.Controllers
 
         //
         // GET: /About/HowToExport/
+        [OutputCache(Duration = 0)]
         public ActionResult HowToExport()
         {
             return View();
@@ -28,6 +30,7 @@ namespace EPSCoR.Controllers
 
         //
         // GET: /About/HowToUpload/
+        [OutputCache(Duration = 0)]
         public ActionResult HowToUpload()
         {
             return View();

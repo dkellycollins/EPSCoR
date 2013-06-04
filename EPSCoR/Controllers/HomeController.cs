@@ -13,6 +13,7 @@ namespace EPSCoR.Controllers
     {
         //
         // GET: /Home/
+        [OutputCache(Duration = 0)]
         public ActionResult Index()
         {
             return View();

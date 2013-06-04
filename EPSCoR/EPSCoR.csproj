@@ -180,6 +180,7 @@
     <Compile Include="NavigationRoutes\NavigationRouteFilter.cs" />
     <Compile Include="Repositories\BasicFileAccessor.cs" />
     <Compile Include="Repositories\BasicRepo.cs" />
+    <Compile Include="Repositories\CachedRepo.cs" />
     <Compile Include="Repositories\IFileAccessor.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
