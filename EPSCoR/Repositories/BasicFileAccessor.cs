@@ -141,8 +141,16 @@ namespace EPSCoR.Repositories
 
             try
             {
-                using (FileStream fs = new FileStream(path, fileMode))
-                    file.InputStream.CopyTo(fs);
+                //If the file does not exist create a new empty file.
+                if (!File.Exists(path))
+                    File.WriteAllBytes(path, new byte[file.FileSize]);
+                FileStream fileStream = File.Open(path, FileMode.Open);
+                
+                //Seek to the staring position of the chunk and copy the stream.
+                fileStream.Seek(file.SeekPos, SeekOrigin.Begin);
+                file.InputStream.CopyTo(fileStream);
+                fileStream.Flush();
+                fileStream.Close();
             }
             catch (Exception e)
             {

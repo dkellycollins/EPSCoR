@@ -326,7 +326,6 @@
     <Content Include="Views\Account\_RemoveExternalLoginsPartial.cshtml" />
     <Content Include="Views\Account\_SetPasswordPartial.cshtml" />
     <Content Include="Views\Tables\Index.cshtml" />
-    <Content Include="Views\Tables\jQueryUpload.cshtml" />
     <Content Include="Views\Tables\DetailsPartial.cshtml" />
     <Content Include="Views\Tables\Delete.cshtml" />
     <Content Include="Views\Tables\Details.cshtml" />

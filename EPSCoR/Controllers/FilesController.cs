@@ -87,35 +87,12 @@ namespace EPSCoR.Controllers
             FileStreamWrapper wrapper = new FileStreamWrapper()
             {
                 FileName = fileName,
-                InputStream = file.InputStream
+                InputStream = file.InputStream,
+                SeekPos = file.StartPosition,
+                FileSize = file.TotalFileLength
             };
 
-            bool saveSuccessful;
-            if (file.IsChunk)
-            {
-                saveSuccessful = _tempFileAccessor.SavePartialFiles(wrapper);
-
-                //If this was the last chunk, save the complete file.
-                if (saveSuccessful && file.IsLastChunk)
-                {
-                    //Check to see if this table already exis
-                    TableIndex existingTable = _tableIndexRepo.GetAll().Where((t) => t.Name == fileName).FirstOrDefault();
-                    if (existingTable != null)
-                    {
-                        return new FileUploadResult(fileName, "Table already exist. Remove existing table before uploading the new one.");
-                    }
-
-                    FileStream fileStream = _tempFileAccessor.OpenFile(fileName);
-                    wrapper.InputStream = fileStream;
-                    saveSuccessful = _uploadFileAccessor.SaveFiles(wrapper);
-                    _tempFileAccessor.CloseFile(fileStream);
-                    _tempFileAccessor.DeleteFiles(fileName);
-                }
-            }
-            else
-            {
-                saveSuccessful = _uploadFileAccessor.SaveFiles(wrapper);
-            }
+            bool saveSuccessful = _uploadFileAccessor.SaveFiles(wrapper);
 
             return new FileUploadResult(fileName);
         }
@@ -136,41 +113,6 @@ namespace EPSCoR.Controllers
             Response.AppendHeader("Content-Disposition", cd.ToString());
             return File(_conversionFileAccessor.OpenFile(fileName), "text/csv");
         }
-
-        private bool mergeTempFiles(string fullFileName, int totalParts)
-        {
-            string fileName = Path.GetFileNameWithoutExtension(fullFileName);
-            MemoryStream completeFileStream = new MemoryStream();
-            byte[] b = new byte[1024];
-
-            //Write each temp file to the stream.
-            for (int i = 0; i < totalParts; i++)
-            {
-                FileStream tempFileStream = _tempFileAccessor.OpenFile(fileName + i);
-                tempFileStream.CopyTo(completeFileStream);
-                tempFileStream.Close();
-            }
-            //Set the stream back at the begining.
-            completeFileStream.Seek(0, SeekOrigin.Begin);
-
-            //Save complete file.
-            FileStreamWrapper wrapper = new FileStreamWrapper()
-            {
-                FileName = fullFileName,
-                InputStream = completeFileStream
-            };
-            return _uploadFileAccessor.SaveFiles(wrapper);
-        }
-
-        private void deleteTempFiles(string fileName, int totalParts)
-        {
-            string[] tempFileNames = new string[totalParts];
-            for (int i = 0; i < totalParts; i++)
-            {
-                tempFileNames[i] = fileName + i;
-            }
-            _tempFileAccessor.DeleteFiles(tempFileNames);
-        }
     }
 
     [ModelBinder(typeof(ModelBinder))]
@@ -178,8 +120,8 @@ namespace EPSCoR.Controllers
     {
         public string FileName { get; set; }
         public Stream InputStream { get; set; }
-        public bool IsChunk { get; set; }
-        public bool IsLastChunk { get; set; }
+        public int StartPosition { get; set; }
+        public int TotalFileLength { get; set; }
 
         public class ModelBinder : IModelBinder
         {
@@ -189,24 +131,26 @@ namespace EPSCoR.Controllers
 
                 string fileName = request.Files[0].FileName;
                 Stream inputStream = request.Files[0].InputStream;
-                bool partial = request.Headers["Content-Range"] != null;
-                bool lastChunk;
-                if (partial)
+                int startPos;
+                int totalFileLength;
+                if (request.Headers["Content-Range"] != null)
                 {
                     string[] fileInfo = request.Headers["Content-Range"].Split('/', '-');
-                    lastChunk = Int32.Parse(fileInfo[1].Trim()) == Int32.Parse(fileInfo[2].Trim()) - 1;
+                    startPos = Int32.Parse(fileInfo[0].Remove(0, 5));
+                    totalFileLength = Int32.Parse(fileInfo[2]);
                 }
                 else
                 {
-                    lastChunk = false;
+                    startPos = 0;
+                    totalFileLength = request.Files[0].ContentLength;
                 }
 
                 return new FileUpload()
                 {
                     FileName = fileName,
                     InputStream = inputStream,
-                    IsChunk = partial,
-                    IsLastChunk = lastChunk
+                    StartPosition = startPos,
+                    TotalFileLength = totalFileLength
                 };
             }
         }

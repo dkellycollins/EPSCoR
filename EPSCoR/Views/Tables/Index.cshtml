@@ -6,23 +6,20 @@
 
 <h2>Index</h2>
 
-<div id="calc">
+<div id="calc" class="pull-left" style="width: 25%">
     @Html.Partial("CalcForm", Model.CalcForm)
 </div>
 
-<div id="convertedTbls">
-    @Html.Partial("ConvertedTablesForm", Model.ConvertedTables)
-</div>
-
-<select id="tableSelect">
+<div id="tableDetails" class="pull-right" style="width: 75%">
+    <select id="tableSelect">
     @foreach(var table in Model.Tables)
     {
         <option>@table</option>
     }
-</select>
-<div id="tableDetails">
-    <!-- To be loaded when the user selects a table -->
+    </select>
 </div>
+
+
 
 @section Scripts
 {

@@ -9,6 +9,8 @@ namespace EPSCoR.Repositories
     {
         public string FileName;
         public Stream InputStream;
+        public int SeekPos;
+        public int FileSize;
 
         public static FileStreamWrapper FromHttpPostedFile(HttpPostedFileBase file)
         {

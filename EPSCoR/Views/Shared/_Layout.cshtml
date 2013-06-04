@@ -36,10 +36,11 @@
             @Html.Partial("_validationSummary")
             @RenderBody()   
             <hr>
-            <footer>
-                <p>&copy; Kansas State University @System.DateTime.Now.ToString("yyyy")</p>
-            </footer> 
+            
         </div>
+        <div class="footer container">
+            <p>&copy; Kansas State University @System.DateTime.Now.ToString("yyyy")</p>
+        </div> 
         @Scripts.Render("~/scripts/bootstrap/bootstrap-js")
         @RenderSection("Scripts", required: false)
     </body>

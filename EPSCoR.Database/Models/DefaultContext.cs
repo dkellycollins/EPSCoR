@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
 using System.Web;
 using EPSCoR.Database.DbCmds;
+using MySql.Data.MySqlClient;
 
 namespace EPSCoR.Database.Models
 {
@@ -50,6 +53,16 @@ namespace EPSCoR.Database.Models
         public IEnumerable<UpstreamData> GetAllFromUpstreamTable(string usTable)
         {
             return this.Database.SqlQuery<UpstreamData>("SELECT * FROM " + usTable);
+        }
+
+        public DataTable GetTable(string tableName)
+        {
+            //TODO abstract this.
+            string query = "SELECT * FROM " + tableName;
+            IDataAdapter dataAdapter = new MySqlDataAdapter(query, (MySqlConnection)this.Database.Connection);
+            DataSet dataSet = new DataSet();
+            dataAdapter.Fill(dataSet);
+            return dataSet.Tables[0];
         }
 
         public void DeleteTable(string table)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net.Mime;
@@ -53,7 +54,24 @@ namespace EPSCoR.Controllers
         // GET: /Tables/Details/{Table.ID}
         public ActionResult Details(string id)
         {
-            return new HttpNotFoundResult();
+            DefaultContext context = DefaultContext.GetInstance();
+            try
+            {
+                //TODO abstract this into a repository.
+                DataTable table = context.GetTable(id);
+                if (Request.IsAjaxRequest())
+                    return PartialView(table);
+                else
+                    return View(table);
+            }
+            catch
+            {
+                return new HttpNotFoundResult();
+            }
+            finally
+            {
+                DefaultContext.Release();
+            }
         }
 
         //
