@@ -26,7 +26,7 @@ namespace EPSCoR
             routes.MapNavigationRoute<AboutController>("How To", c => c.Index())
                 .AddChildRoute<AboutController>("Export Access Table", c => c.HowToExport())
                 .AddChildRoute<AboutController>("Upload Data Table", c => c.HowToUpload());
-            routes.MapNavigationRoute<UploadController>("Load Tables", c => c.Index());
+            routes.MapNavigationRoute<FilesController>("Load Tables", c => c.Index());
             routes.MapNavigationRoute<TablesController>("Data", c => c.Index());
             //routes.MapNavigationRoute<WatershedController>("Watershed", c => c.Index());
         }

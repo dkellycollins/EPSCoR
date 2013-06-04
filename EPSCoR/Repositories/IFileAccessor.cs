@@ -26,9 +26,15 @@ namespace EPSCoR.Repositories
     public interface IFileAccessor
     {
         bool SaveFiles(params FileStreamWrapper[] files);
-        MemoryStream OpenFile(string fileName);
-        IEnumerable<string> GetFiles();
+        bool SavePartialFiles(params FileStreamWrapper[] files);
+
         void DeleteFiles(params string[] fileNames);
+        
+        FileStream OpenFile(string fileName);
+        void CloseFile(FileStream fileStream);
+        
+        IEnumerable<string> GetFiles();
+        FileInfo GetFileInfo(string fileName);
         bool FileExist(string fileName);
     }
 }

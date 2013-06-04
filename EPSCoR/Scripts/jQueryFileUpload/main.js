@@ -3,7 +3,7 @@
 $(function () {
     'use strict';
     // Change this to the location of your server-side upload handler:
-    var url = 'http://localhost:6615/Upload/UploadFiles',
+    var url = 'http://localhost:6615/Files/UploadFiles',
         cancelButton = $('<button/>')
             .addClass('btn btn-warning')
             .text('Cancel')
@@ -45,7 +45,7 @@ $(function () {
         dataType: 'json',
         autoUpload: false,
         acceptFileTypes: /(\.|\/)(csv)$/i,
-        sequentialUploads: true,
+        //sequentialUploads: true,
         //multipart: false, //This is required for chunking to work in firefox.
         maxChunkSize: 5000000, // 5 MB
     })
@@ -66,7 +66,7 @@ $(function () {
     //This is called if an added file is successfully processed.
     .bind('fileuploadprocessdone', function(e, data) {
         filesToUpload.push(data);
-        setStatus('Ready to upload');
+        setStatus('Ready to upload', data.context);
     })
     //This is called if an added file is not successfully processed.
     .bind('fileuploadprocessfail', function (e, data) {

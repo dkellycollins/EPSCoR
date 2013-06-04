@@ -20,31 +20,21 @@ namespace EPSCoR.Controllers
     {
         private IRepository<UserProfile> _userProfileRepo;
         private IRepository<TableIndex> _tableIndexRepo;
-        private IFileAccessor _uploadFileAccessor;
         private IFileAccessor _conversionFileAccessor;
-        private IFileAccessor _tempFileAccessor;
 
         public TablesController()
         {
             _userProfileRepo = new BasicRepo<UserProfile>();
             _tableIndexRepo = new BasicRepo<TableIndex>();
-            _uploadFileAccessor = new BasicFileAccessor(BasicFileAccessor.UPLOAD_DIRECTORY, WebSecurity.CurrentUserName);
-            _conversionFileAccessor = new BasicFileAccessor(BasicFileAccessor.CONVERTION_DIRECTORY, WebSecurity.CurrentUserName);
-            _tempFileAccessor = new BasicFileAccessor(BasicFileAccessor.TEMP_DIRECTORY, WebSecurity.CurrentUserName);
+            _conversionFileAccessor = BasicFileAccessor.GetConversionsAccessor(WebSecurity.CurrentUserName);
         }
 
         public TablesController(
             IRepository<TableIndex> tableIndexRepo,
-            IRepository<UserProfile> userProfileRepo, 
-            IFileAccessor uploadFileAccessor, 
-            IFileAccessor conversionFileAccessor,
-            IFileAccessor tempFileAccessor)
+            IRepository<UserProfile> userProfileRepo)
         {
             _tableIndexRepo = tableIndexRepo;
             _userProfileRepo = userProfileRepo;
-            _uploadFileAccessor = uploadFileAccessor;
-            _conversionFileAccessor = conversionFileAccessor;
-            _tempFileAccessor = tempFileAccessor;
         }
 
         //
@@ -106,18 +96,6 @@ namespace EPSCoR.Controllers
 
             DisplaySuccess("Calc table generated");
             return RedirectToAction("Index");
-        }
-
-        public ActionResult DownloadCsv(string id)
-        {
-            string fileName = id + ".csv";
-            var cd = new ContentDisposition
-            {
-                FileName = fileName,
-                Inline = false
-            };
-            Response.AppendHeader("Content-Disposition", cd.ToString());
-            return File(_conversionFileAccessor.OpenFile(fileName), "text/csv");
         }
 
         #region Helpers

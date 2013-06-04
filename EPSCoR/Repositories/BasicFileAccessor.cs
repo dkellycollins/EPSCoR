@@ -5,52 +5,37 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Web;
+using EPSCoR.Database.Services;
 
 namespace EPSCoR.Repositories
 {
     public class BasicFileAccessor : IFileAccessor
     {
-        /// <summary>
-        /// Upload directory is where we store the users uploads no matter the format.
-        /// </summary>
-        public const string UPLOAD_DIRECTORY = "~/App_Data/Uploads";
-
-        /// <summary>
-        /// Convertion directory is where we store the files that we create the tables with.
-        /// </summary>
-        public const string CONVERTION_DIRECTORY = "~/App_Data/Convertions";
-
-        /// <summary>
-        /// Archive directory is where we store the uploaded files after they have been converted.
-        /// </summary>
-        public const string ARCHIVE_DIRECTORY = "~/App_Data/Archive";
-
-        /// <summary>
-        /// Temp directory is where we store parts of files while we are uploading.
-        /// </summary>
-        public const string TEMP_DIRECTORY = "~/App_Data/Temp";
-
-        //Just a way to make access the server context easier.
-        private static HttpServerUtility Server
+        public static BasicFileAccessor GetUploadAccessor(string userName)
         {
-            get { return System.Web.HttpContext.Current.Server; }
+            return new BasicFileAccessor(DirectoryManager.UploadDir, userName);
         }
 
-        private string _serverPath;
+        public static BasicFileAccessor GetConversionsAccessor(string userName)
+        {
+            return new BasicFileAccessor(DirectoryManager.ConversionDir, userName);
+        }
+
+        public static BasicFileAccessor GetTempAccessor(string userName)
+        {
+            return new BasicFileAccessor(DirectoryManager.TempDir, userName);
+        }
+
+        private string _userDirectory;
         private string _lockFile;
 
-        public BasicFileAccessor(string directory, string userName)
-        {
-            string dataDirectory = Server.MapPath(directory);
-            if (!Directory.Exists(dataDirectory))
-                Directory.CreateDirectory(dataDirectory);
+        private BasicFileAccessor(string directory, string userName)
+        {   
+            _userDirectory = Path.Combine(directory, userName);
+            if (!Directory.Exists(_userDirectory))
+                Directory.CreateDirectory(_userDirectory);
             
-            string userDirectory = Path.Combine(dataDirectory, userName);
-            if (!Directory.Exists(userDirectory))
-                Directory.CreateDirectory(userDirectory);
-            
-            _serverPath = userDirectory;
-            _lockFile = Path.Combine(_serverPath, "lock");
+            _lockFile = Path.Combine(_userDirectory, "lock");
         }
 
         #region IFileAccessor Members
@@ -62,7 +47,7 @@ namespace EPSCoR.Repositories
             bool result = true;
             foreach (FileStreamWrapper file in files)
             {
-                if (!saveFile(file))
+                if (!saveFile(file, FileMode.Create))
                 {
                     result = false;
                     break;
@@ -74,30 +59,52 @@ namespace EPSCoR.Repositories
             return result;
         }
 
-        public MemoryStream OpenFile(string fileName)
+        public bool SavePartialFiles(params FileStreamWrapper[] files)
         {
-            string path = Path.Combine(_serverPath, fileName);
-            FileStream fileStream;
-            MemoryStream returnStream = new MemoryStream();
+            waitForLock();
+
+            bool result = true;
+            foreach (FileStreamWrapper file in files)
+            {
+                if (!saveFile(file, FileMode.Append))
+                {
+                    result = false;
+                    break;
+                }
+            }
+
+            releaseLock();
+
+            return result;
+        }
+
+        public FileStream OpenFile(string fileName)
+        {
+            waitForLock();
+
+            string path = Path.Combine(_userDirectory, fileName);
             
             try
             {
-                fileStream = File.Open(path, FileMode.Open, FileAccess.Read);
-                fileStream.CopyTo(returnStream);
-                returnStream.Seek(0, SeekOrigin.Begin);
-                fileStream.Close();
-                return returnStream;
+                return File.Open(path, FileMode.OpenOrCreate, FileAccess.Read);
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e.ToString());
+                releaseLock();
                 return null;
             }
         }
 
+        public void CloseFile(FileStream fileStream)
+        {
+            fileStream.Close();
+            releaseLock();
+        }
+
         public IEnumerable<string> GetFiles()
         {
-            return Directory.GetFiles(_serverPath);
+            return Directory.GetFiles(_userDirectory);
         }
 
         public void DeleteFiles(params string[] fileNames)
@@ -112,23 +119,29 @@ namespace EPSCoR.Repositories
 
         public bool FileExist(string fileName)
         {
-            string path = Path.Combine(_serverPath, fileName);
+            string path = Path.Combine(_userDirectory, fileName);
             return File.Exists(path);
+        }
+
+        public FileInfo GetFileInfo(string fileName)
+        {
+            string path = Path.Combine(_userDirectory, fileName);
+            return new FileInfo(path);
         }
 
         #endregion IFileAccessor Memebers
 
         #region Private Members
 
-        private bool saveFile(FileStreamWrapper file)
+        private bool saveFile(FileStreamWrapper file, FileMode fileMode)
         {
             bool result = true;
             var fileName = Path.GetFileName(file.FileName);
-            var path = Path.Combine(_serverPath, fileName);
+            var path = Path.Combine(_userDirectory, fileName);
 
             try
             {
-                using (FileStream fs = new FileStream(path, FileMode.Create))
+                using (FileStream fs = new FileStream(path, fileMode))
                     file.InputStream.CopyTo(fs);
             }
             catch (Exception e)
@@ -141,14 +154,14 @@ namespace EPSCoR.Repositories
 
         private void deleteFile(string fileName)
         {
-            string path = Path.Combine(_serverPath, fileName);
+            string path = Path.Combine(_userDirectory, fileName);
             if (File.Exists(path))
                 File.Delete(path);
         }
 
         private void waitForLock()
         {
-            while (Directory.GetFiles(_serverPath).Contains(_lockFile)) ;
+            while (Directory.GetFiles(_userDirectory).Contains(_lockFile)) ;
             File.Create(_lockFile).Close();
         }
 

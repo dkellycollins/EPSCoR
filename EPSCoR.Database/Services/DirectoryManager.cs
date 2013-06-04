@@ -60,5 +60,16 @@ namespace EPSCoR.Database.Services
                 return dir;
             }
         }
+
+        public static string TempDir
+        {
+            get
+            {
+                string dir = Path.Combine(RootDir, "Temp");
+                if (!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+                return dir;
+            }
+        }
     }
 }

@@ -13,22 +13,22 @@ using System.Web.Script.Serialization;
 namespace EPSCoR.Controllers
 {
     //[Authorize]
-    public class UploadController : BootstrapBaseController
+    public class FilesController : BootstrapBaseController
     {
         private IRepository<TableIndex> _tableIndexRepo;
         private IFileAccessor _uploadFileAccessor;
         private IFileAccessor _conversionFileAccessor;
         private IFileAccessor _tempFileAccessor;
 
-        public UploadController()
+        public FilesController()
         {
             _tableIndexRepo = new BasicRepo<TableIndex>();
-            _uploadFileAccessor = new BasicFileAccessor(BasicFileAccessor.UPLOAD_DIRECTORY, WebSecurity.CurrentUserName);
-            _conversionFileAccessor = new BasicFileAccessor(BasicFileAccessor.CONVERTION_DIRECTORY, WebSecurity.CurrentUserName);
-            _tempFileAccessor = new BasicFileAccessor(BasicFileAccessor.TEMP_DIRECTORY, WebSecurity.CurrentUserName);
+            _uploadFileAccessor = BasicFileAccessor.GetUploadAccessor(WebSecurity.CurrentUserName);
+            _conversionFileAccessor = BasicFileAccessor.GetConversionsAccessor(WebSecurity.CurrentUserName);
+            _tempFileAccessor = BasicFileAccessor.GetTempAccessor(WebSecurity.CurrentUserName);
         }
 
-        public UploadController(
+        public FilesController(
             IRepository<TableIndex> tableIndexRepo,
             IFileAccessor uploadFileAccessor,
             IFileAccessor conversionFileAccessor,
@@ -83,47 +83,41 @@ namespace EPSCoR.Controllers
         {
             string fileName = Path.GetFileName(file.FileName);
 
-            //Circumventing the IFileAccesors for now.
-            string uploadDirectory = System.Web.HttpContext.Current.Server.MapPath("~/App_Data/Uploads");
-            string userDirecotry = Path.Combine(uploadDirectory, WebSecurity.CurrentUserName);
-            string filePath = Path.Combine(userDirecotry, fileName);
-            if (file.PartialFile)
+            //Save the chunk.
+            FileStreamWrapper wrapper = new FileStreamWrapper()
             {
-                try
-                {
-                    FileStream fileStream;
-                    if(System.IO.File.Exists(filePath))
-                        fileStream = System.IO.File.Open(filePath, FileMode.Append);
-                    else
-                        fileStream = System.IO.File.Create(filePath);
+                FileName = fileName,
+                InputStream = file.InputStream
+            };
 
-                    file.InputStream.CopyTo(fileStream);
-                    fileStream.Flush();
-                    fileStream.Close();
+            bool saveSuccessful;
+            if (file.IsChunk)
+            {
+                saveSuccessful = _tempFileAccessor.SavePartialFiles(wrapper);
 
-                    return new FileUploadResult(fileName);
-                }
-                catch(Exception e)
+                //If this was the last chunk, save the complete file.
+                if (saveSuccessful && file.IsLastChunk)
                 {
-                    return new FileUploadResult(fileName, e.Message);
+                    //Check to see if this table already exis
+                    TableIndex existingTable = _tableIndexRepo.GetAll().Where((t) => t.Name == fileName).FirstOrDefault();
+                    if (existingTable != null)
+                    {
+                        return new FileUploadResult(fileName, "Table already exist. Remove existing table before uploading the new one.");
+                    }
+
+                    FileStream fileStream = _tempFileAccessor.OpenFile(fileName);
+                    wrapper.InputStream = fileStream;
+                    saveSuccessful = _uploadFileAccessor.SaveFiles(wrapper);
+                    _tempFileAccessor.CloseFile(fileStream);
+                    _tempFileAccessor.DeleteFiles(fileName);
                 }
             }
             else
             {
-                try
-                {
-                    FileStream fileStream = System.IO.File.Create(filePath);
-                    file.InputStream.CopyTo(fileStream);
-                    fileStream.Flush();
-                    fileStream.Close();
-
-                    return new FileUploadResult(fileName);
-                }
-                catch (Exception e)
-                {
-                    return new FileUploadResult(fileName, e.Message);
-                }
+                saveSuccessful = _uploadFileAccessor.SaveFiles(wrapper);
             }
+
+            return new FileUploadResult(fileName);
         }
 
         public ActionResult DownloadCsv(string id)
@@ -152,7 +146,7 @@ namespace EPSCoR.Controllers
             //Write each temp file to the stream.
             for (int i = 0; i < totalParts; i++)
             {
-                MemoryStream tempFileStream = _tempFileAccessor.OpenFile(fileName + i);
+                FileStream tempFileStream = _tempFileAccessor.OpenFile(fileName + i);
                 tempFileStream.CopyTo(completeFileStream);
                 tempFileStream.Close();
             }
@@ -184,7 +178,8 @@ namespace EPSCoR.Controllers
     {
         public string FileName { get; set; }
         public Stream InputStream { get; set; }
-        public bool PartialFile { get; set; }
+        public bool IsChunk { get; set; }
+        public bool IsLastChunk { get; set; }
 
         public class ModelBinder : IModelBinder
         {
@@ -192,19 +187,26 @@ namespace EPSCoR.Controllers
             {
                 var request = controllerContext.RequestContext.HttpContext.Request;
 
-                bool partial = !string.IsNullOrEmpty(request.Headers["X-File-Name"]);
-                string fileName;
-                if(partial)
-                    fileName = request.Headers["X-File-Name"];
-                else
-                    fileName = request.Files[0].FileName;
+                string fileName = request.Files[0].FileName;
                 Stream inputStream = request.Files[0].InputStream;
+                bool partial = request.Headers["Content-Range"] != null;
+                bool lastChunk;
+                if (partial)
+                {
+                    string[] fileInfo = request.Headers["Content-Range"].Split('/', '-');
+                    lastChunk = Int32.Parse(fileInfo[1].Trim()) == Int32.Parse(fileInfo[2].Trim()) - 1;
+                }
+                else
+                {
+                    lastChunk = false;
+                }
 
                 return new FileUpload()
                 {
                     FileName = fileName,
                     InputStream = inputStream,
-                    PartialFile = partial
+                    IsChunk = partial,
+                    IsLastChunk = lastChunk
                 };
             }
         }
