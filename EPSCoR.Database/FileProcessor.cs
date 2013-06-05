@@ -14,6 +14,7 @@ using EPSCoR.Database.DbCmds;
 using EPSCoR.Database.Exceptions;
 using EPSCoR.Database.Models;
 using EPSCoR.Database.Services;
+using EPSCoR.Database.Services.FileConverter;
 using EPSCoR.Database.Services.Log;
 
 namespace EPSCoR.Database
@@ -86,7 +87,7 @@ namespace EPSCoR.Database
                                 break;
 
                             //Convert the file.
-                            string conversionPath = _fileConverter.Convert(file);
+                            string conversionPath = FileConverterFactory.GetConverter(file).ConvertToCSV();
 
                             //Add converted file to the database.
                             _dbCmd.AddTableFromFile(conversionPath);

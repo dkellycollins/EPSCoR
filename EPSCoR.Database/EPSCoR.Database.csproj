@@ -57,10 +57,10 @@
     <Reference Include="WebMatrix.WebData, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CSVFileConverter.cs" />
+    <Compile Include="Services\FileConverter\CSVFileConverter.cs" />
     <Compile Include="DbCmds\DbCmd.cs" />
-    <Compile Include="FileConverter.cs" />
-    <Compile Include="IFileConverter.cs" />
+    <Compile Include="Services\FileConverter\FileConverterFactory.cs" />
+    <Compile Include="Services\FileConverter\IFileConverter.cs" />
     <Compile Include="Models\CalcData.cs" />
     <Compile Include="Models\TableIndex.cs" />
     <Compile Include="Program.cs" />

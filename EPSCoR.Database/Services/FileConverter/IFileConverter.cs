@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EPSCoR.Database
+namespace EPSCoR.Database.Services.FileConverter
 {
     public interface IFileConverter
     {
-        string Convert(string file);
+        string ConvertToCSV();
     }
 }
