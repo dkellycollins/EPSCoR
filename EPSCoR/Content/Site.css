@@ -21,31 +21,7 @@ body
     padding-top: 0px;
 }
 
-.float-left-small 
+.loading
 {
-    width: 27%;
-    float: left;
-}
-
-.float-left-large 
-{
-    width: 67%;
-    float: left;
-}
-
-.float-right-small
-{
-    width: 27%;
-    float: right;
-}
-
-.float-right-large
-{
-    width: 67%;
-    float: right;
-}
-
-.full
-{
-    width: 100%;
+    background-image: 
 }

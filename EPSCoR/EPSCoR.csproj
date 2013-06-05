@@ -196,6 +196,7 @@
     <Content Include="Content\Bootstrap\bootstrap-responsive.min.css" />
     <Content Include="Content\Bootstrap\bootstrap.css" />
     <Content Include="Content\Bootstrap\bootstrap.min.css" />
+    <Content Include="Content\images\ajax-loader.gif" />
     <Content Include="Content\images\footer.jpeg" />
     <Content Include="Content\Bootstrap\images\glyphicons-halflings-white.png" />
     <Content Include="Content\Bootstrap\images\glyphicons-halflings.png" />
@@ -339,6 +340,7 @@
     <Content Include="Views\Shared\_alerts.cshtml" />
     <Content Include="Scripts\jQuery\jquery-1.9.1.min.map" />
     <Content Include="Views\Files\Upload.cshtml" />
+    <Content Include="Views\Tables\CalcStatusPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

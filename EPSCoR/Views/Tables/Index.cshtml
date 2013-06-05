@@ -17,6 +17,9 @@
         <option>@table</option>
     }
     </select>
+    <div id="loading" class="hide">
+        <img src="~/Content/images/ajax-loader.gif" />
+    </div>
     <div id="tableDetails"></div>
 </div>
 
@@ -27,7 +30,12 @@
     <script>
         $('#tableSelect').change(function () {
             var selectedTable = this.value;
-            $('#tableDetails').load("http://localhost:6615/tables/details/" + selectedTable);
+            $('#loading').removeClass('hide');
+            $('#tableDetails').addClass('hide');
+            $('#tableDetails').load("http://localhost:6615/tables/details/" + selectedTable, function () {
+                $('#loading').addClass('hide');
+                $('#tableDetails').removeClass('hide');
+            });
         });
     </script>
 }
