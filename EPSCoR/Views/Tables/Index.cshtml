@@ -1,29 +1,22 @@
 ﻿@model EPSCoR.ViewModels.TableIndexVM
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Cybercommons > Tables";
 }
 
-<h2>Index</h2>
+<h2>View Tables</h2>
 
 <div id="calc" class="pull-left" style="width: 25%">
     @Html.Partial("CalcForm", Model.CalcForm)
 </div>
 
 <div class="pull-right" style="width: 75%">
-    <select id="tableSelect">
-    @foreach(var table in Model.Tables)
-    {
-        <option>@table</option>
-    }
-    </select>
+    <span>Select a table to view: </span>@Html.DropDownList("tableSelect", new SelectList(Model.Tables))
     <div id="loading" class="hide">
         <img src="~/Content/images/ajax-loader.gif" />
     </div>
     <div id="tableDetails"></div>
 </div>
-
-
 
 @section Scripts
 {
