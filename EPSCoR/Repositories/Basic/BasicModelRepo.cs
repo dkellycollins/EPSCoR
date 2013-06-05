@@ -11,17 +11,17 @@ namespace EPSCoR.Repositories
     /// This implementation uses a DbContext to access the database
     /// </summary>
     /// <typeparam name="T">Model type</typeparam>
-    public class BasicRepo<T> : IRepository<T>
+    public class BasicModelRepo<T> : IModelRepository<T>
         where T : class
     {
         private DbContext _context;
 
-        public BasicRepo()
+        public BasicModelRepo()
         {
             _context = DefaultContext.GetInstance();
         }
 
-        public BasicRepo(DbContext context)
+        public BasicModelRepo(DbContext context)
         {
             _context = context;
         }

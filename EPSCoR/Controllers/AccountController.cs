@@ -19,11 +19,11 @@ namespace EPSCoR.Controllers
     [InitializeSimpleMembership]
     public class AccountController : Controller
     {
-        private IRepository<UserProfile> _userProfileRepo;
+        private IModelRepository<UserProfile> _userProfileRepo;
 
         public AccountController()
         {
-            _userProfileRepo = new BasicRepo<UserProfile>();
+            _userProfileRepo = new BasicModelRepo<UserProfile>();
         }
 
         //

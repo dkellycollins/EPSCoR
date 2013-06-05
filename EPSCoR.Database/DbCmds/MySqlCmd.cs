@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Data.Entity;
 using System.Data.SqlClient;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 using EPSCoR.Database.Exceptions;
 using EPSCoR.Database.Models;
 using EPSCoR.Database.Services.Log;
+using MySql.Data.MySqlClient;
 
 namespace EPSCoR.Database.DbCmds
 {

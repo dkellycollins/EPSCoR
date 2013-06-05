@@ -15,21 +15,21 @@ namespace EPSCoR.Controllers
     //[Authorize]
     public class FilesController : BootstrapBaseController
     {
-        private IRepository<TableIndex> _tableIndexRepo;
+        private IModelRepository<TableIndex> _tableIndexRepo;
         private IFileAccessor _uploadFileAccessor;
         private IFileAccessor _conversionFileAccessor;
         private IFileAccessor _tempFileAccessor;
 
         public FilesController()
         {
-            _tableIndexRepo = new BasicRepo<TableIndex>();
+            _tableIndexRepo = new BasicModelRepo<TableIndex>();
             _uploadFileAccessor = BasicFileAccessor.GetUploadAccessor(WebSecurity.CurrentUserName);
             _conversionFileAccessor = BasicFileAccessor.GetConversionsAccessor(WebSecurity.CurrentUserName);
             _tempFileAccessor = BasicFileAccessor.GetTempAccessor(WebSecurity.CurrentUserName);
         }
 
         public FilesController(
-            IRepository<TableIndex> tableIndexRepo,
+            IModelRepository<TableIndex> tableIndexRepo,
             IFileAccessor uploadFileAccessor,
             IFileAccessor conversionFileAccessor,
             IFileAccessor tempFileAccessor)
@@ -43,7 +43,7 @@ namespace EPSCoR.Controllers
         //
         // GET: /Upload/
 
-        public ActionResult Index()
+        public ActionResult Upload()
         {
             List<string> fileNames = new List<string>();
             foreach (string fullFilePath in _uploadFileAccessor.GetFiles())
@@ -82,6 +82,12 @@ namespace EPSCoR.Controllers
         public ActionResult UploadFiles(FileUpload file)
         {
             string fileName = Path.GetFileName(file.FileName);
+            string tableName = Path.GetFileNameWithoutExtension(file.FileName);
+            TableIndex existingTable = _tableIndexRepo.GetAll().Where(t => t.Name == tableName).FirstOrDefault();
+            if (existingTable != null)
+            {
+                return new FileUploadResult(fileName, "Table already exist. Remove existing table before uploading the new one.");
+            }
 
             //Save the chunk.
             FileStreamWrapper wrapper = new FileStreamWrapper()

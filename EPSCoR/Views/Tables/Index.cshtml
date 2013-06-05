@@ -10,13 +10,14 @@
     @Html.Partial("CalcForm", Model.CalcForm)
 </div>
 
-<div id="tableDetails" class="pull-right" style="width: 75%">
+<div class="pull-right" style="width: 75%">
     <select id="tableSelect">
     @foreach(var table in Model.Tables)
     {
         <option>@table</option>
     }
     </select>
+    <div id="tableDetails"></div>
 </div>
 
 

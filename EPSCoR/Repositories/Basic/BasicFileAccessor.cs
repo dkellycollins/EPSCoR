@@ -59,25 +59,6 @@ namespace EPSCoR.Repositories
             return result;
         }
 
-        public bool SavePartialFiles(params FileStreamWrapper[] files)
-        {
-            waitForLock();
-
-            bool result = true;
-            foreach (FileStreamWrapper file in files)
-            {
-                if (!saveFile(file, FileMode.Append))
-                {
-                    result = false;
-                    break;
-                }
-            }
-
-            releaseLock();
-
-            return result;
-        }
-
         public FileStream OpenFile(string fileName)
         {
             waitForLock();

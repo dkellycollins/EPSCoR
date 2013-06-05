@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{CABE2C57-7BB7-40DE-8F38-2B18BFFBEE38}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EPSCoR.Database</RootNamespace>
     <AssemblyName>EPSCoR.Database</AssemblyName>
@@ -33,7 +33,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject />
+    <StartupObject>EPSCoR.Database.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -63,6 +63,7 @@
     <Compile Include="IFileConverter.cs" />
     <Compile Include="Models\CalcData.cs" />
     <Compile Include="Models\TableIndex.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Services\DirectoryManager.cs" />
     <Compile Include="FileProcessor.cs" />
     <Compile Include="Exceptions\InvalidFileException.cs" />

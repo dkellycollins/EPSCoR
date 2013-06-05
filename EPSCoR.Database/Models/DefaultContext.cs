@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
@@ -37,7 +38,6 @@ namespace EPSCoR.Database.Models
         }
 
         public DbSet<TableIndex> Tables { get; set; }
-        public DbSet<TablePairIndex> TablePairs { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
 
         public DefaultContext()
@@ -57,15 +57,23 @@ namespace EPSCoR.Database.Models
 
         public DataTable GetTable(string tableName)
         {
-            //TODO abstract this.
             string query = "SELECT * FROM " + tableName;
-            IDataAdapter dataAdapter = new MySqlDataAdapter(query, (MySqlConnection)this.Database.Connection);
-            DataSet dataSet = new DataSet();
-            dataAdapter.Fill(dataSet);
-            return dataSet.Tables[0];
+            DbProviderFactory dbFactory = DbProviderFactories.GetFactory(this.Database.Connection);
+            
+            DbCommand cmd = dbFactory.CreateCommand();
+            cmd.CommandText = query;
+            cmd.Connection = this.Database.Connection;
+            
+            DbDataAdapter dataAdapter = dbFactory.CreateDataAdapter();
+            dataAdapter.SelectCommand = cmd;
+            
+            DataTable dataTable = new DataTable();
+            dataAdapter.Fill(dataTable);
+
+            return dataTable;
         }
 
-        public void DeleteTable(string table)
+        public void DropTable(string table)
         {
             TableIndex tableIndex = Tables.Where((t) => t.Name == table).FirstOrDefault();
             if (tableIndex != null)

@@ -24,12 +24,12 @@ namespace EPSCoR.Filters
             }
         }
 
-        private IRepository<UserProfile> _userRepo;
+        private IModelRepository<UserProfile> _userRepo;
 
         public AuthorizeRoleAttribute()
             : base()
         {
-            _userRepo = new BasicRepo<UserProfile>();
+            _userRepo = new BasicModelRepo<UserProfile>();
         }
 
         protected override bool AuthorizeCore(HttpContextBase httpContext)

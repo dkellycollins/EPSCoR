@@ -22,11 +22,10 @@ namespace EPSCoR
             );
 
             routes.MapNavigationRoute<HomeController>("Home", c => c.Index());
-            //routes.MapNavigationRoute<AboutController>("About", c => c.Index());
             routes.MapNavigationRoute<AboutController>("How To", c => c.Index())
                 .AddChildRoute<AboutController>("Export Access Table", c => c.HowToExport())
                 .AddChildRoute<AboutController>("Upload Data Table", c => c.HowToUpload());
-            routes.MapNavigationRoute<FilesController>("Load Tables", c => c.Index());
+            routes.MapNavigationRoute<FilesController>("Load Tables", c => c.Upload());
             routes.MapNavigationRoute<TablesController>("Data", c => c.Index());
             //routes.MapNavigationRoute<WatershedController>("Watershed", c => c.Index());
         }

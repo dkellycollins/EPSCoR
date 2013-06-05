@@ -28,7 +28,6 @@ namespace EPSCoR.Repositories
     public interface IFileAccessor
     {
         bool SaveFiles(params FileStreamWrapper[] files);
-        bool SavePartialFiles(params FileStreamWrapper[] files);
 
         void DeleteFiles(params string[] fileNames);
         

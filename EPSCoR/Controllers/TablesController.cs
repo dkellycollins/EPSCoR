@@ -19,20 +19,22 @@ namespace EPSCoR.Controllers
     //[Authorize]
     public class TablesController : BootstrapBaseController
     {
-        private IRepository<UserProfile> _userProfileRepo;
-        private IRepository<TableIndex> _tableIndexRepo;
+        private IModelRepository<UserProfile> _userProfileRepo;
+        private IModelRepository<TableIndex> _tableIndexRepo;
         private IFileAccessor _conversionFileAccessor;
+        private IRawRepository _tableRepo;
 
         public TablesController()
         {
-            _userProfileRepo = new BasicRepo<UserProfile>();
-            _tableIndexRepo = new BasicRepo<TableIndex>();
+            _userProfileRepo = new BasicModelRepo<UserProfile>();
+            _tableIndexRepo = new BasicModelRepo<TableIndex>();
             _conversionFileAccessor = BasicFileAccessor.GetConversionsAccessor(WebSecurity.CurrentUserName);
+            _tableRepo = new BasicRawRepo();
         }
 
         public TablesController(
-            IRepository<TableIndex> tableIndexRepo,
-            IRepository<UserProfile> userProfileRepo)
+            IModelRepository<TableIndex> tableIndexRepo,
+            IModelRepository<UserProfile> userProfileRepo)
         {
             _tableIndexRepo = tableIndexRepo;
             _userProfileRepo = userProfileRepo;
@@ -54,11 +56,12 @@ namespace EPSCoR.Controllers
         // GET: /Tables/Details/{Table.ID}
         public ActionResult Details(string id)
         {
-            DefaultContext context = DefaultContext.GetInstance();
             try
             {
-                //TODO abstract this into a repository.
-                DataTable table = context.GetTable(id);
+                DataTable table = _tableRepo.Get(id);
+                table.TableName = id;
+                if (table == null)
+                    return new HttpNotFoundResult();
                 if (Request.IsAjaxRequest())
                     return PartialView(table);
                 else
@@ -67,10 +70,6 @@ namespace EPSCoR.Controllers
             catch
             {
                 return new HttpNotFoundResult();
-            }
-            finally
-            {
-                DefaultContext.Release();
             }
         }
 
@@ -84,9 +83,10 @@ namespace EPSCoR.Controllers
         //
         // POST: /Table/Delete/{Table.ID}
         [HttpPost]
-        public ActionResult Delete(int id)
+        public ActionResult Delete(string id)
         {
-            throw new NotImplementedException();
+            _tableRepo.Drop(id);
+            return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)

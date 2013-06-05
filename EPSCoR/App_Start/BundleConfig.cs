@@ -86,14 +86,6 @@ namespace EPSCoR
                 "~/Content/jQueryFileUpload/jquery.fileupload-ui.css",
                 "~/Content/jQueryFileUpload/style.css"
                 ));
-
-            //Fine uploader bundles.
-
-            bundles.Add(new StyleBundle("~/content/fineuploader/fineuploader-css").Include(
-                        "~/Content/FineUploader/fineuploader-{version}.css"));
-
-            bundles.Add(new ScriptBundle("~/scripts/fineuploader/fineuploader-js").Include(
-                        "~/Scripts/FineUploader/jquery.fineuploader-{version}.js"));
         }
     }
 }

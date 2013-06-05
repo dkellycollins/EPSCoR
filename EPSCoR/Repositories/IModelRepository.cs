@@ -6,10 +6,10 @@ using System.Web;
 namespace EPSCoR.Repositories
 {
     /// <summary>
-    /// Interface for accessing the database.
+    /// Interface for a repository that 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IRepository<T> : IDisposable
+    public interface IModelRepository<T> : IDisposable
         where T : class
     {
         T Get(int entityID);
