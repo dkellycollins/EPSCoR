@@ -22,14 +22,16 @@ namespace EPSCoR.Controllers
         private IModelRepository<UserProfile> _userProfileRepo;
         private IModelRepository<TableIndex> _tableIndexRepo;
         private IFileAccessor _conversionFileAccessor;
-        private IRawRepository _tableRepo;
+        private ITableRepository _tableRepo;
+        private IDatabaseCalc _dbCalc;
 
         public TablesController()
         {
             _userProfileRepo = new BasicModelRepo<UserProfile>();
             _tableIndexRepo = new BasicModelRepo<TableIndex>();
             _conversionFileAccessor = BasicFileAccessor.GetConversionsAccessor(WebSecurity.CurrentUserName);
-            _tableRepo = new BasicRawRepo();
+            _tableRepo = new BasicTableRepo();
+            _dbCalc = (IDatabaseCalc)_tableRepo;
         }
 
         public TablesController(
@@ -58,13 +60,15 @@ namespace EPSCoR.Controllers
         {
             try
             {
-                DataTable table = _tableRepo.Get(id);
+                DataTable table = _tableRepo.Read(id);
                 table.TableName = id;
                 if (table == null)
                     return new HttpNotFoundResult();
-                if (Request.IsAjaxRequest())
+                if (Request["format"] == "json") //Handle json request.
+                    return Json(table);
+                if (Request.IsAjaxRequest()) //Handle ajax request.
                     return PartialView(table);
-                else
+                else //Handle all other request.
                     return View(table);
             }
             catch
@@ -105,15 +109,20 @@ namespace EPSCoR.Controllers
             switch (calc)
             {
                 case "Sum":
-                    //Pereform sum.
+                    _dbCalc.SumTables(attTable, usTable);
                     break;
                 case "Avg":
-                    //Perform average.
+                    _dbCalc.AvgTables(attTable, usTable);
                     break;
             }
 
             DisplaySuccess("Calc table generated");
             return RedirectToAction("Index");
+        }
+
+        public ActionResult Download()
+        {
+            return View(_tableIndexRepo.GetAll());
         }
 
         #region Helpers

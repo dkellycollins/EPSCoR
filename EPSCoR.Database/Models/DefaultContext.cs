@@ -39,49 +39,12 @@ namespace EPSCoR.Database.Models
 
         public DbSet<TableIndex> Tables { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
+        public DbCmd Commands { get; private set; }
 
         public DefaultContext()
             : base("MySqlConnection")
         {
-        }
-
-        public IEnumerable<AttributeData> GetAllFromAttributeTable(string attTable)
-        {
-            return this.Database.SqlQuery<AttributeData>("SELECT * FROM " + attTable);
-        }
-
-        public IEnumerable<UpstreamData> GetAllFromUpstreamTable(string usTable)
-        {
-            return this.Database.SqlQuery<UpstreamData>("SELECT * FROM " + usTable);
-        }
-
-        public DataTable GetTable(string tableName)
-        {
-            string query = "SELECT * FROM " + tableName;
-            DbProviderFactory dbFactory = DbProviderFactories.GetFactory(this.Database.Connection);
-            
-            DbCommand cmd = dbFactory.CreateCommand();
-            cmd.CommandText = query;
-            cmd.Connection = this.Database.Connection;
-            
-            DbDataAdapter dataAdapter = dbFactory.CreateDataAdapter();
-            dataAdapter.SelectCommand = cmd;
-            
-            DataTable dataTable = new DataTable();
-            dataAdapter.Fill(dataTable);
-
-            return dataTable;
-        }
-
-        public void DropTable(string table)
-        {
-            TableIndex tableIndex = Tables.Where((t) => t.Name == table).FirstOrDefault();
-            if (tableIndex != null)
-            {
-                this.Database.ExecuteSqlCommand("DROP TABLE " + table);
-                Tables.Remove(tableIndex);
-                SaveChanges();
-            }
+            Commands = new MySqlCmd(this);
         }
     }
 }

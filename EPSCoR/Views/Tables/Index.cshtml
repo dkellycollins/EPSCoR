@@ -21,14 +21,23 @@
 @section Scripts
 {
     <script>
-        $('#tableSelect').change(function () {
-            var selectedTable = this.value;
+        var loadTable = function (selectedTable) {
             $('#loading').removeClass('hide');
             $('#tableDetails').addClass('hide');
             $('#tableDetails').load("http://localhost:6615/tables/details/" + selectedTable, function () {
                 $('#loading').addClass('hide');
                 $('#tableDetails').removeClass('hide');
             });
+        };
+
+        $('#tableSelect').change(function () {
+            var selectedTable = this.value;
+            loadTable(selectedTable);
         });
+
+        //$(document).ready(function () {
+        //    var selectedTable = $('tableSelect').value;
+        //    loadTable(selectedTable);
+        //});
     </script>
 }

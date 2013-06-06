@@ -21,14 +21,19 @@ namespace EPSCoR.Database.DbCmds
     /// </summary>
     internal class MySqlCmd : DbCmd
     {
-        public MySqlCmd() : base() { }
+        public MySqlCmd(DbContext context) 
+            : base(context) 
+        {
+            if (!(context.Database.Connection is MySql.Data.MySqlClient.MySqlConnection))
+                throw new Exception("Database connection is not a MySqlConnection");
+        }
 
         /// <summary>
         /// Creates a new table based on the file provided.
         /// </summary>
         /// <param name="file">CSV file.</param>
         /// <param name="dbContext">Reference to thte database.</param>
-        public override void AddTableFromFile(string file)
+        internal override void AddTableFromFile(string file)
         {
             //Get the table name.
             string tableName = Path.GetFileNameWithoutExtension(file);
@@ -49,27 +54,19 @@ namespace EPSCoR.Database.DbCmds
             //Make the first field the primary key.
             columnsBuilder.Append("PRIMARY KEY(" + fields[0] + ")");
 
-            DefaultContext dbContext = DefaultContext.GetInstance();
-            try
+            //Execute the command.
+            string cmd = "CREATE TABLE IF NOT EXISTS " + tableName
+                + " ( " + columnsBuilder.ToString() + " ) "
+                + "ENGINE = InnoDB "
+                + "DEFAULT CHARSET=latin1";
+            _context.Database.ExecuteSqlCommand(cmd);
+            _context.Set<TableIndex>().Add(new TableIndex()
             {
-                //Execute the command.
-                string cmd = "CREATE TABLE IF NOT EXISTS " + tableName
-                    + " ( " + columnsBuilder.ToString() + " ) "
-                    + "ENGINE = InnoDB "
-                    + "DEFAULT CHARSET=latin1";
-                dbContext.Database.ExecuteSqlCommand(cmd);
-                dbContext.Set<TableIndex>().Add(new TableIndex()
-                {
-                    Name = tableName,
-                    Type = (tableName.Contains("_ATT")) ? TableTypes.ATTRIBUTE : TableTypes.UPSTREAM
-                });
-                dbContext.SaveChanges();
-                LoggerFactory.Log("Table " + tableName + " added to the database.");
-            }
-            finally
-            {
-                DefaultContext.Release();
-            } 
+                Name = tableName,
+                Type = (tableName.Contains("_ATT")) ? TableTypes.ATTRIBUTE : TableTypes.UPSTREAM
+            });
+            _context.SaveChanges();
+            LoggerFactory.Log("Table " + tableName + " added to the database.");
         }
 
         /// <summary>
@@ -77,27 +74,19 @@ namespace EPSCoR.Database.DbCmds
         /// </summary>
         /// <param name="file">CSV file</param>
         /// <param name="dbContext">The reference to the database.</param>
-        public override void PopulateTableFromFile(string file)
+        internal override void PopulateTableFromFile(string file)
         {
             string table = Path.GetFileNameWithoutExtension(file);
             ThrowIfInvalidSql(file, table);
 
-            DefaultContext dbContext = DefaultContext.GetInstance();
-            try
-            {
-                string cmd = "LOAD DATA LOCAL INFILE '" + file.Replace('\\', '/') + "'"
+            string cmd = "LOAD DATA LOCAL INFILE '" + file.Replace('\\', '/') + "'"
                     + "INTO TABLE " + table + " "
-                    + "FIELDS TERMINATED BY ','" 
-                    + "OPTIONALLY ENCLOSED BY '\"'" 
-                    + "LINES TERMINATED BY '\n'" 
+                    + "FIELDS TERMINATED BY ','"
+                    + "OPTIONALLY ENCLOSED BY '\"'"
+                    + "LINES TERMINATED BY '\n'"
                     + "IGNORE 1 LINES";
-                int rowsUpdated = dbContext.Database.ExecuteSqlCommand(cmd);
-                LoggerFactory.Log(rowsUpdated + " rows updated in table " + table);
-            }
-            finally
-            {
-                DefaultContext.Release();
-            }
+            int rowsUpdated = _context.Database.ExecuteSqlCommand(cmd);
+            LoggerFactory.Log(rowsUpdated + " rows updated in table " + table);
         }
 
         /// <summary>
@@ -110,49 +99,41 @@ namespace EPSCoR.Database.DbCmds
             string calcTable = string.Format("{0}_{1}_calc", attTable, usTable);
             ThrowIfInvalidSql(attTable, usTable, calcTable);
 
-            DefaultContext dbContext = DefaultContext.GetInstance();
-            try
+            // Get columns
+            string showColumns = "SHOW COLUMNS FROM " + attTable;
+            IEnumerable<string> columns = _context.Database.SqlQuery<string>(showColumns);
+            if (columns == null || columns.Count() == 0)
             {
-                // Get columns
-                string showColumns = "SHOW COLUMNS FROM " + attTable;
-	            IEnumerable<string> columns = dbContext.Database.SqlQuery<string>(showColumns);
-	            if (columns == null || columns.Count() == 0) 
+                throw new Exception("Query to show fields from table failed");
+            }
+
+            //Build two strings. One that has each column name separated by commas and once that has each column name wrapped in SUM()
+            StringBuilder newColumns = new StringBuilder();
+            StringBuilder curColumns = new StringBuilder();
+            foreach (string column in columns)
+            {
+                if (column != "ID" && column != "ARCID" && column != "OBJECTID" && column != "uni")
                 {
-	                throw new Exception("Query to show fields from table failed");
-	            }
-	            
-                //Build two strings. One that has each column name separated by commas and once that has each column name wrapped in SUM()
-                StringBuilder newColumns = new StringBuilder();
-	            StringBuilder curColumns = new StringBuilder();
-	            foreach(string column in columns)
-                {
-		            if (column != "ID" && column != "ARCID" && column != "OBJECTID" && column != "uni")
-                    {
-			            newColumns.Append(", SUM(" + column + ")");
-                        curColumns.Append(", " + column);
-                    }
+                    newColumns.Append(", SUM(" + column + ")");
+                    curColumns.Append(", " + column);
                 }
-            
-                string cmd = "CREATE TABLE " + calcTable + " "
-                    + "SELECT POLYLINEID, ARCID, US_POLYID" + newColumns
-                    + "FROM (SELECT POLYLINEID, ARCID, US_POLYID" + curColumns + " "
-		    	        + "FROM " + attTable +  ", " + usTable + " "
-		    	        + "WHERE ARCID = US_POLYID) Prod "
-		            + "GROUP BY Prod.POLYLINEID "
-		            + "LIMIT 40";
-                dbContext.Database.ExecuteSqlCommand(cmd);
-                dbContext.Set<TableIndex>().Add(new TableIndex()
-                {
-                    Name = calcTable,
-                    Type = TableTypes.CALC
-                });
-                dbContext.SaveChanges();
-                LoggerFactory.Log("Sum table " + calcTable + "created.");
             }
-            finally
+
+            string cmd = "CREATE TABLE " + calcTable + " "
+                + "SELECT POLYLINEID, ARCID, US_POLYID" + newColumns
+                + "FROM (SELECT POLYLINEID, ARCID, US_POLYID" + curColumns + " "
+                    + "FROM " + attTable + ", " + usTable + " "
+                    + "WHERE ARCID = US_POLYID) Prod "
+                + "GROUP BY Prod.POLYLINEID "
+                + "LIMIT 40";
+            _context.Database.ExecuteSqlCommand(cmd);
+            _context.Set<TableIndex>().Add(new TableIndex()
             {
-                DefaultContext.Release();
-            }
+                Name = calcTable,
+                Type = TableTypes.CALC
+            });
+            _context.SaveChanges();
+            LoggerFactory.Log("Sum table " + calcTable + "created.");
         }
     }
 }

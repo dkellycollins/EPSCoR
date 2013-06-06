@@ -28,14 +28,10 @@ namespace EPSCoR.Database
         static FileProcessor()
         {
             DirectoryManager.Initialize(HttpContext.Current.Server);
-            _fileConverter = new FileConverter();
-            _dbCmd = new MySqlCmd();
         }
 
         //Allows us to cancel the thread.
         private static bool _cancel;
-        private static FileConverter _fileConverter;
-        private static DbCmd _dbCmd;
 
         /// <summary>
         /// Starts the file processor in a separate thread.
@@ -90,8 +86,10 @@ namespace EPSCoR.Database
                             string conversionPath = FileConverterFactory.GetConverter(file).ConvertToCSV();
 
                             //Add converted file to the database.
-                            _dbCmd.AddTableFromFile(conversionPath);
-                            _dbCmd.PopulateTableFromFile(conversionPath);
+                            DefaultContext context = DefaultContext.GetInstance();
+                            context.Commands.AddTableFromFile(conversionPath);
+                            context.Commands.PopulateTableFromFile(conversionPath);
+                            DefaultContext.Release();
 
                             //Move the original file to the Archive.
                             string archivePath = Path.Combine(DirectoryManager.ArchiveDir, Directory.GetParent(file).Name, Path.GetFileName(file));

@@ -1,25 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using EPSCoR.Database.Exceptions;
+using EPSCoR.Database.Models;
 
 namespace EPSCoR.Database.DbCmds
 {
     /// <summary>
     /// This is the base class for all DbCmd classes. This class will mostly define helper functions for the sub classes to use.
     /// </summary>
-    internal abstract class DbCmd
+    public abstract class DbCmd
     {
-        public DbCmd() { }
+        protected DbContext _context;
 
-        public abstract void AddTableFromFile(string file);
-        public abstract void PopulateTableFromFile(string file);
+        public DbCmd(DbContext context) 
+        {
+            _context = context;
+        }
+
+        internal abstract void AddTableFromFile(string file);
+        internal abstract void PopulateTableFromFile(string file);
         public abstract void SumTables(string attTable, string usTable);
+
+        public virtual DataTable SelectAllFrom(string table)
+        {
+            ThrowIfInvalidSql(table);
+
+            string query = "SELECT * FROM " + table;
+            DbProviderFactory dbFactory = DbProviderFactories.GetFactory(_context.Database.Connection);
+
+            DbCommand cmd = dbFactory.CreateCommand();
+            cmd.CommandText = query;
+            cmd.Connection = _context.Database.Connection;
+
+            DbDataAdapter dataAdapter = dbFactory.CreateDataAdapter();
+            dataAdapter.SelectCommand = cmd;
+
+            DataTable dataTable = new DataTable();
+            dataAdapter.Fill(dataTable);
+
+            return dataTable;
+        }
+
+        public virtual void DropTable(string table)
+        {
+            ThrowIfInvalidSql(table);
+
+            _context.Database.ExecuteSqlCommand("DROP TABLE " + table);
+        }
+
+        #region Helper Methods
 
         /// <summary>
         /// Throws an invalid file exception if any of the arguments contain an invalid character.
@@ -56,5 +93,7 @@ namespace EPSCoR.Database.DbCmds
             head = head.Replace('\"', ' ');
             return head.Split(',');
         }
+
+        #endregion Helper Methods
     }
 }

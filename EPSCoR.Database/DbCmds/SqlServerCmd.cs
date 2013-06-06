@@ -18,14 +18,19 @@ namespace EPSCoR.Database.DbCmds
     /// </summary>
     internal class SqlServerCmd : DbCmd
     {
-        public SqlServerCmd() : base() {}
+        public SqlServerCmd(DbContext context) 
+            : base(context) 
+        {
+            if (!(_context.Database.Connection is System.Data.SqlClient.SqlConnection))
+                throw new Exception("Database connection is not a SqlConnection");
+        }
 
         /// <summary>
         /// Creates a new table based on the file provided.
         /// </summary>
         /// <param name="file">CSV file.</param>
         /// <param name="dbContext">Reference to thte database.</param>
-        public override void AddTableFromFile(string file)
+        internal override void AddTableFromFile(string file)
         {
             DefaultContext dbContext = DefaultContext.GetInstance();
 
@@ -55,7 +60,7 @@ namespace EPSCoR.Database.DbCmds
             LoggerFactory.Log("Table " + Path.GetFileNameWithoutExtension(file) + " added to the database.");
         }
 
-        public override void PopulateTableFromFile(string file)
+        internal override void PopulateTableFromFile(string file)
         {
             throw new NotImplementedException();
         }
