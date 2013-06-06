@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using EPSCoR.Database.Models;
 using EPSCoR.Repositories;
+using EPSCoR.Repositories.Basic;
 using WebMatrix.WebData;
 
 namespace EPSCoR.Filters

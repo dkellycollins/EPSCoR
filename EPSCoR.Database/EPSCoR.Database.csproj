@@ -57,11 +57,12 @@
     <Reference Include="WebMatrix.WebData, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\ModelBase.cs" />
+    <Compile Include="Models\UserContext.cs" />
     <Compile Include="Services\FileConverter\CSVFileConverter.cs" />
     <Compile Include="DbCmds\DbCmd.cs" />
     <Compile Include="Services\FileConverter\FileConverterFactory.cs" />
     <Compile Include="Services\FileConverter\IFileConverter.cs" />
-    <Compile Include="Models\CalcData.cs" />
     <Compile Include="Models\TableIndex.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Services\DirectoryManager.cs" />
@@ -70,10 +71,7 @@
     <Compile Include="Services\Log\ConsoleLogger.cs" />
     <Compile Include="Services\Log\FileLogger.cs" />
     <Compile Include="Models\UserProfile.cs" />
-    <Compile Include="Models\AttributeData.cs" />
     <Compile Include="Models\DefaultContext.cs" />
-    <Compile Include="Models\TablePairIndex.cs" />
-    <Compile Include="Models\UpstreamData.cs" />
     <Compile Include="Services\Log\ILogger.cs" />
     <Compile Include="Services\Log\LoggerFactory.cs" />
     <Compile Include="DbCmds\SqlServerCmd.cs" />

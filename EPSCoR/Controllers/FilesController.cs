@@ -9,6 +9,7 @@ using EPSCoR.Database.Models;
 using EPSCoR.Repositories;
 using WebMatrix.WebData;
 using System.Web.Script.Serialization;
+using EPSCoR.Repositories.Basic;
 
 namespace EPSCoR.Controllers
 {
@@ -54,8 +55,9 @@ namespace EPSCoR.Controllers
         [HttpPost]
         public ActionResult Upload(HttpPostedFileBase file)
         {
+            string userName = WebSecurity.CurrentUserName;
             string tableName = Path.GetFileNameWithoutExtension(file.FileName);
-            TableIndex existingTable = _tableIndexRepo.GetAll().Where(t => t.Name == tableName).FirstOrDefault();
+            TableIndex existingTable = _tableIndexRepo.GetAll().Where(t => t.Name == tableName && t.UploadedByUser == userName).FirstOrDefault();
             if (existingTable != null)
             {
                 DisplayAttention("Table already exist. Remove existing table before uploading the new one.");
@@ -83,10 +85,17 @@ namespace EPSCoR.Controllers
         {
             string fileName = Path.GetFileName(file.FileName);
             string tableName = Path.GetFileNameWithoutExtension(file.FileName);
-            TableIndex existingTable = _tableIndexRepo.GetAll().Where(t => t.Name == tableName).FirstOrDefault();
-            if (existingTable != null)
+            string userName = WebSecurity.CurrentUserName;
+            TableIndex existingTable = _tableIndexRepo.GetAll().Where(t => t.Name == tableName && t.UploadedByUser == userName).FirstOrDefault();
+            if (existingTable == null)
             {
-                return new FileUploadResult(fileName, "Table already exist. Remove existing table before uploading the new one.");
+                existingTable = new TableIndex()
+                {
+                    Name = tableName,
+                    UploadedByUser = userName,
+                    Status = "Queued for processing."
+                };
+                _tableIndexRepo.Create(existingTable);
             }
 
             //Save the chunk.
@@ -118,6 +127,11 @@ namespace EPSCoR.Controllers
             };
             Response.AppendHeader("Content-Disposition", cd.ToString());
             return File(_conversionFileAccessor.OpenFile(fileName), "text/csv");
+        }
+
+        public void Dispose()
+        {
+            _tableIndexRepo.Dispose();
         }
     }
 

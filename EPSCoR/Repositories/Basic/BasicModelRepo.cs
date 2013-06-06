@@ -5,14 +5,14 @@ using System.Linq;
 using System.Web;
 using EPSCoR.Database.Models;
 
-namespace EPSCoR.Repositories
+namespace EPSCoR.Repositories.Basic
 {
     /// <summary>
     /// This implementation uses a DbContext to access the database
     /// </summary>
     /// <typeparam name="T">Model type</typeparam>
     public class BasicModelRepo<T> : IModelRepository<T>
-        where T : class
+        where T : class, IModel
     {
         private DbContext _context;
 
@@ -38,12 +38,14 @@ namespace EPSCoR.Repositories
 
         public void Create(T itemToCreate)
         {
+            itemToCreate.DateCreated = DateTime.Now;
             _context.Set<T>().Add(itemToCreate);
             _context.SaveChanges();
         }
 
         public void Update(T itemToUpdate)
         {
+            itemToUpdate.DateUpdated = DateTime.Now;
             _context.Entry(itemToUpdate).State = System.Data.EntityState.Modified;
             _context.SaveChanges();
         }

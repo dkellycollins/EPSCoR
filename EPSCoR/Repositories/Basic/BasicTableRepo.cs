@@ -5,15 +5,17 @@ using System.Linq;
 using System.Web;
 using EPSCoR.Database.Models;
 
-namespace EPSCoR.Repositories
+namespace EPSCoR.Repositories.Basic
 {
     public class BasicTableRepo : ITableRepository, IDatabaseCalc
     {
-        DefaultContext _context;
+        DefaultContext _defaultContext;
+        UserContext _userContext;
 
-        public BasicTableRepo()
+        public BasicTableRepo(string userName)
         {
-            _context = DefaultContext.GetInstance();
+            _defaultContext = DefaultContext.GetInstance();
+            _userContext = UserContext.GetContextForUser(userName);
         }
 
         #region IRawRepository Members
@@ -25,7 +27,7 @@ namespace EPSCoR.Repositories
 
         public DataTable Read(string tableName)
         {
-            return _context.Commands.SelectAllFrom(tableName);
+            return _userContext.Commands.SelectAllFrom(tableName);
         }
 
         public void Update(DataTable table)
@@ -35,12 +37,13 @@ namespace EPSCoR.Repositories
 
         public void Drop(string tableName)
         {
-            TableIndex tableIndex = _context.Tables.Where((t) => t.Name == tableName).FirstOrDefault();
+            _userContext.Commands.DropTable(tableName);
+
+            TableIndex tableIndex = _defaultContext.Tables.Where((t) => t.Name == tableName).FirstOrDefault();
             if (tableIndex != null)
             {
-                _context.Commands.DropTable(tableName);
-                _context.Tables.Remove(tableIndex);
-                _context.SaveChanges();
+                _defaultContext.Tables.Remove(tableIndex);
+                _defaultContext.SaveChanges();
             }
         }
 
@@ -55,7 +58,7 @@ namespace EPSCoR.Repositories
 
         public void SumTables(string attTable, string usTable)
         {
-            _context.Commands.SumTables(attTable, usTable);
+            _userContext.Commands.SumTables(attTable, usTable);
         }
 
         public void AvgTables(string attTable, string usTalbe)

@@ -8,20 +8,12 @@ using System.Threading.Tasks;
 
 namespace EPSCoR.Database.Models
 {
-    public class ModelBase
+    public interface IModel
     {
-        [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
-        public int ID { get; set; }
+        int ID { get; set; }
 
-        public DateTime DateCreated { get; set; }
+        DateTime DateCreated { get; set; }
 
-        public DateTime DateUpdated { get; set; }
-
-        public DateTime DateLastAccessed { get; set; }
-
-        public string UpdatedByUser { get; set; }
-
-        public int AccessCount { get; set; }
+        DateTime DateUpdated { get; set; }
     }
 }

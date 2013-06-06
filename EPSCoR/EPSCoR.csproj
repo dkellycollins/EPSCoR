@@ -181,10 +181,12 @@
     <Compile Include="PagedTable.cs" />
     <Compile Include="Repositories\Basic\BasicFileAccessor.cs" />
     <Compile Include="Repositories\Basic\BasicModelRepo.cs" />
+    <Compile Include="Repositories\Basic\BasicRootRepo.cs" />
     <Compile Include="Repositories\CachedRepo.cs" />
     <Compile Include="Repositories\IFileAccessor.cs" />
     <Compile Include="Repositories\IModelRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\IRootRepository.cs" />
     <Compile Include="Repositories\ITableRepository.cs" />
     <Compile Include="Repositories\Basic\BasicTableRepo.cs" />
     <Compile Include="ViewModels\TableIndexViewModels.cs" />

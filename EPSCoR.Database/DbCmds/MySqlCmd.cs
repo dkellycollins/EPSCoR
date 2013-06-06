@@ -37,13 +37,13 @@ namespace EPSCoR.Database.DbCmds
         {
             //Get the table name.
             string tableName = Path.GetFileNameWithoutExtension(file);
-            ThrowIfInvalidSql(tableName);
+            ThrowFileExceptionIfInvalidSql(file, tableName);
 
             //Get all the fields from the file.
             string[] fields = GetFieldsFromFile(file);
             if (fields.Length == 0)
                 throw new InvalidFileException(file, "No data to process.");
-            ThrowIfInvalidSql(file, fields);
+            ThrowFileExceptionIfInvalidSql(file, fields);
 
             //Build the column paramaters for the Sql query.
             StringBuilder columnsBuilder = new StringBuilder();
@@ -60,11 +60,7 @@ namespace EPSCoR.Database.DbCmds
                 + "ENGINE = InnoDB "
                 + "DEFAULT CHARSET=latin1";
             _context.Database.ExecuteSqlCommand(cmd);
-            _context.Set<TableIndex>().Add(new TableIndex()
-            {
-                Name = tableName,
-                Type = (tableName.Contains("_ATT")) ? TableTypes.ATTRIBUTE : TableTypes.UPSTREAM
-            });
+            //Update the table status.
             _context.SaveChanges();
             LoggerFactory.Log("Table " + tableName + " added to the database.");
         }
@@ -77,7 +73,7 @@ namespace EPSCoR.Database.DbCmds
         internal override void PopulateTableFromFile(string file)
         {
             string table = Path.GetFileNameWithoutExtension(file);
-            ThrowIfInvalidSql(file, table);
+            ThrowFileExceptionIfInvalidSql(file, table);
 
             string cmd = "LOAD DATA LOCAL INFILE '" + file.Replace('\\', '/') + "'"
                     + "INTO TABLE " + table + " "
@@ -97,7 +93,7 @@ namespace EPSCoR.Database.DbCmds
         public override void SumTables(string attTable, string usTable)
         {
             string calcTable = string.Format("{0}_{1}_calc", attTable, usTable);
-            ThrowIfInvalidSql(attTable, usTable, calcTable);
+            ThrowExceptionIfInvalidSql(attTable, usTable, calcTable);
 
             // Get columns
             string showColumns = "SHOW COLUMNS FROM " + attTable;
@@ -134,6 +130,13 @@ namespace EPSCoR.Database.DbCmds
             });
             _context.SaveChanges();
             LoggerFactory.Log("Sum table " + calcTable + "created.");
+        }
+
+        public override void CreateDatabase(string databaseName)
+        {
+            string cmd = "CREATE DATABASE " + databaseName;
+            _context.Database.ExecuteSqlCommand(cmd);
+            LoggerFactory.Log("Database " + databaseName + " added");
         }
     }
 }

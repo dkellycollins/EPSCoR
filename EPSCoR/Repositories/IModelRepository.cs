@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using EPSCoR.Database.Models;
 
 namespace EPSCoR.Repositories
 {
@@ -10,7 +11,7 @@ namespace EPSCoR.Repositories
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public interface IModelRepository<T> : IDisposable
-        where T : class
+        where T : IModel
     {
         T Get(int entityID);
 

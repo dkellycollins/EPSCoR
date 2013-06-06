@@ -8,8 +8,16 @@ using System.Threading.Tasks;
 
 namespace EPSCoR.Database.Models
 {
-    public class TableIndex : ModelBase
+    public class TableIndex : IModel
     {
+        [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+        public int ID { get; set; }
+
+        public DateTime DateCreated { get; set; }
+
+        public DateTime DateUpdated { get; set; }
+
         public string Name { get; set; }
 
         public string UploadedByUser { get; set; }
@@ -18,7 +26,7 @@ namespace EPSCoR.Database.Models
 
         public string Status { get; set; }
 
-        public string GeTableName()
+        public string GetTableName()
         {
             return string.Format("{0}_{1}", UploadedByUser, Name);
         }

@@ -14,7 +14,7 @@ namespace EPSCoR.Repositories
         void Drop(string tableName);
     }
 
-    public interface IDatabaseCalc
+    public interface IDatabaseCalc : IDisposable
     {
         void SumTables(string attTable, string usTable);
         void AvgTables(string attTable, string usTalbe);

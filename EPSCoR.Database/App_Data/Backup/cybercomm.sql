@@ -273,9 +273,6 @@ CREATE TABLE `tableindexes` (
   `Type` varchar(10) DEFAULT NULL,
   `DateCreated` datetime DEFAULT NULL,
   `DateUpdated` datetime DEFAULT NULL,
-  `DateLastAccessed` datetime DEFAULT NULL,
-  `UpdatedByUser` varchar(25) DEFAULT NULL,
-  `AccessCount` int(11) DEFAULT NULL,
   `UploadedByUser` varchar(25) DEFAULT NULL,
   `Status` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`ID`)
@@ -288,7 +285,7 @@ CREATE TABLE `tableindexes` (
 
 LOCK TABLES `tableindexes` WRITE;
 /*!40000 ALTER TABLE `tableindexes` DISABLE KEYS */;
-INSERT INTO `tableindexes` VALUES (1,'MDC_B_US','us',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(2,'MDC_A_US','us',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `tableindexes` VALUES (1,'MDC_B_US','us',NULL,NULL,NULL,NULL),(2,'MDC_A_US','us',NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `tableindexes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -305,9 +302,6 @@ CREATE TABLE `userprofile` (
   `Role` varchar(25) DEFAULT NULL,
   `DateCreated` datetime DEFAULT NULL,
   `DateUpdated` datetime DEFAULT NULL,
-  `DateLastAccessed` datetime DEFAULT NULL,
-  `UpdatedByUser` varchar(25) DEFAULT NULL,
-  `AccessCount` int(11) DEFAULT NULL,
   PRIMARY KEY (`UserId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -330,4 +324,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-06-06 12:21:02
+-- Dump completed on 2013-06-06 12:31:58

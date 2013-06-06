@@ -10,7 +10,7 @@ using EPSCoR.Database.Models;
 namespace EPSCoR.Repositories
 {
     public class CachedRepo<T> : IModelRepository<T> 
-        where T : class
+        where T : class, IModel 
     {
         private DbContext _dbContext;
 

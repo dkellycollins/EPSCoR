@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using BootstrapSupport;
 using EPSCoR.Database.Models;
 using EPSCoR.Repositories;
+using EPSCoR.Repositories.Basic;
 using EPSCoR.ViewModels;
 using Newtonsoft.Json.Linq;
 using WebMatrix.WebData;
@@ -30,7 +31,7 @@ namespace EPSCoR.Controllers
             _userProfileRepo = new BasicModelRepo<UserProfile>();
             _tableIndexRepo = new BasicModelRepo<TableIndex>();
             _conversionFileAccessor = BasicFileAccessor.GetConversionsAccessor(WebSecurity.CurrentUserName);
-            _tableRepo = new BasicTableRepo();
+            _tableRepo = new BasicTableRepo(WebSecurity.CurrentUserName);
             _dbCalc = (IDatabaseCalc)_tableRepo;
         }
 
@@ -60,7 +61,9 @@ namespace EPSCoR.Controllers
         {
             try
             {
-                DataTable table = _tableRepo.Read(id);
+                string userName = WebSecurity.CurrentUserName;
+                TableIndex tIndex = _tableIndexRepo.GetAll().Where((t) => t.Name == id && t.UploadedByUser == userName).FirstOrDefault();
+                DataTable table = _tableRepo.Read(tIndex.GetTableName());
                 table.TableName = id;
                 if (table == null)
                     return new HttpNotFoundResult();
@@ -89,7 +92,9 @@ namespace EPSCoR.Controllers
         [HttpPost]
         public ActionResult Delete(string id)
         {
-            _tableRepo.Drop(id);
+            string userName = WebSecurity.CurrentUserName;
+            TableIndex tIndex = _tableIndexRepo.GetAll().Where((t) => t.Name == id && t.UploadedByUser == userName).FirstOrDefault();
+            _tableRepo.Drop(tIndex.GetTableName());
             return RedirectToAction("Index");
         }
 
@@ -105,14 +110,18 @@ namespace EPSCoR.Controllers
             string attTable = formCollection["attTable"];
             string usTable = formCollection["usTable"];
             string calc = formCollection["calc"];
+            string userName = WebSecurity.CurrentUserName;
+
+            TableIndex attTableIndex = _tableIndexRepo.GetAll().Where((t) => t.Name == attTable && t.UploadedByUser == userName).FirstOrDefault();
+            TableIndex usTableIndex = _tableIndexRepo.GetAll().Where((t) => t.Name == usTable && t.UploadedByUser == userName).FirstOrDefault();
 
             switch (calc)
             {
                 case "Sum":
-                    _dbCalc.SumTables(attTable, usTable);
+                    _dbCalc.SumTables(attTableIndex.GetTableName(), usTableIndex.GetTableName());
                     break;
                 case "Avg":
-                    _dbCalc.AvgTables(attTable, usTable);
+                    _dbCalc.AvgTables(attTableIndex.GetTableName(), usTableIndex.GetTableName());
                     break;
             }
 
@@ -123,6 +132,13 @@ namespace EPSCoR.Controllers
         public ActionResult Download()
         {
             return View(_tableIndexRepo.GetAll());
+        }
+
+        public void Dispose()
+        {
+            _tableIndexRepo.Dispose();
+            _tableRepo.Dispose();
+            _userProfileRepo.Dispose();
         }
 
         #region Helpers

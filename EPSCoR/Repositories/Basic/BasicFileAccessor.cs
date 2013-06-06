@@ -7,7 +7,7 @@ using System.Threading;
 using System.Web;
 using EPSCoR.Database.Services;
 
-namespace EPSCoR.Repositories
+namespace EPSCoR.Repositories.Basic
 {
     public class BasicFileAccessor : IFileAccessor
     {

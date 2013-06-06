@@ -86,10 +86,10 @@ namespace EPSCoR.Database
                             string conversionPath = FileConverterFactory.GetConverter(file).ConvertToCSV();
 
                             //Add converted file to the database.
-                            DefaultContext context = DefaultContext.GetInstance();
+                            string userName = Directory.GetParent(file).Name;
+                            UserContext context = UserContext.GetContextForUser(userName);
                             context.Commands.AddTableFromFile(conversionPath);
                             context.Commands.PopulateTableFromFile(conversionPath);
-                            DefaultContext.Release();
 
                             //Move the original file to the Archive.
                             string archivePath = Path.Combine(DirectoryManager.ArchiveDir, Directory.GetParent(file).Name, Path.GetFileName(file));

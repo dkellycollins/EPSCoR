@@ -69,5 +69,10 @@ namespace EPSCoR.Database.DbCmds
         {
             throw new NotImplementedException();
         }
+
+        public override void CreateDatabase(string databaseName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -12,6 +12,7 @@ using EPSCoR.Database.Models;
 using EPSCoR.Filters;
 using EPSCoR.Repositories;
 using DotNetCasClient;
+using EPSCoR.Repositories.Basic;
 
 namespace EPSCoR.Controllers
 {
@@ -20,10 +21,12 @@ namespace EPSCoR.Controllers
     public class AccountController : Controller
     {
         private IModelRepository<UserProfile> _userProfileRepo;
+        private IRootRepository _rootRepo;
 
         public AccountController()
         {
             _userProfileRepo = new BasicModelRepo<UserProfile>();
+            _rootRepo = new BasicRootRepo();
         }
 
         //
@@ -38,6 +41,20 @@ namespace EPSCoR.Controllers
             return redirectToLocal(returnUrl);
         }
 
+        //
+        // POST: /Account/LogOff
+        public ActionResult LogOff()
+        {
+            CasAuthentication.SingleSignOut();
+            return RedirectToAction("Index", "Home");
+        }
+
+        public void Dispose()
+        {
+            _userProfileRepo.Dispose();
+            _rootRepo.Dispose();
+        }
+
         private void createProfile()
         {
             UserProfile profile = new UserProfile()
@@ -45,14 +62,6 @@ namespace EPSCoR.Controllers
                 UserName = WebSecurity.CurrentUserName
             };
             _userProfileRepo.Create(profile);
-        }
-
-        //
-        // POST: /Account/LogOff
-        public ActionResult LogOff()
-        {
-            CasAuthentication.SingleSignOut();
-            return RedirectToAction("Index", "Home");
         }
 
         private ActionResult redirectToLocal(string returnUrl)

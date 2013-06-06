@@ -28,10 +28,11 @@ namespace EPSCoR.Database.DbCmds
         internal abstract void AddTableFromFile(string file);
         internal abstract void PopulateTableFromFile(string file);
         public abstract void SumTables(string attTable, string usTable);
+        public abstract void CreateDatabase(string databaseName);
 
         public virtual DataTable SelectAllFrom(string table)
         {
-            ThrowIfInvalidSql(table);
+            ThrowExceptionIfInvalidSql(table);
 
             string query = "SELECT * FROM " + table;
             DbProviderFactory dbFactory = DbProviderFactories.GetFactory(_context.Database.Connection);
@@ -51,7 +52,7 @@ namespace EPSCoR.Database.DbCmds
 
         public virtual void DropTable(string table)
         {
-            ThrowIfInvalidSql(table);
+            ThrowExceptionIfInvalidSql(table);
 
             _context.Database.ExecuteSqlCommand("DROP TABLE " + table);
         }
@@ -63,7 +64,7 @@ namespace EPSCoR.Database.DbCmds
         /// </summary>
         /// <param name="file"></param>
         /// <param name="args"></param>
-        protected static void ThrowIfInvalidSql(string file, params string[] args)
+        protected static void ThrowFileExceptionIfInvalidSql(string file, params string[] args)
         {
             foreach (string arg in args)
             {
@@ -76,7 +77,7 @@ namespace EPSCoR.Database.DbCmds
         /// Throws an exception if any of the arguments contain an invalid character.
         /// </summary>
         /// <param name="args"></param>
-        protected static void ThrowIfInvalidSql(params string[] args)
+        protected static void ThrowExceptionIfInvalidSql(params string[] args)
         {
             foreach (string arg in args)
             {
