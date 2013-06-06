@@ -9,7 +9,7 @@ using System.Web.Security;
 namespace EPSCoR.Database.Models
 {
     [Table("UserProfile")]
-    public class UserProfile
+    public class UserProfile : ModelBase
     {
         [Key]
         [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
