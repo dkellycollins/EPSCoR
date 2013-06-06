@@ -14,6 +14,7 @@ namespace EPSCoR.Database.Models
 {
     public class DefaultContext : DbContext
     {
+        /*
         private static DefaultContext _instance = null;
         private static int referenceCount = 0;
 
@@ -36,6 +37,7 @@ namespace EPSCoR.Database.Models
                 _instance = null;
             }
         }
+         */
 
         public DbSet<TableIndex> Tables { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }

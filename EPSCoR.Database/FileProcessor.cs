@@ -90,6 +90,7 @@ namespace EPSCoR.Database
                             UserContext context = UserContext.GetContextForUser(userName);
                             context.Commands.AddTableFromFile(conversionPath);
                             context.Commands.PopulateTableFromFile(conversionPath);
+                            context.Dispose();
 
                             //Move the original file to the Archive.
                             string archivePath = Path.Combine(DirectoryManager.ArchiveDir, Directory.GetParent(file).Name, Path.GetFileName(file));

@@ -14,7 +14,7 @@ namespace EPSCoR.Repositories.Basic
 
         public BasicTableRepo(string userName)
         {
-            _defaultContext = DefaultContext.GetInstance();
+            _defaultContext = new DefaultContext();
             _userContext = UserContext.GetContextForUser(userName);
         }
 
@@ -49,7 +49,8 @@ namespace EPSCoR.Repositories.Basic
 
         public void Dispose()
         {
-            DefaultContext.Release();
+            _defaultContext.Dispose();
+            _userContext.Dispose();
         }
 
         #endregion IRawRepository Members

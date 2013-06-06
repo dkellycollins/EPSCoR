@@ -18,7 +18,7 @@ namespace EPSCoR.Repositories.Basic
 
         public BasicModelRepo()
         {
-            _context = DefaultContext.GetInstance();
+            _context = new DefaultContext();
         }
 
         public BasicModelRepo(DbContext context)
@@ -59,7 +59,7 @@ namespace EPSCoR.Repositories.Basic
 
         public void Dispose()
         {
-            DefaultContext.Release();
+            _context.Dispose();
         }
     }
 }

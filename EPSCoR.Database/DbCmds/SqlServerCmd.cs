@@ -32,8 +32,6 @@ namespace EPSCoR.Database.DbCmds
         /// <param name="dbContext">Reference to thte database.</param>
         internal override void AddTableFromFile(string file)
         {
-            DefaultContext dbContext = DefaultContext.GetInstance();
-
             //Get all the fields from the file.
             TextReader reader = File.OpenText(file);
             string head = reader.ReadLine();
@@ -52,11 +50,10 @@ namespace EPSCoR.Database.DbCmds
             //Make the first field the primary key.
             columnsBuilder.Append("PRIMARY KEY(" + fields[0] + ")");
 
-            dbContext.Database.ExecuteSqlCommand(
+            _context.Database.ExecuteSqlCommand(
                 "CREATE TABLE " + Path.GetFileNameWithoutExtension(file) + " (" + columnsBuilder.ToString() + ")"
                 );
 
-            DefaultContext.Release();
             LoggerFactory.Log("Table " + Path.GetFileNameWithoutExtension(file) + " added to the database.");
         }
 
