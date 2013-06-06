@@ -16,14 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Current Database: `cybercomm`
---
-
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `cybercomm` /*!40100 DEFAULT CHARACTER SET utf8 */;
-
-USE `cybercomm`;
-
---
 -- Table structure for table `my_aspnet_applications`
 --
 
@@ -279,8 +271,15 @@ CREATE TABLE `tableindexes` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(25) DEFAULT NULL,
   `Type` varchar(10) DEFAULT NULL,
+  `DateCreated` datetime DEFAULT NULL,
+  `DateUpdated` datetime DEFAULT NULL,
+  `DateLastAccessed` datetime DEFAULT NULL,
+  `UpdatedByUser` varchar(25) DEFAULT NULL,
+  `AccessCount` int(11) DEFAULT NULL,
+  `UploadedByUser` varchar(25) DEFAULT NULL,
+  `Status` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -289,35 +288,8 @@ CREATE TABLE `tableindexes` (
 
 LOCK TABLES `tableindexes` WRITE;
 /*!40000 ALTER TABLE `tableindexes` DISABLE KEYS */;
+INSERT INTO `tableindexes` VALUES (1,'MDC_B_US','us',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(2,'MDC_A_US','us',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `tableindexes` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tablepairindexes`
---
-
-DROP TABLE IF EXISTS `tablepairindexes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tablepairindexes` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `Name` varchar(50) DEFAULT NULL,
-  `Version` varchar(10) DEFAULT NULL,
-  `Region` varchar(50) DEFAULT NULL,
-  `UpstreamTable` varchar(50) DEFAULT NULL,
-  `AttributeTable` varchar(50) DEFAULT NULL,
-  `User` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tablepairindexes`
---
-
-LOCK TABLES `tablepairindexes` WRITE;
-/*!40000 ALTER TABLE `tablepairindexes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tablepairindexes` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -331,6 +303,11 @@ CREATE TABLE `userprofile` (
   `UserId` int(11) NOT NULL AUTO_INCREMENT,
   `UserName` varchar(25) NOT NULL,
   `Role` varchar(25) DEFAULT NULL,
+  `DateCreated` datetime DEFAULT NULL,
+  `DateUpdated` datetime DEFAULT NULL,
+  `DateLastAccessed` datetime DEFAULT NULL,
+  `UpdatedByUser` varchar(25) DEFAULT NULL,
+  `AccessCount` int(11) DEFAULT NULL,
   PRIMARY KEY (`UserId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -353,4 +330,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-05-24 12:15:27
+-- Dump completed on 2013-06-06 12:21:02
