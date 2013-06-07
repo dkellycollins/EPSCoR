@@ -107,9 +107,31 @@ namespace EPSCoR.Controllers
                 FileSize = file.TotalFileLength
             };
 
-            bool saveSuccessful = _uploadFileAccessor.SaveFiles(wrapper);
+            bool saveSuccessful = _tempFileAccessor.SaveFiles(wrapper);
 
             return new FileUploadResult(fileName);
+        }
+
+        [HttpPost]
+        public ActionResult CompleteUpload(string id)
+        {
+            bool result = false;
+            FileStream fileStream = _tempFileAccessor.OpenFile(id);
+            if (fileStream != null)
+            {
+                FileStreamWrapper wrapper = new FileStreamWrapper()
+                {
+                    FileName = id,
+                    InputStream = fileStream
+                };
+                result = _uploadFileAccessor.SaveFiles(wrapper);
+                _tempFileAccessor.CloseFile(fileStream);
+                _tempFileAccessor.DeleteFiles(id);
+            }
+
+            if (result)
+                return new FileUploadResult(id);
+            return new FileUploadResult(id, "Could not complete file upload.");
         }
 
         public ActionResult DownloadCsv(string id)

@@ -28,9 +28,9 @@ namespace EPSCoR.Filters
             {
                 System.Data.Entity.Database.SetInitializer<DefaultContext>(null);
 
+                var context = new DefaultContext();
                 try
                 {
-                    var context = DefaultContext.GetInstance();
                     if (!context.Database.Exists())
                     {
                         // Create the SimpleMembership database without Entity Framework migration schema
@@ -45,7 +45,7 @@ namespace EPSCoR.Filters
                 }
                 finally
                 {
-                    DefaultContext.Release();
+                    context.Dispose();
                 }
             }
         }

@@ -10,7 +10,7 @@ namespace EPSCoR.Database
     {
         public static void Main(string[] args)
         {
-            FileProcessor.Start();
+            
         }
     }
 }

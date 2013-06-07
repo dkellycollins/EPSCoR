@@ -30,100 +30,77 @@ namespace EPSCoR.Database
             DirectoryManager.Initialize(HttpContext.Current.Server);
         }
 
-        //Allows us to cancel the thread.
-        private static bool _cancel;
+        private FileSystemWatcher _fileWatcher;
 
-        /// <summary>
-        /// Starts the file processor in a separate thread.
-        /// </summary>
-        public static void Start()
+        public FileProcessor()
         {
-            _cancel = false;
-            Thread t = new Thread(convertFiles);
-            t.Start();
+            _fileWatcher = new FileSystemWatcher(DirectoryManager.UploadDir);
+            _fileWatcher.Created += _fileWatcher_Created;
+
+            _fileWatcher.EnableRaisingEvents = true;
         }
 
-        /// <summary>
-        /// Stops the file processor. This will not imediatly kill the thread.
-        /// </summary>
-        public static void Stop()
+        public void Dispose()
         {
-            _cancel = true;
+            _fileWatcher.Dispose();
         }
 
-        /// <summary>
-        /// The main method of this class. Until _cancel is set to true it will continually scan the upload directory for any files to process.
-        /// </summary>
-        private static void convertFiles()
+        private void _fileWatcher_Created(object sender, FileSystemEventArgs e)
         {
-            while (!_cancel)
+            convertFile(e.FullPath);
+        }
+
+        private static void convertFile(string file)
+        {
+            try
             {
-                try
+                //Wait until the file can be opened.
+                while (!IsFileReady(file)) ;
+
+                //Convert the file.
+                string conversionPath = FileConverterFactory.GetConverter(file).ConvertToCSV();
+
+                //Add converted file to the database.
+                string userName = Directory.GetParent(file).Name;
+                UserContext context = UserContext.GetContextForUser(userName);
+                context.Commands.AddTableFromFile(conversionPath);
+                context.Commands.PopulateTableFromFile(conversionPath);
+                context.Dispose();
+
+                //Move the original file to the Archive.
+                string archivePath = Path.Combine(DirectoryManager.ArchiveDir, Directory.GetParent(file).Name, Path.GetFileName(file));
+                validateDestination(archivePath);
+                File.Move(file, archivePath);
+
+                //Log when the file was processed.
+                LoggerFactory.Log("File processed: " + file);
+            }
+            catch (InvalidFileException e)
+            {
+                LoggerFactory.Log("Invalid File: " + e.InvalidFile, e);
+                //Move the invalid file.
+                string invalidPath = Path.Combine(DirectoryManager.InvalidDir, Path.GetFileName(e.InvalidFile));
+                validateDestination(invalidPath);
+                File.Move(e.InvalidFile, invalidPath);
+            }
+            catch (Exception e)
+            {
+                LoggerFactory.Log("Exception while processing file", e);
+            }
+        }
+
+        public static bool IsFileReady(string fileName)
+        {
+            try
+            {
+                using (FileStream stream = File.Open(fileName, FileMode.Open))
                 {
-                    foreach (string userDirectory in Directory.GetDirectories(DirectoryManager.UploadDir))
-                    {
-                        //See if we need to cancel.
-                        if (_cancel)
-                            break;
-
-                        string[] files = Directory.GetFiles(userDirectory);
-
-                        //If a lock file exist in the user directory, it mean that the user is uploading file.
-                        //We want to wait until the user is done uploading file, so just move on if there is a lock file.
-                        string lockFile = Path.Combine(userDirectory, "lock");
-                        if (files.Contains(lockFile))
-                        {
-                            continue;
-                        }
-
-                        //Process each file.
-                        foreach (string file in files)
-                        {
-                            if (_cancel)
-                                break;
-
-                            //Convert the file.
-                            string conversionPath = FileConverterFactory.GetConverter(file).ConvertToCSV();
-
-                            //Add converted file to the database.
-                            string userName = Directory.GetParent(file).Name;
-                            UserContext context = UserContext.GetContextForUser(userName);
-                            context.Commands.AddTableFromFile(conversionPath);
-                            context.Commands.PopulateTableFromFile(conversionPath);
-                            context.Dispose();
-
-                            //Move the original file to the Archive.
-                            string archivePath = Path.Combine(DirectoryManager.ArchiveDir, Directory.GetParent(file).Name, Path.GetFileName(file));
-                            validateDestination(archivePath);
-                            File.Move(file, archivePath);
-
-                            //Log when the file was processed.
-                            LoggerFactory.Log("File processed: " + file);
-                        }
-
-                        //Release the lock.
-                        File.Delete(lockFile);
-                        lockFile = null;
-                    }
+                    return stream.Length > 0;
                 }
-                catch (InvalidFileException e)
-                {
-                    LoggerFactory.Log("Invalid File: " + e.InvalidFile, e);
-                    //Move the invalid file.
-                    string invalidPath = Path.Combine(DirectoryManager.InvalidDir, Path.GetFileName(e.InvalidFile));
-                    validateDestination(invalidPath);
-                    File.Move(e.InvalidFile, invalidPath);
-                }
-                catch (Exception e)
-                {
-                    LoggerFactory.Log("Exception while processing files", e);
-                    //Once we hit an exception we don't want to keep going.
-                    _cancel = true;
-                }
-#if DEBUG
-                //In debug mode only run once.
-                _cancel = true;
-#endif
+            }
+            catch
+            {
+                return false;
             }
         }
 

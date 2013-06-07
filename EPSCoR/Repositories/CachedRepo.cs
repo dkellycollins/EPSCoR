@@ -16,7 +16,7 @@ namespace EPSCoR.Repositories
 
         public CachedRepo()
         {
-            _dbContext = DefaultContext.GetInstance();
+            _dbContext = new DefaultContext();
         }
 
         public T Get(int entityID)
@@ -76,7 +76,7 @@ namespace EPSCoR.Repositories
 
         public void Dispose()
         {
-            DefaultContext.Release();
+            _dbContext.Dispose();
         }
     }
 }

@@ -16,6 +16,8 @@ namespace EPSCoR
 
     public class MvcApplication : System.Web.HttpApplication
     {
+        private FileProcessor _fileProcessor;
+
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
@@ -25,12 +27,12 @@ namespace EPSCoR
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-            FileProcessor.Start();
+            _fileProcessor = new FileProcessor();
         }
 
         protected void Application_End()
         {
-            FileProcessor.Stop();
+            _fileProcessor.Dispose();
         }
     }
 }

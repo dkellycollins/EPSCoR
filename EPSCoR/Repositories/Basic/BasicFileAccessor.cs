@@ -42,7 +42,7 @@ namespace EPSCoR.Repositories.Basic
 
         public bool SaveFiles(params FileStreamWrapper[] files)
         {
-            waitForLock();
+            //waitForLock();
 
             bool result = true;
             foreach (FileStreamWrapper file in files)
@@ -54,14 +54,14 @@ namespace EPSCoR.Repositories.Basic
                 }
             }
 
-            releaseLock();
+            //releaseLock();
 
             return result;
         }
 
         public FileStream OpenFile(string fileName)
         {
-            waitForLock();
+            //waitForLock();
 
             string path = Path.Combine(_userDirectory, fileName);
             
@@ -80,7 +80,7 @@ namespace EPSCoR.Repositories.Basic
         public void CloseFile(FileStream fileStream)
         {
             fileStream.Close();
-            releaseLock();
+            //releaseLock();
         }
 
         public IEnumerable<string> GetFiles()
@@ -90,12 +90,12 @@ namespace EPSCoR.Repositories.Basic
 
         public void DeleteFiles(params string[] fileNames)
         {
-            waitForLock();
+            //waitForLock();
 
             foreach (string fileName in fileNames)
                 deleteFile(fileName);
 
-            releaseLock();
+            //releaseLock();
         }
 
         public bool FileExist(string fileName)
@@ -123,9 +123,7 @@ namespace EPSCoR.Repositories.Basic
             try
             {
                 //If the file does not exist create a new empty file.
-                if (!File.Exists(path))
-                    File.WriteAllBytes(path, new byte[file.FileSize]);
-                FileStream fileStream = File.Open(path, FileMode.Open);
+                FileStream fileStream = File.Open(path, FileMode.OpenOrCreate);
                 
                 //Seek to the staring position of the chunk and copy the stream.
                 fileStream.Seek(file.SeekPos, SeekOrigin.Begin);

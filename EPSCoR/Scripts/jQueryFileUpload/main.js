@@ -3,7 +3,9 @@
 $(function () {
     'use strict';
     // Change this to the location of your server-side upload handler:
-    var url = 'http://localhost:6615/Files/UploadFiles',
+    var baseUrl = 'http://localhost:6615/Files/',
+        uploadUrl = baseUrl + 'UploadFiles',
+        completeUrl = baseUrl + 'CompleteUpload',
         cancelButton = $('<button/>')
             .addClass('btn btn-warning')
             .text('Cancel')
@@ -41,7 +43,7 @@ $(function () {
         };
 
     $('#fileupload').fileupload({
-        url: url,
+        url: uploadUrl,
         dataType: 'json',
         autoUpload: false,
         acceptFileTypes: /(\.|\/)(csv)$/i,
@@ -88,11 +90,16 @@ $(function () {
     })
     //This is called when a file is successfully uploaded.
     .bind('fileuploaddone', function (e, data) {
-        if (data.error)
-            setErrorStatus(data.error, data.context);
-        else
-            setSuccessStatus('File uploaded.', data.context);
-        $('.btn-warning', data.context).remove();
+        var fileName = data.files[data.index].name,
+            $context = data.context;
+        $.post(completeUrl + '/?id=' + fileName,
+            function (data) {
+                if (data.error)
+                    setErrorStatus(data.error, $context);
+                else
+                    setSuccessStatus('File uploaded.', $context);
+                $('.btn-warning', $context).remove();
+            });
     })
     //This is called if a fail fails to upload.
     .bind('fileuploadfail', function (e, data) {
