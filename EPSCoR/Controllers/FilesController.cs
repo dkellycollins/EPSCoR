@@ -10,6 +10,7 @@ using EPSCoR.Repositories;
 using WebMatrix.WebData;
 using System.Web.Script.Serialization;
 using EPSCoR.Repositories.Basic;
+using EPSCoR.ViewModels;
 
 namespace EPSCoR.Controllers
 {
@@ -87,15 +88,9 @@ namespace EPSCoR.Controllers
             string tableName = Path.GetFileNameWithoutExtension(file.FileName);
             string userName = WebSecurity.CurrentUserName;
             TableIndex existingTable = _tableIndexRepo.GetAll().Where(t => t.Name == tableName && t.UploadedByUser == userName).FirstOrDefault();
-            if (existingTable == null)
+            if (existingTable != null)
             {
-                existingTable = new TableIndex()
-                {
-                    Name = tableName,
-                    UploadedByUser = userName,
-                    Status = "Queued for processing."
-                };
-                _tableIndexRepo.Create(existingTable);
+                return new FileUploadResult(fileName, "Table already exists. Delete exisiting table before uploading a new one.");
             }
 
             //Save the chunk.
@@ -134,6 +129,11 @@ namespace EPSCoR.Controllers
             return new FileUploadResult(id, "Could not complete file upload.");
         }
 
+        public ActionResult Download()
+        {
+            return View(createFileDownloadVM(_tableIndexRepo.GetAll()));
+        }
+
         public ActionResult DownloadCsv(string id)
         {
             string fileName = id + ".csv";
@@ -155,6 +155,30 @@ namespace EPSCoR.Controllers
         {
             _tableIndexRepo.Dispose();
         }
+
+        #region Helpers
+
+        private List<FileDownloadVM> createFileDownloadVM(IEnumerable<TableIndex> tableIndexes)
+        {
+            List<FileDownloadVM> returnList = new List<FileDownloadVM>();
+            foreach (TableIndex tableIndex in tableIndexes)
+            {
+                if (!_conversionFileAccessor.FileExist(tableIndex.Name + ".csv"))
+                    continue;
+
+                returnList.Add(new FileDownloadVM()
+                {
+                    Table = tableIndex.Name,
+                    Type = tableIndex.Type,
+                    DateCreated = tableIndex.DateUpdated.ToString(),
+                    Issuer = tableIndex.UploadedByUser
+                });
+            }
+
+            return returnList;
+        }
+
+        #endregion
     }
 
     [ModelBinder(typeof(ModelBinder))]

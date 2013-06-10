@@ -24,7 +24,8 @@ namespace EPSCoR
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional },
+                namespaces: new string[] { "EPSCoR.Controllers" }
             );
 
             routes.MapNavigationRoute<HomeController>("Home", c => c.Index());
@@ -32,6 +33,7 @@ namespace EPSCoR
                 .AddChildRoute<AboutController>("Export Access Table", c => c.HowToExport())
                 .AddChildRoute<AboutController>("Upload Data Table", c => c.HowToUpload());
             routes.MapNavigationRoute<FilesController>("Load Tables", c => c.Upload());
+            routes.MapNavigationRoute<FilesController>("Download", c => c.Download());
             routes.MapNavigationRoute<TablesController>("Data", c => c.Index());
             //routes.MapNavigationRoute<WatershedController>("Watershed", c => c.Index());
         }

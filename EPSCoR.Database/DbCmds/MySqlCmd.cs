@@ -21,6 +21,14 @@ namespace EPSCoR.Database.DbCmds
     /// </summary>
     internal class MySqlCmd : DbCmd
     {
+        private string DatabaseName
+        {
+            get
+            {
+                return _context.Database.Connection.Database;
+            }
+        }
+
         public MySqlCmd(DbContext context) 
             : base(context) 
         {
@@ -60,9 +68,8 @@ namespace EPSCoR.Database.DbCmds
                 + "ENGINE = InnoDB "
                 + "DEFAULT CHARSET=latin1";
             _context.Database.ExecuteSqlCommand(cmd);
-            //Update the table status.
             _context.SaveChanges();
-            LoggerFactory.Log("Table " + tableName + " added to the database.");
+            LoggerFactory.Log("Table " + tableName + " added to " + DatabaseName);
         }
 
         /// <summary>
@@ -82,7 +89,7 @@ namespace EPSCoR.Database.DbCmds
                     + "LINES TERMINATED BY '\n'"
                     + "IGNORE 1 LINES";
             int rowsUpdated = _context.Database.ExecuteSqlCommand(cmd);
-            LoggerFactory.Log(rowsUpdated + " rows updated in table " + table);
+            LoggerFactory.Log(rowsUpdated + " rows updated in table " + table + ", " + DatabaseName);
         }
 
         /// <summary>
@@ -123,17 +130,14 @@ namespace EPSCoR.Database.DbCmds
                 + "GROUP BY Prod.POLYLINEID "
                 + "LIMIT 40";
             _context.Database.ExecuteSqlCommand(cmd);
-            _context.Set<TableIndex>().Add(new TableIndex()
-            {
-                Name = calcTable,
-                Type = TableTypes.CALC
-            });
             _context.SaveChanges();
-            LoggerFactory.Log("Sum table " + calcTable + "created.");
+            LoggerFactory.Log("Sum table " + calcTable + "created in " + DatabaseName);
         }
 
         public override void CreateDatabase(string databaseName)
         {
+            ThrowExceptionIfInvalidSql(databaseName);
+
             string cmd = "CREATE DATABASE " + databaseName;
             _context.Database.ExecuteSqlCommand(cmd);
             LoggerFactory.Log("Database " + databaseName + " added");

@@ -129,11 +129,6 @@ namespace EPSCoR.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult Download()
-        {
-            return View(_tableIndexRepo.GetAll());
-        }
-
         public void Dispose()
         {
             _tableIndexRepo.Dispose();

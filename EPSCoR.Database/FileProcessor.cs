@@ -52,22 +52,40 @@ namespace EPSCoR.Database
 
         private static void convertFile(string file)
         {
+            DefaultContext defaultContext = new DefaultContext();
             try
             {
                 //Wait until the file can be opened.
                 while (!IsFileReady(file)) ;
 
+                //Create table entry.
+                string tableName = Path.GetFileNameWithoutExtension(file);
+                string userName = Directory.GetParent(file).Name;
+                TableIndex tableIndex = new TableIndex()
+                {
+                    Name = tableName,
+                    DateCreated = DateTime.Now,
+                    DateUpdated = DateTime.Now,
+                    Status = "Queued for processing",
+                    Type = (tableName.Contains("_CALC")) ? TableTypes.CALC : (tableName.Contains("_US")) ? TableTypes.UPSTREAM : TableTypes.ATTRIBUTE,
+                    UploadedByUser = userName
+                };
+                defaultContext.Tables.Add(tableIndex);
+                defaultContext.SaveChanges();
+
                 //Convert the file.
+                updateTableStatus(defaultContext, tableIndex, "Converting uploaded file.");
                 string conversionPath = FileConverterFactory.GetConverter(file).ConvertToCSV();
 
                 //Add converted file to the database.
-                string userName = Directory.GetParent(file).Name;
-                UserContext context = UserContext.GetContextForUser(userName);
-                context.Commands.AddTableFromFile(conversionPath);
-                context.Commands.PopulateTableFromFile(conversionPath);
-                context.Dispose();
+                updateTableStatus(defaultContext, tableIndex, "Creating table in database.");
+                UserContext userContext = UserContext.GetContextForUser(userName);
+                userContext.Commands.AddTableFromFile(conversionPath);
+                userContext.Commands.PopulateTableFromFile(conversionPath);
+                userContext.Dispose();
 
                 //Move the original file to the Archive.
+                updateTableStatus(defaultContext, tableIndex, "Table created.");
                 string archivePath = Path.Combine(DirectoryManager.ArchiveDir, Directory.GetParent(file).Name, Path.GetFileName(file));
                 validateDestination(archivePath);
                 File.Move(file, archivePath);
@@ -115,6 +133,14 @@ namespace EPSCoR.Database
                 Directory.CreateDirectory(destDir);
             if (File.Exists(dest))
                 File.Delete(dest);
+        }
+
+        private static void updateTableStatus(DefaultContext context, TableIndex index, string status)
+        {
+            index.Status = status;
+            index.DateUpdated = DateTime.Now;
+            context.Entry(index).State = System.Data.EntityState.Modified;
+            context.SaveChanges();
         }
     }
 }

@@ -192,6 +192,7 @@
     <Compile Include="Repositories\IRootRepository.cs" />
     <Compile Include="Repositories\ITableRepository.cs" />
     <Compile Include="Repositories\Basic\BasicTableRepo.cs" />
+    <Compile Include="ViewModels\FileDownloadViewModels.cs" />
     <Compile Include="ViewModels\TableIndexViewModels.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -346,7 +347,7 @@
     <Content Include="Scripts\jQuery\jquery-1.9.1.min.map" />
     <Content Include="Views\Files\Upload.cshtml" />
     <Content Include="Views\Tables\CalcStatusPartial.cshtml" />
-    <Content Include="Views\Tables\Download.cshtml" />
+    <Content Include="Views\Files\Download.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

@@ -11,11 +11,13 @@ namespace EPSCoR.Repositories.Basic
     {
         DefaultContext _defaultContext;
         UserContext _userContext;
+        string currentUser;
 
         public BasicTableRepo(string userName)
         {
             _defaultContext = new DefaultContext();
             _userContext = UserContext.GetContextForUser(userName);
+            currentUser = userName;
         }
 
         #region IRawRepository Members
@@ -59,7 +61,24 @@ namespace EPSCoR.Repositories.Basic
 
         public void SumTables(string attTable, string usTable)
         {
+            TableIndex index = new TableIndex()
+            {
+                Name = string.Format("{0}_{1}", attTable, usTable),
+                DateCreated = DateTime.Now,
+                DateUpdated = DateTime.Now,
+                Status = "Generating table.",
+                Type = TableTypes.CALC,
+                UploadedByUser = currentUser
+            };
+            _defaultContext.Tables.Add(index);
+            _defaultContext.SaveChanges();
+
             _userContext.Commands.SumTables(attTable, usTable);
+
+            index.Status = "Table created.";
+            index.DateUpdated = DateTime.Now;
+            _defaultContext.Entry(index).State = EntityState.Modified;
+            _defaultContext.SaveChanges();
         }
 
         public void AvgTables(string attTable, string usTalbe)
