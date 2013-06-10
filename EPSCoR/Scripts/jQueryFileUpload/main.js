@@ -16,6 +16,7 @@ $(function () {
                 data.abort();
                 setErrorStatus('Cancelled.', $context);
             }),
+        closeButton = $('<button type="button" class="close hidden" data-dismiss="alert">x</button>'),
         progressBar = $('<div/>')
             .addClass('progress progress-success')
             .append($('<div/>')
@@ -33,12 +34,14 @@ $(function () {
             $context
                 .removeClass('alert-info')
                 .addClass('alert-error');
+            $('.close', $context).removeClass('hidden');
             setStatus(status, $context);
         },
         setSuccessStatus = function (status, $context) {
             $context
                 .removeClass('alert-info')
                 .addClass('alert-success');
+            $('.close', $context).removeClass('hidden');
             setStatus(status);
         };
 
@@ -58,6 +61,7 @@ $(function () {
             data.context = $context;
 
             $context.addClass('alert alert-info');
+            $context.append(closeButton.clone(true));
             $context.append($('<span/>').text(file.name));
             $context.append($('<br/>'));
             $context.append($('<span/>').text('Processing...').addClass('status'));

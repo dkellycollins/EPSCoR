@@ -35,7 +35,9 @@ namespace EPSCoR.Database
         public FileProcessor()
         {
             _fileWatcher = new FileSystemWatcher(DirectoryManager.UploadDir);
-            _fileWatcher.Created += _fileWatcher_Created;
+            //_fileWatcher.Created += _fileWatcher_Created;
+            _fileWatcher.Changed += _fileWatcher_Changed;
+            _fileWatcher.Error += _fileWatcher_Error;
 
             _fileWatcher.EnableRaisingEvents = true;
         }
@@ -50,60 +52,83 @@ namespace EPSCoR.Database
             convertFile(e.FullPath);
         }
 
+        private void _fileWatcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            if (e.ChangeType == WatcherChangeTypes.Changed || e.ChangeType == WatcherChangeTypes.Created)
+                convertFile(e.FullPath);
+        }
+
+        private void _fileWatcher_Error(object sender, ErrorEventArgs e)
+        {
+            LoggerFactory.Log("FILE WATCHER FAILED.", e.GetException());
+        }
+
+        private static TimeSpan WAIT_TIME = new TimeSpan(0, 1, 0);
+
         private static void convertFile(string file)
         {
-            DefaultContext defaultContext = new DefaultContext();
-            try
+            //Wait until the file can be opened.
+            DateTime timeStamp = DateTime.Now;
+            while (!IsFileReady(file))
             {
-                //Wait until the file can be opened.
-                while (!IsFileReady(file)) ;
-
-                //Create table entry.
-                string tableName = Path.GetFileNameWithoutExtension(file);
-                string userName = Directory.GetParent(file).Name;
-                TableIndex tableIndex = new TableIndex()
+                if (DateTime.Now - timeStamp > WAIT_TIME)
                 {
-                    Name = tableName,
-                    DateCreated = DateTime.Now,
-                    DateUpdated = DateTime.Now,
-                    Status = "Queued for processing",
-                    Type = (tableName.Contains("_CALC")) ? TableTypes.CALC : (tableName.Contains("_US")) ? TableTypes.UPSTREAM : TableTypes.ATTRIBUTE,
-                    UploadedByUser = userName
-                };
-                defaultContext.Tables.Add(tableIndex);
-                defaultContext.SaveChanges();
-
-                //Convert the file.
-                updateTableStatus(defaultContext, tableIndex, "Converting uploaded file.");
-                string conversionPath = FileConverterFactory.GetConverter(file).ConvertToCSV();
-
-                //Add converted file to the database.
-                updateTableStatus(defaultContext, tableIndex, "Creating table in database.");
-                UserContext userContext = UserContext.GetContextForUser(userName);
-                userContext.Commands.AddTableFromFile(conversionPath);
-                userContext.Commands.PopulateTableFromFile(conversionPath);
-                userContext.Dispose();
-
-                //Move the original file to the Archive.
-                updateTableStatus(defaultContext, tableIndex, "Table created.");
-                string archivePath = Path.Combine(DirectoryManager.ArchiveDir, Directory.GetParent(file).Name, Path.GetFileName(file));
-                validateDestination(archivePath);
-                File.Move(file, archivePath);
-
-                //Log when the file was processed.
-                LoggerFactory.Log("File processed: " + file);
+                    LoggerFactory.Log("Failed to access file: " + file);
+                    return;
+                }
             }
-            catch (InvalidFileException e)
+
+            using (DefaultContext defaultContext = new DefaultContext())
             {
-                LoggerFactory.Log("Invalid File: " + e.InvalidFile, e);
-                //Move the invalid file.
-                string invalidPath = Path.Combine(DirectoryManager.InvalidDir, Path.GetFileName(e.InvalidFile));
-                validateDestination(invalidPath);
-                File.Move(e.InvalidFile, invalidPath);
-            }
-            catch (Exception e)
-            {
-                LoggerFactory.Log("Exception while processing file", e);
+                try
+                {
+                    //Create table entry.
+                    string tableName = Path.GetFileNameWithoutExtension(file);
+                    string userName = Directory.GetParent(file).Name;
+                    TableIndex tableIndex = new TableIndex()
+                    {
+                        Name = tableName,
+                        DateCreated = DateTime.Now,
+                        DateUpdated = DateTime.Now,
+                        Status = "Queued for processing",
+                        Type = (tableName.Contains("_CALC")) ? TableTypes.CALC : (tableName.Contains("_US")) ? TableTypes.UPSTREAM : TableTypes.ATTRIBUTE,
+                        UploadedByUser = userName
+                    };
+                    defaultContext.Tables.Add(tableIndex);
+                    defaultContext.SaveChanges();
+
+                    //Convert the file.
+                    updateTableStatus(defaultContext, tableIndex, "Converting uploaded file.");
+                    string conversionPath = FileConverterFactory.GetConverter(file).ConvertToCSV();
+
+                    //Add converted file to the database.
+                    updateTableStatus(defaultContext, tableIndex, "Creating table in database.");
+                    UserContext userContext = UserContext.GetContextForUser(userName);
+                    userContext.Commands.AddTableFromFile(conversionPath);
+                    userContext.Commands.PopulateTableFromFile(conversionPath);
+                    userContext.Dispose();
+
+                    //Move the original file to the Archive.
+                    updateTableStatus(defaultContext, tableIndex, "Table created.");
+                    string archivePath = Path.Combine(DirectoryManager.ArchiveDir, Directory.GetParent(file).Name, Path.GetFileName(file));
+                    validateDestination(archivePath);
+                    File.Move(file, archivePath);
+
+                    //Log when the file was processed.
+                    LoggerFactory.Log("File processed: " + file);
+                }
+                catch (InvalidFileException e)
+                {
+                    LoggerFactory.Log("Invalid File: " + e.InvalidFile, e);
+                    //Move the invalid file.
+                    string invalidPath = Path.Combine(DirectoryManager.InvalidDir, Path.GetFileName(e.InvalidFile));
+                    validateDestination(invalidPath);
+                    File.Move(e.InvalidFile, invalidPath);
+                }
+                catch (Exception e)
+                {
+                    LoggerFactory.Log("Exception while processing file", e);
+                }
             }
         }
 

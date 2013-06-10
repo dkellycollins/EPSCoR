@@ -19,7 +19,7 @@ namespace EPSCoR.Database.Models
                 + "User Id=root;"
                 + "password=root;"
                 + "Persist Security Info=True;"
-                + "database=cybercomm-" + username + ";"
+                + "database=cybercomm_" + username + ";"
                 + "DefaultCommandTimeout=0";
             DbConnection conn = new MySqlConnection(connection);
             
