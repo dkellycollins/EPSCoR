@@ -86,6 +86,11 @@ namespace EPSCoR
                 "~/Content/jQueryFileUpload/jquery.fileupload-ui.css",
                 "~/Content/jQueryFileUpload/style.css"
                 ));
+
+            //jQuery Datatables bundles
+            bundles.Add(new ScriptBundle("~/scritps/DataTables-1.9.4/datatables-js").Include(
+                "~/Scripts/DataTables-1.9.4/media/js/jquery.dataTables.js"
+                ));
         }
     }
 }
