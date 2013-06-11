@@ -9,7 +9,6 @@ namespace EPSCoR.ViewModels
     {
         public List<string> Tables;
         public CalcFormVM CalcForm;
-        public List<ConvertedTablesVM> ConvertedTables;
     }
 
     public class CalcFormVM

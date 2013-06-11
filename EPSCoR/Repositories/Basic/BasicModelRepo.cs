@@ -39,6 +39,7 @@ namespace EPSCoR.Repositories.Basic
         public void Create(T itemToCreate)
         {
             itemToCreate.DateCreated = DateTime.Now;
+            itemToCreate.DateUpdated = DateTime.Now;
             _context.Set<T>().Add(itemToCreate);
             _context.SaveChanges();
         }

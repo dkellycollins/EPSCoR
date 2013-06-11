@@ -62,7 +62,7 @@ namespace EPSCoR.Database.DbCmds
             throw new NotImplementedException();
         }
 
-        public override void SumTables(string attTable, string usTable)
+        public override void SumTables(string attTable, string usTable, string calcTable)
         {
             throw new NotImplementedException();
         }

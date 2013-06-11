@@ -27,7 +27,7 @@ namespace EPSCoR.Database.DbCmds
 
         internal abstract void AddTableFromFile(string file);
         internal abstract void PopulateTableFromFile(string file);
-        public abstract void SumTables(string attTable, string usTable);
+        public abstract void SumTables(string attTable, string usTable, string calcTable);
         public abstract void CreateDatabase(string databaseName);
 
         public virtual DataTable SelectAllFrom(string table)

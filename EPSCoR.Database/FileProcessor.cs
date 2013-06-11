@@ -109,7 +109,7 @@ namespace EPSCoR.Database
                     userContext.Dispose();
 
                     //Move the original file to the Archive.
-                    updateTableStatus(defaultContext, tableIndex, "Table created.");
+                    updateTableStatus(defaultContext, tableIndex, "Table created.", true);
                     string archivePath = Path.Combine(DirectoryManager.ArchiveDir, Directory.GetParent(file).Name, Path.GetFileName(file));
                     validateDestination(archivePath);
                     File.Move(file, archivePath);
@@ -160,10 +160,11 @@ namespace EPSCoR.Database
                 File.Delete(dest);
         }
 
-        private static void updateTableStatus(DefaultContext context, TableIndex index, string status)
+        private static void updateTableStatus(DefaultContext context, TableIndex index, string status, bool processed = false)
         {
             index.Status = status;
             index.DateUpdated = DateTime.Now;
+            index.Processed = processed;
             context.Entry(index).State = System.Data.EntityState.Modified;
             context.SaveChanges();
         }

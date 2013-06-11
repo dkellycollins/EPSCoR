@@ -110,18 +110,14 @@ namespace EPSCoR.Controllers
             string attTable = formCollection["attTable"];
             string usTable = formCollection["usTable"];
             string calc = formCollection["calc"];
-            string userName = WebSecurity.CurrentUserName;
-
-            TableIndex attTableIndex = _tableIndexRepo.GetAll().Where((t) => t.Name == attTable && t.UploadedByUser == userName).FirstOrDefault();
-            TableIndex usTableIndex = _tableIndexRepo.GetAll().Where((t) => t.Name == usTable && t.UploadedByUser == userName).FirstOrDefault();
 
             switch (calc)
             {
                 case "Sum":
-                    _dbCalc.SumTables(attTableIndex.GetTableName(), usTableIndex.GetTableName());
+                    _dbCalc.SumTables(attTable, usTable);
                     break;
                 case "Avg":
-                    _dbCalc.AvgTables(attTableIndex.GetTableName(), usTableIndex.GetTableName());
+                    _dbCalc.AvgTables(attTable, usTable);
                     break;
             }
 
@@ -147,24 +143,14 @@ namespace EPSCoR.Controllers
             vm.CalcForm.UpstreamTables = new List<string>();
             foreach (TableIndex index in tableIndexes)
             {
+                if (!index.Processed)
+                    continue; //Don't display any tables that cannot be used.
+
                 vm.Tables.Add(index.Name);
                 if (index.Type == TableTypes.ATTRIBUTE)
                     vm.CalcForm.AttributeTables.Add(index.Name);
                 else if (index.Type == TableTypes.UPSTREAM)
                     vm.CalcForm.UpstreamTables.Add(index.Name);
-            }
-
-            vm.ConvertedTables = new List<ConvertedTablesVM>();
-            foreach (string convertedFile in _conversionFileAccessor.GetFiles())
-            {
-                vm.ConvertedTables.Add(new ConvertedTablesVM()
-                {
-                    TableID = 0,
-                    Table = Path.GetFileNameWithoutExtension(convertedFile),
-                    Issuer = "",
-                    Time = "",
-                    Type = ""
-                });
             }
 
             return vm;

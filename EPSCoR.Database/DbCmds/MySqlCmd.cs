@@ -97,9 +97,8 @@ namespace EPSCoR.Database.DbCmds
         /// </summary>
         /// <param name="attTable">Attribute Table</param>
         /// <param name="usTable">Upstream Table</param>
-        public override void SumTables(string attTable, string usTable)
+        public override void SumTables(string attTable, string usTable, string calcTable)
         {
-            string calcTable = string.Format("{0}_{1}_calc", attTable, usTable);
             ThrowExceptionIfInvalidSql(attTable, usTable, calcTable);
 
             // Get columns

@@ -61,9 +61,10 @@ namespace EPSCoR.Repositories.Basic
 
         public void SumTables(string attTable, string usTable)
         {
+            string calcTable = string.Format("{0}_{1}_SUM", attTable, usTable);
             TableIndex index = new TableIndex()
             {
-                Name = string.Format("{0}_{1}", attTable, usTable),
+                Name = calcTable,
                 DateCreated = DateTime.Now,
                 DateUpdated = DateTime.Now,
                 Status = "Generating table.",
@@ -73,7 +74,7 @@ namespace EPSCoR.Repositories.Basic
             _defaultContext.Tables.Add(index);
             _defaultContext.SaveChanges();
 
-            _userContext.Commands.SumTables(attTable, usTable);
+            _userContext.Commands.SumTables(attTable, usTable, calcTable);
 
             index.Status = "Table created.";
             index.DateUpdated = DateTime.Now;
