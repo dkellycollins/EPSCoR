@@ -17,7 +17,7 @@ using WebMatrix.WebData;
 
 namespace EPSCoR.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class TablesController : BootstrapBaseController
     {
         private IModelRepository<UserProfile> _userProfileRepo;
@@ -41,6 +41,15 @@ namespace EPSCoR.Controllers
         {
             _tableIndexRepo = tableIndexRepo;
             _userProfileRepo = userProfileRepo;
+        }
+
+        protected override void OnActionExecuted(ActionExecutedContext filterContext)
+        {
+            _tableIndexRepo.Dispose();
+            _tableRepo.Dispose();
+            _userProfileRepo.Dispose();
+
+            base.OnActionExecuted(filterContext);
         }
 
         //
@@ -123,13 +132,6 @@ namespace EPSCoR.Controllers
 
             DisplaySuccess("Calc table generated");
             return RedirectToAction("Index");
-        }
-
-        public void Dispose()
-        {
-            _tableIndexRepo.Dispose();
-            _tableRepo.Dispose();
-            _userProfileRepo.Dispose();
         }
 
         #region Helpers

@@ -9,7 +9,7 @@ namespace EPSCoR.Controllers
     /// <summary>
     /// Contains private info pages such as the How to pages.
     /// </summary>
-    //[Authorize]
+    [Authorize]
     public class AboutController : Controller
     {
         //

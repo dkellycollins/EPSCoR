@@ -14,7 +14,7 @@ using EPSCoR.ViewModels;
 
 namespace EPSCoR.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class FilesController : BootstrapBaseController
     {
         private IModelRepository<TableIndex> _tableIndexRepo;
@@ -40,6 +40,13 @@ namespace EPSCoR.Controllers
             _uploadFileAccessor = uploadFileAccessor;
             _conversionFileAccessor = conversionFileAccessor;
             _tempFileAccessor = tempFileAccessor;
+        }
+
+        protected override void OnActionExecuted(ActionExecutedContext filterContext)
+        {
+            _tableIndexRepo.Dispose();
+
+            base.OnActionExecuted(filterContext);
         }
 
         //
@@ -149,11 +156,6 @@ namespace EPSCoR.Controllers
             };
             Response.AppendHeader("Content-Disposition", cd.ToString());
             return File(_conversionFileAccessor.OpenFile(fileName), "text/csv");
-        }
-
-        public void Dispose()
-        {
-            _tableIndexRepo.Dispose();
         }
 
         #region Helpers

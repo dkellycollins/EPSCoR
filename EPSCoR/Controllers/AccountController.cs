@@ -29,6 +29,14 @@ namespace EPSCoR.Controllers
             _rootRepo = new BasicRootRepo();
         }
 
+        protected override void OnActionExecuted(ActionExecutedContext filterContext)
+        {
+            _userProfileRepo.Dispose();
+            _rootRepo.Dispose();
+
+            base.OnActionExecuted(filterContext);
+        }
+        
         //
         // GET: /Account/Login
         public ActionResult Login(string returnUrl)
@@ -47,12 +55,6 @@ namespace EPSCoR.Controllers
         {
             CasAuthentication.SingleSignOut();
             return RedirectToAction("Index", "Home");
-        }
-
-        public void Dispose()
-        {
-            _userProfileRepo.Dispose();
-            _rootRepo.Dispose();
         }
 
         private void createProfile()
