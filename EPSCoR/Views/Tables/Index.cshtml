@@ -20,11 +20,13 @@
 
 @section Scripts
 {
+    @Scripts.Render("~/scritps/DataTables-1.9.4/datatables-js");
     <script>
         var loadTable = function (selectedTable) {
             $('#loading').removeClass('hide');
             $('#tableDetails').addClass('hide');
             $('#tableDetails').load("http://localhost:6615/tables/details/" + selectedTable, function () {
+                initDataTable('tableDetails');
                 $('#loading').addClass('hide');
                 $('#tableDetails').removeClass('hide');
             });

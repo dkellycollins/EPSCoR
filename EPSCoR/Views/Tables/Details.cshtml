@@ -12,8 +12,6 @@
 @section Scripts{
     @Scripts.Render("~/scritps/DataTables-1.9.4/datatables-js");
     <script>
-        $(document).ready(function () {
-            $('#tableDetails').dataTable();
-        });
+        $(document).ready(initDataTable('tableDetails'));
     </script>
 }

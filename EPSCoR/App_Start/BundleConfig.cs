@@ -89,7 +89,8 @@ namespace EPSCoR
 
             //jQuery Datatables bundles
             bundles.Add(new ScriptBundle("~/scritps/DataTables-1.9.4/datatables-js").Include(
-                "~/Scripts/DataTables-1.9.4/media/js/jquery.dataTables.js"
+                "~/Scripts/DataTables-1.9.4/media/js/jquery.dataTables.js",
+                "~/Scripts/DataTables-1.9.4/main.js"
                 ));
         }
     }
