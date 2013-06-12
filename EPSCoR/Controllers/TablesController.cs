@@ -71,8 +71,7 @@ namespace EPSCoR.Controllers
             try
             {
                 string userName = WebSecurity.CurrentUserName;
-                TableIndex tIndex = _tableIndexRepo.GetAll().Where((t) => t.Name == id && t.UploadedByUser == userName).FirstOrDefault();
-                DataTable table = _tableRepo.Read(tIndex.GetTableName());
+                DataTable table = _tableRepo.Read(id);
                 table.TableName = id;
                 if (table == null)
                     return new HttpNotFoundResult();
@@ -102,9 +101,7 @@ namespace EPSCoR.Controllers
         [HttpPost]
         public ActionResult Delete(string id)
         {
-            string userName = WebSecurity.CurrentUserName;
-            TableIndex tIndex = _tableIndexRepo.GetAll().Where((t) => t.Name == id && t.UploadedByUser == userName).FirstOrDefault();
-            _tableRepo.Drop(tIndex.GetTableName());
+            _tableRepo.Drop(id);
             return RedirectToAction("Index");
         }
 

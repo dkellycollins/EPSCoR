@@ -8,9 +8,10 @@ using System.Linq;
 using System.Threading;
 using System.Web;
 using EPSCoR.Database.DbCmds;
+using EPSCoR.Database.Models;
 using MySql.Data.MySqlClient;
 
-namespace EPSCoR.Database.Models
+namespace EPSCoR.Database
 {
     public class DefaultContext : DbContext
     {

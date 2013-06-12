@@ -5,6 +5,7 @@ using System.Threading;
 using System.Web.Mvc;
 using WebMatrix.WebData;
 using EPSCoR.Database.Models;
+using EPSCoR.Database;
 
 namespace EPSCoR.Filters
 {

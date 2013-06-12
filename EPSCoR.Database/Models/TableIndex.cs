@@ -27,11 +27,6 @@ namespace EPSCoR.Database.Models
         public string Status { get; set; }
 
         public bool Processed { get; set; }
-
-        public string GetTableName()
-        {
-            return string.Format("{0}_{1}", UploadedByUser, Name);
-        }
     }
 
     public class TableTypes

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web.Mvc;
 using EPSCoR.Controllers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -20,7 +21,7 @@ namespace EPSCoR.Tests.Controllers
         {
             var result = _controller.Index();
 
-            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
 
         [TestMethod]
@@ -28,7 +29,7 @@ namespace EPSCoR.Tests.Controllers
         {
             var result = _controller.HowToExport();
 
-            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
 
         [TestMethod]
@@ -36,7 +37,7 @@ namespace EPSCoR.Tests.Controllers
         {
             var result = _controller.HowToUpload();
 
-            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
     }
 }

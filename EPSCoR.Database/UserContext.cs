@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
+﻿using System.Data.Common;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EPSCoR.Database.DbCmds;
 using MySql.Data.MySqlClient;
 
-namespace EPSCoR.Database.Models
+namespace EPSCoR.Database
 {
     public class UserContext : DbContext
     {
