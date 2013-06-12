@@ -91,6 +91,7 @@ namespace EPSCoR.Controllers
 
         //
         // GET: /Table/Delete/{Table.ID}
+        [HttpGet]
         public ActionResult Delete()
         {
             return View();
@@ -105,12 +106,6 @@ namespace EPSCoR.Controllers
             TableIndex tIndex = _tableIndexRepo.GetAll().Where((t) => t.Name == id && t.UploadedByUser == userName).FirstOrDefault();
             _tableRepo.Drop(tIndex.GetTableName());
             return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            _userProfileRepo.Dispose();
-            base.Dispose(disposing);
         }
 
         [HttpPost]

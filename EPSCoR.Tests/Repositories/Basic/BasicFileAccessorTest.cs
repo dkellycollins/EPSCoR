@@ -1,49 +1,49 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace EPSCoR.Tests.Controllers
+namespace EPSCoR.Tests.Repositories.Basic
 {
     [TestClass]
-    public class TablesControllerTest
+    public class BasicFileAccessorTest
     {
         [TestMethod]
-        public void IndexTest()
+        public void SaveFilesTest()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void DetailsSuccessTest()
+        public void OpenFileTest()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void DetailsFailTest()
+        public void CloseFileTest()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void DeleteGetTest()
+        public void GetFilesTest()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void DeletePostSuccessTest()
+        public void DeleteFilesTest()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void DeletePostFailTest()
+        public void FileExistTest()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void CalcTest()
+        public void GetFileInfoTest()
         {
             Assert.Inconclusive();
         }

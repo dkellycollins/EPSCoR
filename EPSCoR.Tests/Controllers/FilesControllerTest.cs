@@ -4,46 +4,46 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace EPSCoR.Tests.Controllers
 {
     [TestClass]
-    public class TablesControllerTest
+    public class FilesControllerTest
     {
         [TestMethod]
-        public void IndexTest()
+        public void UploadGetTest()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void DetailsSuccessTest()
+        public void UploadPostTest()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void DetailsFailTest()
+        public void UploadFilesTest()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void DeleteGetTest()
+        public void CompleteUploadTest()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void DeletePostSuccessTest()
+        public void DownloadTest()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void DeletePostFailTest()
+        public void DownloadCsvTest()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void CalcTest()
+        public void CreateFileDownloadVMTest()
         {
             Assert.Inconclusive();
         }

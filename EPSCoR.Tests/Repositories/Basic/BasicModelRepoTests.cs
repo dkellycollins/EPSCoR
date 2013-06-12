@@ -1,49 +1,49 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace EPSCoR.Tests.Controllers
+namespace EPSCoR.Tests.Repositories
 {
     [TestClass]
-    public class TablesControllerTest
+    public class BasicRepoTest
     {
+        [TestInitialize]
+        public void TestInitalize()
+        {
+
+        }
+
         [TestMethod]
-        public void IndexTest()
+        public void GetTest()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void DetailsSuccessTest()
+        public void GetWithIDTest()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void DetailsFailTest()
+        public void GetAllTest()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void DeleteGetTest()
+        public void CreateTest()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void DeletePostSuccessTest()
+        public void UpdateTest()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void DeletePostFailTest()
-        {
-            Assert.Inconclusive();
-        }
-
-        [TestMethod]
-        public void CalcTest()
+        public void RemoveTest()
         {
             Assert.Inconclusive();
         }

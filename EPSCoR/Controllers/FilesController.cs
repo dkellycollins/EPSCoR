@@ -51,7 +51,7 @@ namespace EPSCoR.Controllers
 
         //
         // GET: /Upload/
-
+        [HttpGet]
         public ActionResult Upload()
         {
             List<string> fileNames = new List<string>();
