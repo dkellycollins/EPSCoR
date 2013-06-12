@@ -71,24 +71,17 @@ namespace EPSCoR.Controllers
         // GET: /Tables/Details/{Table.ID}
         public ActionResult Details(string id)
         {
-            try
-            {
-                string userName = WebSecurity.CurrentUserName;
-                DataTable table = _tableRepo.Read(id);
-                table.TableName = id;
-                if (table == null)
-                    return new HttpNotFoundResult();
-                if (Request["format"] == "json") //Handle json request.
-                    return Json(table);
-                if (Request.IsAjaxRequest()) //Handle ajax request.
-                    return PartialView(table);
-                else //Handle all other request.
-                    return View(table);
-            }
-            catch
-            {
+            DataTable table = _tableRepo.Read(id);
+            if (table == null)
                 return new HttpNotFoundResult();
-            }
+
+            table.TableName = id;
+            if (Request["format"] == "json") //Handle json request.
+                return Json(table);
+            if (Request.IsAjaxRequest()) //Handle ajax request.
+                return PartialView(table);
+            else //Handle all other request.
+                return View(table);
         }
 
         //

@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using System.Web.Routing;
 using EPSCoR.Controllers;
 using EPSCoR.Database.Models;
 using EPSCoR.Repositories;
@@ -12,7 +16,7 @@ namespace EPSCoR.Tests.Controllers
     [TestClass]
     public class TablesControllerTest
     {
-        private List<TableIndex> MockData = new List<TableIndex>()
+        private List<TableIndex> MockTableIndexes = new List<TableIndex>()
         {
             new TableIndex()
             {
@@ -52,6 +56,11 @@ namespace EPSCoR.Tests.Controllers
             },
         };
 
+        private DataTable MockDataTable = new DataTable()
+        {
+            TableName = "TestTable",
+        };
+
         private Mock<IModelRepository<TableIndex>> _tableIndexRepo;
         private Mock<ITableRepository> _tableRepo;
         private Mock<IDatabaseCalc> _dbCalc;
@@ -63,6 +72,8 @@ namespace EPSCoR.Tests.Controllers
             _tableRepo = new Mock<ITableRepository>();
             _dbCalc = new Mock<IDatabaseCalc>();
         }
+
+        #region IndexTests
 
         [TestMethod]
         public void GetAllProcessedTables()
@@ -81,7 +92,7 @@ namespace EPSCoR.Tests.Controllers
         {
             TablesController controller = indexSetup();
             int expectedLength = 1;
-            TableIndex expectedTableIndex = MockData[1];
+            TableIndex expectedTableIndex = MockTableIndexes[1];
 
             dynamic view = controller.Index();
             int actualLength = view.ViewBag.AttributeTables.Count;
@@ -96,7 +107,7 @@ namespace EPSCoR.Tests.Controllers
         {
             TablesController controller = indexSetup();
             int expectedLength = 1;
-            TableIndex expectedTableIndex = MockData[2];
+            TableIndex expectedTableIndex = MockTableIndexes[2];
 
             dynamic view = controller.Index();
             int actualLength = view.ViewBag.AttributeTables.Count;
@@ -108,21 +119,67 @@ namespace EPSCoR.Tests.Controllers
 
         private TablesController indexSetup()
         {
-            _tableIndexRepo.Setup(repo => repo.GetAll()).Returns(MockData.AsQueryable());
+            _tableIndexRepo.Setup(repo => repo.GetAll()).Returns(MockTableIndexes.AsQueryable());
 
             return new TablesController(_tableIndexRepo.Object, _tableRepo.Object, _dbCalc.Object);
         }
 
+        #endregion IndexTests
+
         [TestMethod]
-        public void DetailsSuccessTest()
+        public void GetTableDetailsView()
         {
-            Assert.Inconclusive();
+            Mock<HttpRequestBase> request = new Mock<HttpRequestBase>();
+            request.Setup(r => r.Headers).Returns(
+                new System.Net.WebHeaderCollection {
+                });
+            Mock<HttpContextBase> context = new Mock<HttpContextBase>();
+            context.Setup(c => c.Request).Returns(request.Object);
+            _tableRepo.Setup(repo => repo.Read(MockDataTable.TableName)).Returns(MockDataTable);
+            TablesController controller = new TablesController(_tableIndexRepo.Object, _tableRepo.Object, _dbCalc.Object);
+            controller.ControllerContext = new ControllerContext(context.Object, new RouteData(), controller);
+
+            dynamic result = controller.Details(MockDataTable.TableName);
+
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            Assert.AreEqual(MockDataTable, result.Model);
         }
 
         [TestMethod]
-        public void DetailsFailTest()
+        public void GetTableDetailsPartialView()
         {
-            Assert.Inconclusive();
+            Mock<HttpRequestBase> request = new Mock<HttpRequestBase>();
+            request.Setup(r => r.Headers).Returns(
+                new System.Net.WebHeaderCollection {
+                    {"X-Requested-With", "XMLHttpRequest"}
+                });
+            Mock<HttpContextBase> context = new Mock<HttpContextBase>();
+            context.Setup(c => c.Request).Returns(request.Object);
+            _tableRepo.Setup(repo => repo.Read(MockDataTable.TableName)).Returns(MockDataTable);
+            TablesController controller = new TablesController(_tableIndexRepo.Object, _tableRepo.Object, _dbCalc.Object);
+            controller.ControllerContext = new ControllerContext(context.Object, new RouteData(), controller);
+
+            dynamic result = controller.Details(MockDataTable.TableName);
+
+            Assert.IsInstanceOfType(result, typeof(PartialViewResult));
+            Assert.AreEqual(MockDataTable, result.Model);
+        }
+
+        [TestMethod]
+        public void GetNonexisitantTableDetailsView()
+        {
+            TablesController controller = detailsSetup();
+
+            var actual = controller.Details("X");
+
+            Assert.IsInstanceOfType(actual, typeof(HttpNotFoundResult));
+        }
+
+        private TablesController detailsSetup()
+        {
+            _tableRepo.Setup(repo => repo.Read(MockDataTable.TableName)).Returns(MockDataTable);
+
+            return new TablesController(_tableIndexRepo.Object, _tableRepo.Object, _dbCalc.Object);
         }
 
         [TestMethod]
