@@ -54,9 +54,16 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\FileConverter\FileConverterFactoryTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EPSCoR.Database\EPSCoR.Database.csproj">
+      <Project>{cabe2c57-7bb7-40de-8f38-2b18bffbee38}</Project>
+      <Name>EPSCoR.Database</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

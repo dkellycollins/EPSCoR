@@ -20,34 +20,32 @@ namespace EPSCoR.Controllers
     [Authorize]
     public class TablesController : BootstrapBaseController
     {
-        private IModelRepository<UserProfile> _userProfileRepo;
         private IModelRepository<TableIndex> _tableIndexRepo;
-        private IFileAccessor _conversionFileAccessor;
         private ITableRepository _tableRepo;
         private IDatabaseCalc _dbCalc;
 
         public TablesController()
         {
-            _userProfileRepo = new BasicModelRepo<UserProfile>();
             _tableIndexRepo = new BasicModelRepo<TableIndex>();
-            _conversionFileAccessor = BasicFileAccessor.GetConversionsAccessor(WebSecurity.CurrentUserName);
             _tableRepo = new BasicTableRepo(WebSecurity.CurrentUserName);
             _dbCalc = (IDatabaseCalc)_tableRepo;
         }
 
         public TablesController(
             IModelRepository<TableIndex> tableIndexRepo,
-            IModelRepository<UserProfile> userProfileRepo)
+            ITableRepository tableRepo,
+            IDatabaseCalc dbCalc)
         {
             _tableIndexRepo = tableIndexRepo;
-            _userProfileRepo = userProfileRepo;
+            _tableRepo = tableRepo;
+            _dbCalc = dbCalc;
         }
 
         protected override void OnActionExecuted(ActionExecutedContext filterContext)
         {
             _tableIndexRepo.Dispose();
             _tableRepo.Dispose();
-            _userProfileRepo.Dispose();
+            _dbCalc.Dispose();
 
             base.OnActionExecuted(filterContext);
         }
@@ -57,11 +55,16 @@ namespace EPSCoR.Controllers
         public ActionResult Index()
         {
             var tables = from t in _tableIndexRepo.GetAll() select t;
-            //UserProfile userProfile = _userProfileRepo.GetAll().Where((u) => u.UserName == WebSecurity.CurrentUserName).FirstOrDefault();
-            //if(!this.User.IsInRole("admin"))
-                //tables = tables.Where((t) => t. == this.User);
 
-            return View(createTableIndexViewModel(tables.ToList()));
+            var allTables = tables.Where(t => t.Processed);
+            var attTables = allTables.Where(t => t.Type == TableTypes.ATTRIBUTE);
+            var usTables = allTables.Where(t => t.Type == TableTypes.UPSTREAM);
+
+            ViewBag.AllTables = allTables.ToList();
+            ViewBag.AttributeTables = attTables.ToList();
+            ViewBag.UpstreamTables = usTables.ToList();
+
+            return View();
         }
 
         //
@@ -127,28 +130,6 @@ namespace EPSCoR.Controllers
         }
 
         #region Helpers
-
-        private TableIndexVM createTableIndexViewModel(List<TableIndex> tableIndexes)
-        {
-            TableIndexVM vm = new TableIndexVM();
-            vm.Tables = new List<string>();
-            vm.CalcForm = new CalcFormVM();
-            vm.CalcForm.AttributeTables = new List<string>();
-            vm.CalcForm.UpstreamTables = new List<string>();
-            foreach (TableIndex index in tableIndexes)
-            {
-                if (!index.Processed)
-                    continue; //Don't display any tables that cannot be used.
-
-                vm.Tables.Add(index.Name);
-                if (index.Type == TableTypes.ATTRIBUTE)
-                    vm.CalcForm.AttributeTables.Add(index.Name);
-                else if (index.Type == TableTypes.UPSTREAM)
-                    vm.CalcForm.UpstreamTables.Add(index.Name);
-            }
-
-            return vm;
-        }
 
         #endregion Helpers
     }

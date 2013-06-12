@@ -61,7 +61,7 @@
     <Compile Include="Models\IModel.cs" />
     <Compile Include="UserContext.cs" />
     <Compile Include="Services\FileConverter\CSVFileConverter.cs" />
-    <Compile Include="DbCmds\DbCmd.cs" />
+    <Compile Include="DbProcedure\DbProcedures.cs" />
     <Compile Include="Services\FileConverter\FileConverterFactory.cs" />
     <Compile Include="Services\FileConverter\IFileConverter.cs" />
     <Compile Include="Models\TableIndex.cs" />
@@ -74,8 +74,8 @@
     <Compile Include="DefaultContext.cs" />
     <Compile Include="Services\Log\ILogger.cs" />
     <Compile Include="Services\Log\LoggerFactory.cs" />
-    <Compile Include="DbCmds\SqlServerCmd.cs" />
-    <Compile Include="DbCmds\MySqlCmd.cs" />
+    <Compile Include="DbProcedure\SqlServerProcedures.cs" />
+    <Compile Include="DbProcedure\MySqlProcedures.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -83,7 +83,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\Seed_Data\" />
+    <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="ADODB">

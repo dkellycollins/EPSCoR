@@ -30,7 +30,7 @@ namespace EPSCoR.Repositories.Basic
 
         public DataTable Read(string tableName)
         {
-            return _userContext.Commands.SelectAllFrom(tableName);
+            return _userContext.Procedures.SelectAllFrom(tableName);
         }
 
         public void Update(DataTable table)
@@ -40,7 +40,7 @@ namespace EPSCoR.Repositories.Basic
 
         public void Drop(string tableName)
         {
-            _userContext.Commands.DropTable(tableName);
+            _userContext.Procedures.DropTable(tableName);
 
             TableIndex tableIndex = _defaultContext.Tables.Where((t) => t.Name == tableName).FirstOrDefault();
             if (tableIndex != null)
@@ -75,7 +75,7 @@ namespace EPSCoR.Repositories.Basic
             _defaultContext.Tables.Add(index);
             _defaultContext.SaveChanges();
 
-            _userContext.Commands.SumTables(attTable, usTable, calcTable);
+            _userContext.Procedures.SumTables(attTable, usTable, calcTable);
 
             index.Status = "Table created.";
             index.DateUpdated = DateTime.Now;

@@ -1,16 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Data.Entity;
-using System.Data.SqlClient;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Web;
-using EPSCoR.Database.DbCmds;
 using EPSCoR.Database.Exceptions;
 using EPSCoR.Database.Models;
 using EPSCoR.Database.Services;
@@ -104,8 +94,8 @@ namespace EPSCoR.Database
                     //Add converted file to the database.
                     updateTableStatus(defaultContext, tableIndex, "Creating table in database.");
                     UserContext userContext = UserContext.GetContextForUser(userName);
-                    userContext.Commands.AddTableFromFile(conversionPath);
-                    userContext.Commands.PopulateTableFromFile(conversionPath);
+                    userContext.Procedures.AddTableFromFile(conversionPath);
+                    userContext.Procedures.PopulateTableFromFile(conversionPath);
                     userContext.Dispose();
 
                     //Move the original file to the Archive.

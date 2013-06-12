@@ -18,7 +18,7 @@ namespace EPSCoR.Repositories.Basic
 
         public void CreateDatabase(string databaseName)
         {
-            _context.Commands.CreateDatabase(databaseName);
+            _context.Procedures.CreateDatabase(databaseName);
         }
 
         public void DropDatabase(string databaseName)

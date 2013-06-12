@@ -124,6 +124,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EPSCoR.Database\EPSCoR.Database.csproj">
+      <Project>{cabe2c57-7bb7-40de-8f38-2b18bffbee38}</Project>
+      <Name>EPSCoR.Database</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EPSCoR\EPSCoR.csproj">
       <Project>{9D3EF42C-1E00-4A31-9BEE-B8E8514D1650}</Project>
       <Name>EPSCoR</Name>

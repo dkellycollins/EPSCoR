@@ -1,6 +1,6 @@
 ﻿using System.Data.Common;
 using System.Data.Entity;
-using EPSCoR.Database.DbCmds;
+using EPSCoR.Database.DbProcedure;
 using MySql.Data.MySqlClient;
 
 namespace EPSCoR.Database
@@ -19,7 +19,7 @@ namespace EPSCoR.Database
             DbConnection conn = new MySqlConnection(connection);
             
             UserContext context = new UserContext(conn);
-            context.Commands = new MySqlCmd(context);
+            context.Procedures = new MySqlProcedures(context);
 
             return context;
         }
@@ -31,7 +31,7 @@ namespace EPSCoR.Database
                 return this.Database.Connection.Database;
             }
         }
-        public DbCmd Commands { get; private set; }
+        public DbProcedures Procedures { get; private set; }
 
         private UserContext(DbConnection conn)
             : base(conn, false)

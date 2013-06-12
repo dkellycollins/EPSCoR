@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.Data.Entity;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Threading;
-using System.Web;
-using EPSCoR.Database.DbCmds;
+﻿using System.Data.Entity;
+using EPSCoR.Database.DbProcedure;
 using EPSCoR.Database.Models;
-using MySql.Data.MySqlClient;
 
 namespace EPSCoR.Database
 {
@@ -42,12 +33,12 @@ namespace EPSCoR.Database
 
         public DbSet<TableIndex> Tables { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
-        public DbCmd Commands { get; private set; }
+        public DbProcedures Procedures { get; private set; }
 
         public DefaultContext()
             : base("MySqlConnection")
         {
-            Commands = new MySqlCmd(this);
+            Procedures = new MySqlProcedures(this);
         }
     }
 }
