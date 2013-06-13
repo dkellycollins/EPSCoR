@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using EPSCoR.Database;
 using EPSCoR.Database.Models;
@@ -30,7 +31,14 @@ namespace EPSCoR.Repositories.Basic
 
         public DataTable Read(string tableName)
         {
-            return _userContext.Procedures.SelectAllFrom(tableName);
+            try
+            {
+                return _userContext.Procedures.SelectAllFrom(tableName);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public void Update(DataTable table)
@@ -60,7 +68,43 @@ namespace EPSCoR.Repositories.Basic
 
         #region IDatabaseCalc Members
 
-        public void SumTables(string attTable, string usTable)
+        public CalcResult SumTables(string attTable, string usTable)
+        {
+            string calcTable = string.Format("{0}_{1}_SUM", attTable, usTable);
+            TableIndex exisitingTable = _defaultContext.GetTableIndex(calcTable, currentUser);
+            if (exisitingTable != null)
+                return CalcResult.TableAlreadyExists;
+
+            try
+            {
+                TableIndex index = new TableIndex()
+                {
+                    Name = calcTable,
+                    DateCreated = DateTime.Now,
+                    DateUpdated = DateTime.Now,
+                    Status = "Generating table.",
+                    Type = TableTypes.CALC,
+                    UploadedByUser = currentUser
+                };
+                _defaultContext.Tables.Add(index);
+                _defaultContext.SaveChanges();
+
+                _userContext.Procedures.SumTables(attTable, usTable, calcTable);
+
+                index.Status = "Table created.";
+                index.DateUpdated = DateTime.Now;
+                _defaultContext.Entry(index).State = EntityState.Modified;
+                _defaultContext.SaveChanges();
+
+                return CalcResult.Success;
+            }
+            catch
+            {
+                return CalcResult.Error;
+            }
+        }
+
+        public void SumTablesAsync(string attTable, string usTable)
         {
             string calcTable = string.Format("{0}_{1}_SUM", attTable, usTable);
             TableIndex index = new TableIndex()
@@ -75,15 +119,17 @@ namespace EPSCoR.Repositories.Basic
             _defaultContext.Tables.Add(index);
             _defaultContext.SaveChanges();
 
-            _userContext.Procedures.SumTables(attTable, usTable, calcTable);
-
-            index.Status = "Table created.";
-            index.DateUpdated = DateTime.Now;
-            _defaultContext.Entry(index).State = EntityState.Modified;
-            _defaultContext.SaveChanges();
+            Task.Factory.StartNew(() => _userContext.Procedures.SumTables(attTable, usTable, calcTable))
+                .ContinueWith((task) =>
+                {
+                    index.Status = "Table created.";
+                    index.DateUpdated = DateTime.Now;
+                    _defaultContext.Entry(index).State = EntityState.Modified;
+                    _defaultContext.SaveChanges();
+                });
         }
 
-        public void AvgTables(string attTable, string usTalbe)
+        public CalcResult AvgTables(string attTable, string usTalbe)
         {
             throw new NotImplementedException();
         }

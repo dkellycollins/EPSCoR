@@ -9,9 +9,9 @@ using System.Web;
 using System.Web.Mvc;
 using BootstrapSupport;
 using EPSCoR.Database.Models;
+using EPSCoR.Extensions;
 using EPSCoR.Repositories;
 using EPSCoR.Repositories.Basic;
-using EPSCoR.ViewModels;
 using Newtonsoft.Json.Linq;
 using WebMatrix.WebData;
 
@@ -76,20 +76,12 @@ namespace EPSCoR.Controllers
                 return new HttpNotFoundResult();
 
             table.TableName = id;
-            if (Request["format"] == "json") //Handle json request.
+            if (Request.IsJsonRequest()) //Handle json request.
                 return Json(table);
             if (Request.IsAjaxRequest()) //Handle ajax request.
-                return PartialView(table);
+                return PartialView("DetailsPartial", table);
             else //Handle all other request.
                 return View(table);
-        }
-
-        //
-        // GET: /Table/Delete/{Table.ID}
-        [HttpGet]
-        public ActionResult Delete()
-        {
-            return View();
         }
 
         //
@@ -97,7 +89,11 @@ namespace EPSCoR.Controllers
         [HttpPost]
         public ActionResult Delete(string id)
         {
+            if (string.IsNullOrEmpty(id))
+                return HttpNotFound();
+
             _tableRepo.Drop(id);
+            DisplaySuccess(id + " deleted.");
             return RedirectToAction("Index");
         }
 
@@ -108,17 +104,32 @@ namespace EPSCoR.Controllers
             string usTable = formCollection["usTable"];
             string calc = formCollection["calc"];
 
+            CalcResult result = CalcResult.Unknown;
             switch (calc)
             {
                 case "Sum":
-                    _dbCalc.SumTables(attTable, usTable);
+                    result = _dbCalc.SumTables(attTable, usTable);
                     break;
                 case "Avg":
-                    _dbCalc.AvgTables(attTable, usTable);
+                    result = _dbCalc.AvgTables(attTable, usTable);
                     break;
             }
 
-            DisplaySuccess("Calc table generated");
+            switch (result)
+            {
+                case CalcResult.Success:
+                    DisplaySuccess("Calc table generated");
+                    break;
+                case CalcResult.Error:
+                    DisplayError("The server encountered an error while processing you request.");
+                    break;
+                case CalcResult.TableAlreadyExists:
+                    DisplayError("The calc table already exists. Please delete existing table before createing a new one.");
+                    break;
+                case CalcResult.SubmittedForProcessing:
+                    DisplayInformation("The request has been submitted for processing.");
+                    break;
+            }
             return RedirectToAction("Index");
         }
 

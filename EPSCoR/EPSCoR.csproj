@@ -170,6 +170,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TablesController.cs" />
     <Compile Include="Controllers\FilesController.cs" />
+    <Compile Include="Extensions\HttpRequestBaseExtensions.cs" />
     <Compile Include="Filters\AuthorizeRoleAttribute.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
     <Compile Include="Filters\MultipleResponseFormatsAttribute.cs" />
@@ -192,8 +193,6 @@
     <Compile Include="Repositories\IRootRepository.cs" />
     <Compile Include="Repositories\ITableRepository.cs" />
     <Compile Include="Repositories\Basic\BasicTableRepo.cs" />
-    <Compile Include="ViewModels\FileDownloadViewModels.cs" />
-    <Compile Include="ViewModels\TableIndexViewModels.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\Bootstrap\body.css" />

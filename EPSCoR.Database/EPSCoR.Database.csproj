@@ -59,6 +59,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\IModel.cs" />
+    <Compile Include="Services\CompleteFileWatcher.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UserContext.cs" />
     <Compile Include="Services\FileConverter\CSVFileConverter.cs" />
     <Compile Include="DbProcedure\DbProcedures.cs" />

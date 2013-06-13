@@ -126,6 +126,8 @@ namespace EPSCoR.Tests.Controllers
 
         #endregion IndexTests
 
+        #region Details Tests
+
         [TestMethod]
         public void GetTableDetailsView()
         {
@@ -166,39 +168,61 @@ namespace EPSCoR.Tests.Controllers
         }
 
         [TestMethod]
+        public void GetTableDetailsJsonResult()
+        {
+            Mock<HttpRequestBase> request = new Mock<HttpRequestBase>();
+            request.Setup(r => r.Headers).Returns(
+                new System.Net.WebHeaderCollection {
+                    {"format", "json"}
+                });
+            Mock<HttpContextBase> context = new Mock<HttpContextBase>();
+            context.Setup(c => c.Request).Returns(request.Object);
+            _tableRepo.Setup(repo => repo.Read(MockDataTable.TableName)).Returns(MockDataTable);
+            TablesController controller = new TablesController(_tableIndexRepo.Object, _tableRepo.Object, _dbCalc.Object);
+            controller.ControllerContext = new ControllerContext(context.Object, new RouteData(), controller);
+
+            dynamic result = controller.Details(MockDataTable.TableName);
+
+            Assert.IsInstanceOfType(result, typeof(JsonResult));
+            Assert.AreEqual(MockDataTable, result.Data);
+        }
+
+        [TestMethod]
         public void GetNonexisitantTableDetailsView()
         {
-            TablesController controller = detailsSetup();
+            _tableRepo.Setup(repo => repo.Read(MockDataTable.TableName)).Returns(MockDataTable);
+            TablesController controller = new TablesController(_tableIndexRepo.Object, _tableRepo.Object, _dbCalc.Object);
 
             var actual = controller.Details("X");
 
             Assert.IsInstanceOfType(actual, typeof(HttpNotFoundResult));
         }
 
-        private TablesController detailsSetup()
-        {
-            _tableRepo.Setup(repo => repo.Read(MockDataTable.TableName)).Returns(MockDataTable);
+        #endregion Details Tests
 
-            return new TablesController(_tableIndexRepo.Object, _tableRepo.Object, _dbCalc.Object);
-        }
-
-        [TestMethod]
-        public void DeleteGetTest()
-        {
-            Assert.Inconclusive();
-        }
+        #region Delete Tests
 
         [TestMethod]
         public void DeletePostSuccessTest()
         {
-            Assert.Inconclusive();
+            TablesController controller = new TablesController(_tableIndexRepo.Object, _tableRepo.Object, _dbCalc.Object);
+
+            var result = controller.Delete(MockDataTable.TableName);
+
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
         }
 
         [TestMethod]
         public void DeletePostFailTest()
         {
-            Assert.Inconclusive();
+            TablesController controller = new TablesController(_tableIndexRepo.Object, _tableRepo.Object, _dbCalc.Object);
+
+            var result = controller.Delete("");
+
+            Assert.IsInstanceOfType(result, typeof(HttpNotFoundResult));
         }
+
+        #endregion Delete Tests
 
         [TestMethod]
         public void CalcTest()

@@ -92,6 +92,10 @@ namespace EPSCoR
                 "~/Scripts/DataTables-1.9.4/media/js/jquery.dataTables.js",
                 "~/Scripts/DataTables-1.9.4/main.js"
                 ));
+
+            bundles.Add(new StyleBundle("~/content/DataTables-1.9.4/datatables-css").Include(
+                "~/Content/DataTables-1.9.4/media/css/jquery.dataTables.css"
+                ));
         }
     }
 }

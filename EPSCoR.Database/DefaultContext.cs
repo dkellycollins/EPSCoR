@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity;
+using System.Linq;
 using EPSCoR.Database.DbProcedure;
 using EPSCoR.Database.Models;
 
@@ -39,6 +40,11 @@ namespace EPSCoR.Database
             : base("MySqlConnection")
         {
             Procedures = new MySqlProcedures(this);
+        }
+
+        public TableIndex GetTableIndex(string tableName, string UserName)
+        {
+            return Tables.Where(index => index.Name == tableName && index.UploadedByUser == UserName).FirstOrDefault();
         }
     }
 }

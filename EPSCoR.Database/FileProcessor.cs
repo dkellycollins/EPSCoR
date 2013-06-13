@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Web;
 using EPSCoR.Database.Exceptions;
 using EPSCoR.Database.Models;
@@ -25,10 +26,11 @@ namespace EPSCoR.Database
         public FileProcessor()
         {
             _fileWatcher = new FileSystemWatcher(DirectoryManager.UploadDir);
-            //_fileWatcher.Created += _fileWatcher_Created;
-            _fileWatcher.Changed += _fileWatcher_Changed;
+            _fileWatcher.Created += _fileWatcher_Created;
+            //_fileWatcher.Changed += _fileWatcher_Changed;
             _fileWatcher.Error += _fileWatcher_Error;
 
+            _fileWatcher.IncludeSubdirectories = true;
             _fileWatcher.EnableRaisingEvents = true;
         }
 
@@ -45,7 +47,7 @@ namespace EPSCoR.Database
         private void _fileWatcher_Changed(object sender, FileSystemEventArgs e)
         {
             if (e.ChangeType == WatcherChangeTypes.Changed || e.ChangeType == WatcherChangeTypes.Created)
-                convertFile(e.FullPath);
+                Task.Factory.StartNew(() => convertFile(e.FullPath));
         }
 
         private void _fileWatcher_Error(object sender, ErrorEventArgs e)

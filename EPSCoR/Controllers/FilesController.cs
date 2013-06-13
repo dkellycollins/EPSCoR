@@ -10,7 +10,6 @@ using EPSCoR.Repositories;
 using WebMatrix.WebData;
 using System.Web.Script.Serialization;
 using EPSCoR.Repositories.Basic;
-using EPSCoR.ViewModels;
 
 namespace EPSCoR.Controllers
 {
@@ -94,11 +93,7 @@ namespace EPSCoR.Controllers
             string fileName = Path.GetFileName(file.FileName);
             string tableName = Path.GetFileNameWithoutExtension(file.FileName);
             string userName = WebSecurity.CurrentUserName;
-            TableIndex existingTable = _tableIndexRepo.GetAll().Where(t => t.Name == tableName && t.UploadedByUser == userName).FirstOrDefault();
-            if (existingTable != null)
-            {
-                return new FileUploadResult(fileName, "Table already exists. Delete exisiting table before uploading a new one.");
-            }
+            
 
             //Save the chunk.
             FileStreamWrapper wrapper = new FileStreamWrapper()
@@ -117,6 +112,13 @@ namespace EPSCoR.Controllers
         [HttpPost]
         public ActionResult CompleteUpload(string id)
         {
+            string userName = WebSecurity.CurrentUserName;
+            TableIndex existingTable = _tableIndexRepo.GetAll().Where(t => t.Name == id && t.UploadedByUser == userName).FirstOrDefault();
+            if (existingTable != null)
+                return new FileUploadResult(id, "Table already exists. Delete exisiting table before uploading a new one.");
+            if (!_tempFileAccessor.FileExist(id))
+                return new FileUploadResult(id, "File has not been uploaded.");
+
             bool result = false;
             FileStream fileStream = _tempFileAccessor.OpenFile(id);
             if (fileStream != null)
@@ -138,7 +140,14 @@ namespace EPSCoR.Controllers
 
         public ActionResult Download()
         {
-            return View(createFileDownloadVM(_tableIndexRepo.GetAll()));
+            var tableIndexes = _tableIndexRepo.GetAll().ToList();
+            List<TableIndex> existingConversions = new List<TableIndex>();
+            foreach (TableIndex tableIndex in tableIndexes)
+            {
+                if (_conversionFileAccessor.FileExist(tableIndex.Name + ".csv"))
+                    existingConversions.Add(tableIndex);
+            }
+            return View(existingConversions);
         }
 
         public ActionResult DownloadCsv(string id)
@@ -159,26 +168,6 @@ namespace EPSCoR.Controllers
         }
 
         #region Helpers
-
-        private List<FileDownloadVM> createFileDownloadVM(IEnumerable<TableIndex> tableIndexes)
-        {
-            List<FileDownloadVM> returnList = new List<FileDownloadVM>();
-            foreach (TableIndex tableIndex in tableIndexes)
-            {
-                if (!_conversionFileAccessor.FileExist(tableIndex.Name + ".csv"))
-                    continue;
-
-                returnList.Add(new FileDownloadVM()
-                {
-                    Table = tableIndex.Name,
-                    Type = tableIndex.Type,
-                    DateCreated = tableIndex.DateUpdated.ToString(),
-                    Issuer = tableIndex.UploadedByUser
-                });
-            }
-
-            return returnList;
-        }
 
         #endregion
     }

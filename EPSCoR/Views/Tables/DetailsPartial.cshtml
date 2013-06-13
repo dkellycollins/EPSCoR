@@ -1,23 +1,27 @@
 ﻿@model System.Data.DataTable
 
-<table class="table table-bordered table-striped">
-    <tr>
-        @foreach(System.Data.DataColumn column in Model.Columns)
-        {
-            <th>
-                @column.ColumnName
-            </th>
-        }
-    </tr>
-    @foreach (System.Data.DataRow row in Model.Rows)
-    {
+<table id="tableDetails" class="table table-bordered table-striped">
+    <thead>
         <tr>
-        @foreach (System.Data.DataColumn column in Model.Columns)
-        {
-            <td>
-                @row[column]
-            </td>
-        }
+            @foreach(System.Data.DataColumn column in Model.Columns)
+            {
+                <th>
+                    @column.ColumnName
+                </th>
+            }
         </tr>
-    }
+    </thead>
+    <tbody>
+        @foreach (System.Data.DataRow row in Model.Rows)
+        {
+            <tr>
+            @foreach (System.Data.DataColumn column in Model.Columns)
+            {
+                <td>
+                    @row[column]
+                </td>
+            }
+            </tr>
+        }
+    </tbody>
 </table>

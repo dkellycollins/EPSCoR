@@ -5,10 +5,13 @@
 
 <h2>@Model.TableName</h2>
 
-<div id="tableDetails">
+<div id="tableDetailsContainer">
     @Html.Partial("DetailsPartial", Model);
 </div>
 
+@section Styles{
+    @Styles.Render("~/content/DataTables-1.9.4/datatables-css");
+}
 @section Scripts{
     @Scripts.Render("~/scritps/DataTables-1.9.4/datatables-js");
     <script>

@@ -15,11 +15,13 @@ namespace EPSCoR
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            /*
             routes.MapRoute(
                 name: "ApiRoute",
                 url: "api/{controller}/{action}/",
                 namespaces: new string[] { "EPSCoR.Controllers.API" }
             );
+             */
 
             routes.MapRoute(
                 name: "Default",

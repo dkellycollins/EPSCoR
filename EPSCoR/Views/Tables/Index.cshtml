@@ -13,20 +13,23 @@
     <div id="loading" class="hide">
         <img src="~/Content/images/ajax-loader.gif" />
     </div>
-    <div id="tableDetails"></div>
+    <div id="tableDetailsContainer"></div>
 </div>
 
+@section Styles{
+    @Styles.Render("~/content/DataTables-1.9.4/datatables-css")
+}
 @section Scripts
 {
-    @Scripts.Render("~/scritps/DataTables-1.9.4/datatables-js");
+    @Scripts.Render("~/scritps/DataTables-1.9.4/datatables-js")
     <script>
         var loadTable = function (selectedTable) {
             $('#loading').removeClass('hide');
-            $('#tableDetails').addClass('hide');
-            $('#tableDetails').load("http://localhost:6615/tables/details/" + selectedTable, function () {
+            $('#tableDetailsContainer').addClass('hide');
+            $('#tableDetailsContainer').load("http://localhost:6615/tables/details/" + selectedTable, function () {
                 initDataTable('tableDetails');
                 $('#loading').addClass('hide');
-                $('#tableDetails').removeClass('hide');
+                $('#tableDetailsContainer').removeClass('hide');
             });
         };
 

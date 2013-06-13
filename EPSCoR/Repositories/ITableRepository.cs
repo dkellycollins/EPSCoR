@@ -14,9 +14,18 @@ namespace EPSCoR.Repositories
         void Drop(string tableName);
     }
 
+    public enum CalcResult
+    {
+        TableAlreadyExists,
+        SubmittedForProcessing,
+        Error,
+        Success,
+        Unknown
+    }
+
     public interface IDatabaseCalc : IDisposable
     {
-        void SumTables(string attTable, string usTable);
-        void AvgTables(string attTable, string usTalbe);
+        CalcResult SumTables(string attTable, string usTable);
+        CalcResult AvgTables(string attTable, string usTalbe);
     }
 }
