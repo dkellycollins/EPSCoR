@@ -62,6 +62,11 @@ namespace EPSCoR.Database.DbProcedure
             throw new NotImplementedException();
         }
 
+        public override void AvgTables(string attTable, string usTable, string calcTable)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void CreateDatabase(string databaseName)
         {
             throw new NotImplementedException();

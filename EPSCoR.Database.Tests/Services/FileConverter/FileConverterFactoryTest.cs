@@ -18,8 +18,9 @@ namespace EPSCoR.Database.Test.Services.FileConverter
         public void GetCsvConverter()
         {
             string testFileName = "test.csv";
+            string testUserName = "tester";
 
-            var result = FileConverterFactory.GetConverter(testFileName);
+            var result = FileConverterFactory.GetConverter(testFileName, testUserName);
 
             Assert.IsInstanceOfType(result, typeof(CSVFileConverter));
         }
@@ -29,8 +30,9 @@ namespace EPSCoR.Database.Test.Services.FileConverter
         public void GetConverterFail()
         {
             string testFileName = "test.aaa";
+            string testUserName = "tester";
 
-            var result = FileConverterFactory.GetConverter(testFileName);
+            var result = FileConverterFactory.GetConverter(testFileName, testUserName);
 
             Assert.Fail("InvalidFileException not thrown.");
         }

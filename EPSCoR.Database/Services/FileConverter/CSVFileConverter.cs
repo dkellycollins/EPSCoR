@@ -9,16 +9,18 @@ namespace EPSCoR.Database.Services.FileConverter
     public class CSVFileConverter : IFileConverter
     {
         public string FilePath { get; private set; }
+        public string User { get; private set; }
 
-        public CSVFileConverter(string file)
+        public CSVFileConverter(string file, string user)
         {
             FilePath = file;
+            User = user;
         }
 
         public string ConvertToCSV()
         {
             //Ensure that the contents of the csv can be used as doubles. Remove any data that connot be used.
-            string processedFile = Path.Combine(DirectoryManager.ConversionDir, Path.GetFileName(FilePath));
+            string processedFile = Path.Combine(DirectoryManager.ConversionDir, User, Path.GetFileName(FilePath));
 
             using (TextReader reader = File.OpenText(FilePath))
             {

@@ -91,35 +91,32 @@ namespace EPSCoR.Database
 
                     //Convert the file.
                     updateTableStatus(defaultContext, tableIndex, "Converting uploaded file.");
-                    string conversionPath = FileConverterFactory.GetConverter(file).ConvertToCSV();
+                    string conversionPath = FileConverterFactory.GetConverter(file, userName).ConvertToCSV();
 
                     //Add converted file to the database.
                     updateTableStatus(defaultContext, tableIndex, "Creating table in database.");
-                    UserContext userContext = UserContext.GetContextForUser(userName);
-                    userContext.Procedures.AddTableFromFile(conversionPath);
-                    userContext.Procedures.PopulateTableFromFile(conversionPath);
-                    userContext.Dispose();
+                    using (UserContext userContext = UserContext.GetContextForUser(userName))
+                    {
+                        userContext.Procedures.AddTableFromFile(conversionPath);
+                        userContext.Procedures.PopulateTableFromFile(conversionPath);
+                    }
 
                     //Move the original file to the Archive.
                     updateTableStatus(defaultContext, tableIndex, "Table created.", true);
-                    string archivePath = Path.Combine(DirectoryManager.ArchiveDir, Directory.GetParent(file).Name, Path.GetFileName(file));
+                    string archivePath = Path.Combine(DirectoryManager.ArchiveDir, userName, Path.GetFileName(file));
                     validateDestination(archivePath);
                     File.Move(file, archivePath);
 
                     //Log when the file was processed.
                     LoggerFactory.Log("File processed: " + file);
                 }
-                catch (InvalidFileException e)
-                {
-                    LoggerFactory.Log("Invalid File: " + e.InvalidFile, e);
-                    //Move the invalid file.
-                    string invalidPath = Path.Combine(DirectoryManager.InvalidDir, Path.GetFileName(e.InvalidFile));
-                    validateDestination(invalidPath);
-                    File.Move(e.InvalidFile, invalidPath);
-                }
                 catch (Exception e)
                 {
-                    LoggerFactory.Log("Exception while processing file", e);
+                    LoggerFactory.Log("Exception while processing file: " + file, e);
+                    //Move the invalid file.
+                    string invalidPath = Path.Combine(DirectoryManager.InvalidDir, Path.GetFileName(file));
+                    validateDestination(invalidPath);
+                    File.Move(file, invalidPath);
                 }
             }
         }

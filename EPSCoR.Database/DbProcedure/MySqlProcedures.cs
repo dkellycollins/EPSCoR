@@ -135,6 +135,11 @@ namespace EPSCoR.Database.DbProcedure
             createCalcTable(attTable, usTable, calcTable, "SUM");
         }
 
+        public override void AvgTables(string attTable, string usTable, string calcTable)
+        {
+            createCalcTable(attTable, usTable, calcTable, "AVG");
+        }
+
         private void createCalcTable(string attTable, string usTable, string calcTable, string calc)
         {
             ThrowExceptionIfInvalidSql(attTable, usTable, calcTable);            

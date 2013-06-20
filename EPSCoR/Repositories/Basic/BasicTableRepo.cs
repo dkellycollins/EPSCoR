@@ -70,7 +70,25 @@ namespace EPSCoR.Repositories.Basic
 
         public CalcResult SumTables(string attTable, string usTable)
         {
-            string calcTable = string.Format("{0}_{1}_SUM", attTable, usTable);
+            return createCalcTable(attTable, usTable, CalcType.SUM);
+        }
+
+        public CalcResult AvgTables(string attTable, string usTable)
+        {
+            return createCalcTable(attTable, usTable, CalcType.AVG);
+        }
+
+        #endregion IDatabaseCalc Members
+
+        private enum CalcType
+        {
+            SUM,
+            AVG,
+        }
+
+        private CalcResult createCalcTable(string attTable, string usTable, CalcType calc)
+        {
+            string calcTable = string.Format("{0}_{1}_{2}", attTable, usTable, calc.ToString());
             TableIndex exisitingTable = _defaultContext.GetTableIndex(calcTable, currentUser);
             if (exisitingTable != null)
                 return CalcResult.TableAlreadyExists;
@@ -84,14 +102,26 @@ namespace EPSCoR.Repositories.Basic
                     DateUpdated = DateTime.Now,
                     Status = "Generating table.",
                     Type = TableTypes.CALC,
-                    UploadedByUser = currentUser
+                    UploadedByUser = currentUser,
+                    Processed = false
                 };
                 _defaultContext.Tables.Add(index);
                 _defaultContext.SaveChanges();
 
-                _userContext.Procedures.SumTables(attTable, usTable, calcTable);
+                switch (calc)
+                {
+                    case CalcType.SUM:
+                        _userContext.Procedures.SumTables(attTable, usTable, calcTable);
+                        break;
+                    case CalcType.AVG:
+                        _userContext.Procedures.AvgTables(attTable, usTable, calcTable);
+                        break;
+                    default:
+                        throw new Exception("Unknown calctype");
+                }
 
                 index.Status = "Table created.";
+                index.Processed = true;
                 index.DateUpdated = DateTime.Now;
                 _defaultContext.Entry(index).State = EntityState.Modified;
                 _defaultContext.SaveChanges();
@@ -104,7 +134,7 @@ namespace EPSCoR.Repositories.Basic
             }
         }
 
-        public void SumTablesAsync(string attTable, string usTable)
+        private CalcResult createCalcTableAsync(string attTable, string usTable, CalcType calc)
         {
             string calcTable = string.Format("{0}_{1}_SUM", attTable, usTable);
             TableIndex index = new TableIndex()
@@ -119,7 +149,20 @@ namespace EPSCoR.Repositories.Basic
             _defaultContext.Tables.Add(index);
             _defaultContext.SaveChanges();
 
-            Task.Factory.StartNew(() => _userContext.Procedures.SumTables(attTable, usTable, calcTable))
+            Task.Factory.StartNew(() =>
+            {
+                switch (calc)
+                {
+                    case CalcType.SUM:
+                        _userContext.Procedures.SumTables(attTable, usTable, calcTable);
+                        break;
+                    case CalcType.AVG:
+                        _userContext.Procedures.AvgTables(attTable, usTable, calcTable);
+                        break;
+                    default:
+                        throw new Exception("Unknown calctype");
+                }
+            })
                 .ContinueWith((task) =>
                 {
                     index.Status = "Table created.";
@@ -127,13 +170,8 @@ namespace EPSCoR.Repositories.Basic
                     _defaultContext.Entry(index).State = EntityState.Modified;
                     _defaultContext.SaveChanges();
                 });
-        }
 
-        public CalcResult AvgTables(string attTable, string usTalbe)
-        {
-            throw new NotImplementedException();
+            return CalcResult.SubmittedForProcessing;
         }
-
-        #endregion IDatabaseCalc Members
     }
 }
