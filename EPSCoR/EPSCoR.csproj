@@ -437,6 +437,7 @@
     <Content Include="Scripts\Knockout\knockout-2.1.0.debug.js" />
     <Content Include="Scripts\Knockout\knockout-2.1.0.js" />
     <Content Include="Scripts\Modernizr\modernizr-2.5.3.js" />
+    <Content Include="Scripts\poll.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -478,6 +479,8 @@
     <Content Include="Views\Files\Upload.cshtml" />
     <Content Include="Views\Tables\CalcStatusPartial.cshtml" />
     <Content Include="Views\Files\Download.cshtml" />
+    <Content Include="Views\Tables\Status.cshtml" />
+    <Content Include="Views\Tables\StatusPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

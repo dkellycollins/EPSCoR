@@ -144,12 +144,13 @@ namespace EPSCoR.Repositories.Basic
                 DateUpdated = DateTime.Now,
                 Status = "Generating table.",
                 Type = TableTypes.CALC,
-                UploadedByUser = currentUser
+                UploadedByUser = currentUser,
+                Processed = false
             };
             _defaultContext.Tables.Add(index);
             _defaultContext.SaveChanges();
 
-            Task.Factory.StartNew(() =>
+            Task t = Task.Factory.StartNew(() =>
             {
                 switch (calc)
                 {
@@ -162,14 +163,22 @@ namespace EPSCoR.Repositories.Basic
                     default:
                         throw new Exception("Unknown calctype");
                 }
-            })
-                .ContinueWith((task) =>
+            });
+            t.ContinueWith((task) =>
                 {
                     index.Status = "Table created.";
                     index.DateUpdated = DateTime.Now;
+                    index.Processed = true;
                     _defaultContext.Entry(index).State = EntityState.Modified;
                     _defaultContext.SaveChanges();
-                });
+                }, TaskContinuationOptions.OnlyOnRanToCompletion);
+            t.ContinueWith((task) =>
+                {
+                    index.Status = "The server encountered an error while processing your request.";
+                    index.DateUpdated = DateTime.Now;
+                    _defaultContext.Entry(index).State = EntityState.Modified;
+                    _defaultContext.SaveChanges();
+                }, TaskContinuationOptions.OnlyOnFaulted);
 
             return CalcResult.SubmittedForProcessing;
         }

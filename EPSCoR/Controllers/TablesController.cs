@@ -127,10 +127,17 @@ namespace EPSCoR.Controllers
                     DisplayError("The calc table already exists. Please delete existing table before createing a new one.");
                     break;
                 case CalcResult.SubmittedForProcessing:
-                    DisplayInformation("The request has been submitted for processing.");
+                    DisplaySuccess("The request has been submitted for processing.");
                     break;
             }
             return RedirectToAction("Index");
+        }
+
+        public ActionResult Status()
+        {
+            if (Request.IsAjaxRequest())
+                return PartialView("StatusPartial", _tableIndexRepo.GetAll().ToList());
+            return View(_tableIndexRepo.GetAll().ToList());
         }
 
         #region Helpers
