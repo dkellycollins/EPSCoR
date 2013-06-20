@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using EPSCoR.Database.Exceptions;
 using EPSCoR.Database.Services.Log;
+using MySql.Data.MySqlClient;
 
 namespace EPSCoR.Database.DbProcedure
 {
@@ -41,16 +42,19 @@ namespace EPSCoR.Database.DbProcedure
             ThrowFileExceptionIfInvalidSql(file, tableName);
 
             //Get all the fields from the file.
-            string[] fields = GetFieldsFromFile(file);
-            if (fields.Length == 0)
+            List<string> fields = new List<string>();
+            List<string> samples = new List<string>();
+            GetFieldsAndSamplesFromFile(file, fields, samples);
+            if (fields.Count == 0 || samples.Count == 0)
                 throw new InvalidFileException(file, "No data to process.");
-            ThrowFileExceptionIfInvalidSql(file, fields);
+            ThrowFileExceptionIfInvalidSql(file, fields.ToArray());
 
             //Build the column paramaters for the Sql query.
             StringBuilder columnsBuilder = new StringBuilder();
             for (int i = 0; i < fields.Count(); i++)
             {
-                columnsBuilder.Append(fields[i] + " char(25), ");
+                string type = getValueType(samples[i]);
+                columnsBuilder.Append(fields[i] + " " + type + ", ");
             }
             //Make the first field the primary key.
             columnsBuilder.Append("PRIMARY KEY(" + fields[0] + ")");
@@ -65,6 +69,19 @@ namespace EPSCoR.Database.DbProcedure
             LoggerFactory.Log("Table " + tableName + " added to " + DatabaseName);
         }
 
+        private string getValueType(string sample)
+        {
+            int x;
+            double y;
+            //if (Int32.TryParse(sample, out x))
+            //    return "int";
+            if (Double.TryParse(sample, out y))
+                return "double";
+            return "varchar(25)";
+        }
+
+        private const int MAX_CMD_LENGTH = 1048576 / sizeof(char); //1mb divided by the size of a character.
+
         /// <summary>
         /// Populates the table with same name as the file with the data in the file.
         /// </summary>
@@ -75,6 +92,29 @@ namespace EPSCoR.Database.DbProcedure
             string table = Path.GetFileNameWithoutExtension(file);
             ThrowFileExceptionIfInvalidSql(file, table);
 
+            /*
+            InsertCmd insertCmd = new InsertCmd(table);
+            using (TextReader reader = File.OpenText(file))
+            {
+                //Build the column paramaters for the Sql query.
+                string head = reader.ReadLine();
+                head = head.Replace('\"', ' ');
+                string[] fields = head.Split(',');
+                insertCmd.AddColumns(fields);
+
+                //Build the values string.
+                string buf = string.Empty;
+                while ((buf = reader.ReadLine()) != null)
+                {
+                    string[] values = buf.Split(',');
+                    insertCmd.AddRow(values);
+                }
+            }
+
+            int rowsUpdated = insertCmd.ExecuteCmd(_context, MAX_CMD_LENGTH);
+            */
+            
+            
             string cmd = "LOAD DATA LOCAL INFILE '" + file.Replace('\\', '/') + "'"
                     + "INTO TABLE " + table + " "
                     + "FIELDS TERMINATED BY ','"
@@ -92,10 +132,18 @@ namespace EPSCoR.Database.DbProcedure
         /// <param name="usTable">Upstream Table</param>
         public override void SumTables(string attTable, string usTable, string calcTable)
         {
-            ThrowExceptionIfInvalidSql(attTable, usTable, calcTable);
+            createCalcTable(attTable, usTable, calcTable, "SUM");
+        }
+
+        private void createCalcTable(string attTable, string usTable, string calcTable, string calc)
+        {
+            ThrowExceptionIfInvalidSql(attTable, usTable, calcTable);            
 
             // Get columns
-            string showColumns = "SHOW COLUMNS FROM " + attTable;
+            string showColumns = "SELECT column_name"
+                                + " FROM information_schema.columns"
+                                + " WHERE table_schema = '" + _context.Database.Connection.Database + "'"
+                                + " AND table_name = '" + attTable + "'";
             IEnumerable<string> columns = _context.Database.SqlQuery<string>(showColumns);
             if (columns == null || columns.Count() == 0)
             {
@@ -107,23 +155,25 @@ namespace EPSCoR.Database.DbProcedure
             StringBuilder curColumns = new StringBuilder();
             foreach (string column in columns)
             {
+                //TODO make this if statement dynamic
                 if (column != "ID" && column != "ARCID" && column != "OBJECTID" && column != "uni")
                 {
-                    newColumns.Append(", SUM(" + column + ")");
+                    newColumns.Append(string.Format(", {0}({1})", calc, column));
                     curColumns.Append(", " + column);
                 }
             }
 
             string cmd = "CREATE TABLE " + calcTable + " "
-                + "SELECT POLYLINEID, ARCID, US_POLYID" + newColumns
-                + "FROM (SELECT POLYLINEID, ARCID, US_POLYID" + curColumns + " "
+                + "SELECT POLYLINEID, ARCID, US_POLYID" + newColumns.ToString() + " "
+                + "FROM ("
+                    + "SELECT POLYLINEID, ARCID, US_POLYID" + curColumns.ToString() + " "
                     + "FROM " + attTable + ", " + usTable + " "
-                    + "WHERE ARCID = US_POLYID) Prod "
-                + "GROUP BY Prod.POLYLINEID "
-                + "LIMIT 40";
+                    + "WHERE ARCID = US_POLYID"
+                + ") as Prod "
+                + "GROUP BY Prod.POLYLINEID ";
             _context.Database.ExecuteSqlCommand(cmd);
             _context.SaveChanges();
-            LoggerFactory.Log("Sum table " + calcTable + "created in " + DatabaseName);
+            LoggerFactory.Log(calc + " table " + calcTable + "created in " + DatabaseName);
         }
 
         public override void CreateDatabase(string databaseName)
@@ -133,6 +183,86 @@ namespace EPSCoR.Database.DbProcedure
             string cmd = "CREATE DATABASE " + databaseName;
             _context.Database.ExecuteSqlCommand(cmd);
             LoggerFactory.Log("Database " + databaseName + " added");
+        }
+
+        private class InsertCmd
+        {
+            public string Columns { get; private set; }
+            public List<string> Values { get; private set; }
+            public string TableName { get; private set; }
+            public int PacketSize { get; private set; }
+
+            private string cmd;
+
+            public InsertCmd(string tableName)
+            {
+                TableName = tableName;
+                Values = new List<string>();
+            }
+
+            public void AddColumns(params string[] columns)
+            {
+                StringBuilder columnsBuilder = new StringBuilder();
+                for (int i = 0; i < columns.Count(); i++)
+                {
+                    if (i == 0)
+                        columnsBuilder.Append("(");
+                    else
+                        columnsBuilder.Append(", ");
+                    columnsBuilder.Append(columns[i]);
+                }
+                columnsBuilder.Append(")");
+
+                Columns = columnsBuilder.ToString();
+            }
+
+            public void AddRow(params string[] values)
+            {
+                StringBuilder valuesBuilder = new StringBuilder();
+                for (int i = 0; i < values.Count(); i++)
+                {
+                    if (i == 0)
+                        valuesBuilder.Append("(");
+                    else
+                        valuesBuilder.Append(", ");
+
+                    double x = 0.0;
+                    double.TryParse(values[i], out x);
+                    valuesBuilder.Append(x);
+                }
+                valuesBuilder.Append(")");
+
+                Values.Add(valuesBuilder.ToString());
+            }
+
+            public int ExecuteCmd(DbContext context, int maxAllowedPacket)
+            {
+                int rowsUpdated = 0;
+                //We will be added row values to this cmd.
+                string cmdBase = "INSERT INTO " + TableName + " "
+                                + Columns + " "
+                                + "VALUES ";
+                string[] values = Values.ToArray();
+                string cmd = cmdBase + values[0];
+                for (int i = 1; i < values.Length; i++)
+                {
+                    //Check to see if we can add the row values without going overthe max allowed packet.
+                    if (cmd.Length + values[i].Length < maxAllowedPacket)
+                    {
+                        cmd += ", " + values[i];
+                    }
+                    else
+                    {
+                        //We need to execute the current cmd before adding more rows.
+                        rowsUpdated += context.Database.ExecuteSqlCommand(cmd);
+                        cmd = cmdBase + values[i];
+                    }
+                }
+                //There will always be at least 1 row we still need to add.
+                rowsUpdated += context.Database.ExecuteSqlCommand(cmd);
+
+                return rowsUpdated;
+            }
         }
     }
 }

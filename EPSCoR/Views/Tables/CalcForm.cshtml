@@ -5,15 +5,15 @@
 @using (Html.BeginForm("Calc", "Tables", FormMethod.Post, new { @class = "editform" }))
 {    
     <label>Attribute Table:</label>
-    @Html.DropDownList("Attribute", new SelectList(ViewBag.AttributeTables, "Name", "Name"))
+    @Html.DropDownList("attTable", new SelectList(ViewBag.AttributeTables, "Name", "Name"))
     <br />
         
     <label>Upstream Table:</label>
-    @Html.DropDownList("Upstream", new SelectList(ViewBag.UpstreamTables, "Name", "Name"))
+    @Html.DropDownList("usTable", new SelectList(ViewBag.UpstreamTables, "Name", "Name"))
     <br />
     
     <label>Calculation:</label>
-    <select name="Calculation">
+    <select name="calc">
         <option>Sum</option>
         <option>Avg</option>
     </select>

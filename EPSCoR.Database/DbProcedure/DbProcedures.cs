@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.Entity;
@@ -83,11 +84,36 @@ namespace EPSCoR.Database.DbProcedure
 
         protected static string[] GetFieldsFromFile(string file)
         {
-            TextReader reader = File.OpenText(file);
-            string head = reader.ReadLine();
-            reader.Close();
-            head = head.Replace('\"', ' ');
-            return head.Split(',');
+            List<string> fields = new List<string>();
+            GetFieldsAndSamplesFromFile(file, fields, null);
+            return fields.ToArray();
+        }
+
+        protected static string[] GetSampleFromFile(string file)
+        {
+            List<string> samples = new List<string>();
+            GetFieldsAndSamplesFromFile(file, null, samples);
+            return samples.ToArray();
+        }
+
+        protected static void GetFieldsAndSamplesFromFile(string file, List<string> fields, List<string> samples)
+        {
+            using (TextReader reader = File.OpenText(file))
+            {
+                string head = reader.ReadLine();
+                if (fields != null)
+                {
+                    head = head.Replace('\"', ' ');
+                    fields.AddRange(head.Split(','));
+                }
+
+                string samp = reader.ReadLine();
+                if (samples != null)
+                {
+                    samp = samp.Replace('\"', ' ');
+                    samples.AddRange(samp.Split(','));
+                }
+            }
         }
 
         #endregion Helper Methods
