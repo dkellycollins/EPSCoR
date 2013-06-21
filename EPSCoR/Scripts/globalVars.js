@@ -1,0 +1,1 @@
+﻿var serverBase = "http://localhost:6615/";

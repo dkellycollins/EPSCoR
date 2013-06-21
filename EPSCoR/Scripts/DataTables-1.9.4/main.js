@@ -1,5 +1,12 @@
-﻿var initDataTable = function (tableId) {
+﻿var initDataTable = function (tableId, tableName) {
     $('#' + tableId).dataTable({
-        "sPaginationType": "full_numbers"
+        "bFilter": false,
+        "bSort":false,
+        "sPaginationType": "full_numbers",
+        "bServerSide": true,
+        "fnServerParams": function (aoData) {
+            aoData.push({ "name": "tableName", "value" : tableName });
+        },
+        "sAjaxSource": serverBase + "Tables/JsonDetails"
     });
 };

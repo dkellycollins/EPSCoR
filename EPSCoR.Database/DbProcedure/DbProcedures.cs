@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Common;
 using System.Data.Entity;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using EPSCoR.Database.Exceptions;
 
@@ -32,6 +33,33 @@ namespace EPSCoR.Database.DbProcedure
             ThrowExceptionIfInvalidSql(table);
 
             string query = "SELECT * FROM " + table;
+            return CommonSelect(query);
+        }
+
+        public virtual DataTable SelectAllFrom(string table, int lowerLimit, int upperLimit, out int totalRows)
+        {
+            ThrowExceptionIfInvalidSql(table);
+
+            string mainQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM " + table + " "
+                        + "LIMIT " + lowerLimit + ", " + upperLimit;
+            string rowsQuery = "SELECT FOUND_ROWS()";
+            
+            DataTable result = CommonSelect(mainQuery);
+            totalRows = _context.Database.ExecuteSqlCommand(rowsQuery);
+            
+            return result;
+        }
+
+        public virtual int Count(string table)
+        {
+            ThrowExceptionIfInvalidSql(table);
+
+            string query = "SELECT COUNT(*) FROM " + table;
+            return _context.Database.SqlQuery<int>(query).FirstOrDefault();
+        }
+
+        protected virtual DataTable CommonSelect(string query)
+        {
             DbProviderFactory dbFactory = DbProviderFactories.GetFactory(_context.Database.Connection);
 
             DbCommand cmd = dbFactory.CreateCommand();

@@ -3,7 +3,7 @@
 $(function () {
     'use strict';
     // Change this to the location of your server-side upload handler:
-    var baseUrl = 'http://localhost:6615/Files/',
+    var baseUrl = serverBase + 'Files/',
         uploadUrl = baseUrl + 'UploadFiles',
         completeUrl = baseUrl + 'CompleteUpload',
         cancelButton = $('<button/>')

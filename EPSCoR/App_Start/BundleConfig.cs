@@ -13,6 +13,9 @@ namespace EPSCoR
             bundles.Add(new StyleBundle("~/content/css").Include(
                        "~/Content/Site.css"));
 
+            bundles.Add(new ScriptBundle("~/scripts/main").Include(
+                       "~/Scripts/globalVars.js"));
+
             //jQuery bundles
 
             bundles.Add(new ScriptBundle("~/scripts/jquery/jquery").Include(

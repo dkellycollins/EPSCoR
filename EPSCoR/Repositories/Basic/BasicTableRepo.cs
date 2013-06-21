@@ -41,6 +41,24 @@ namespace EPSCoR.Repositories.Basic
             }
         }
 
+        public DataTable Read(string tableName, int lowerLimit, int upperLimit)
+        {
+            try
+            {
+                int totalRows = 0;
+                return _userContext.Procedures.SelectAllFrom(tableName, lowerLimit, upperLimit, out totalRows);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public int Count(string tableName)
+        {
+            return _userContext.Procedures.Count(tableName);
+        }
+
         public void Update(DataTable table)
         {
             throw new NotImplementedException();

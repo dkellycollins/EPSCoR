@@ -27,7 +27,7 @@
             $('#loading').removeClass('hide');
             $('#tableDetailsContainer').addClass('hide');
             $('#tableDetailsContainer').load("http://localhost:6615/tables/details/" + selectedTable, function () {
-                initDataTable('tableDetails');
+                initDataTable('tableDetails', selectedTable);
                 $('#loading').addClass('hide');
                 $('#tableDetailsContainer').removeClass('hide');
             });

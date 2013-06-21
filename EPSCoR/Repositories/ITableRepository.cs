@@ -6,10 +6,18 @@ using System.Web;
 
 namespace EPSCoR.Repositories
 {
+    public struct ReadParam
+    {
+        public int UpperLimit { get; set; }
+        public int LowerLimit { get; set; }
+    }
+
     public interface ITableRepository : IDisposable
     {
         void Create(DataTable table);
         DataTable Read(string tableName);
+        DataTable Read(string tableName, int lowerLimit, int upperLimit);
+        int Count(string tableName);
         void Update(DataTable table);
         void Drop(string tableName);
     }
