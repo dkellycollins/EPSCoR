@@ -8,7 +8,12 @@ namespace EPSCoR
         // For more information on Bundling, visit http://go.microsoft.com/fwlink/?LinkId=254725
         public static void RegisterBundles(BundleCollection bundles)
         {
-            //Custom bundles
+            // Use the development version of Modernizr to develop with and learn from. Then, when you're
+            // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
+            bundles.Add(new ScriptBundle("~/scripts/modernizr/modernizr").Include(
+                        "~/Scripts/Modernizr/modernizr-*"));
+
+            #region Custom bundles
 
             bundles.Add(new StyleBundle("~/content/css").Include(
                        "~/Content/Site.css"));
@@ -16,7 +21,9 @@ namespace EPSCoR
             bundles.Add(new ScriptBundle("~/scripts/main").Include(
                        "~/Scripts/globalVars.js"));
 
-            //jQuery bundles
+            #endregion Custom bundles
+
+            #region jQuery bundles
 
             bundles.Add(new ScriptBundle("~/scripts/jquery/jquery").Include(
                         "~/Scripts/jQuery/jquery-{version}.js"));
@@ -31,12 +38,9 @@ namespace EPSCoR
                         "~/Scripts/jQuery/jquery-migrate-{version}.js"
                         ));
 
-            // Use the development version of Modernizr to develop with and learn from. Then, when you're
-            // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
-            bundles.Add(new ScriptBundle("~/scripts/modernizr/modernizr").Include(
-                        "~/Scripts/Modernizr/modernizr-*"));
+            #endregion jQuery bundles
 
-            //jQuery ui bundles
+            #region jQuery ui bundles
 
             bundles.Add(new ScriptBundle("~/scripts/jquery/jqueryui-js").Include(
                         "~/Scripts/jQuery/jquery-ui-{version}.js"));
@@ -56,7 +60,9 @@ namespace EPSCoR
                         "~/Content/jQueryUI/jquery.ui.theme.css"
                         ));
 
-            //Bootstrap bundles
+            #endregion jQuery ui bundles
+
+            #region Bootstrap bundles
 
             bundles.Add(new ScriptBundle("~/scripts/bootstrap/bootstrap-js").Include(
                 "~/Scripts/jQuery/jquery-{version}.js",
@@ -74,7 +80,9 @@ namespace EPSCoR
                 "~/Content/Bootstrap/bootstrap-mvc-validation.css"
                 ));
 
-            //jQueryFileUpload bundles
+            #endregion Bootstrap bundles
+
+            #region jQueryFileUpload bundles
 
             bundles.Add(new ScriptBundle("~/scripts/jqueryfileupload/fileUpload-js").Include(
                 "~/Scripts/jQueryFileUpload/jquery.iframe-transport.js",
@@ -90,7 +98,10 @@ namespace EPSCoR
                 "~/Content/jQueryFileUpload/style.css"
                 ));
 
-            //jQuery Datatables bundles
+            #endregion jQueryFileUpload bundles
+
+            #region jQuery Datatables bundles
+            
             bundles.Add(new ScriptBundle("~/scritps/DataTables-1.9.4/datatables-js").Include(
                 "~/Scripts/DataTables-1.9.4/media/js/jquery.dataTables.js",
                 "~/Scripts/DataTables-1.9.4/main.js"
@@ -99,6 +110,8 @@ namespace EPSCoR
             bundles.Add(new StyleBundle("~/content/DataTables-1.9.4/datatables-css").Include(
                 "~/Content/DataTables-1.9.4/media/css/jquery.dataTables.css"
                 ));
+
+            #endregion jQuery Datatables bundles
         }
     }
 }

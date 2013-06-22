@@ -11,8 +11,10 @@ namespace EPSCoR.Controllers
     /// </summary>
     public class HomeController : Controller
     {
-        //
-        // GET: /Home/
+        /// <summary>
+        /// Returns the homepage.
+        /// </summary>
+        /// <returns></returns>
         [OutputCache(Duration = 0)]
         public ActionResult Index()
         {

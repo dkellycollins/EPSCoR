@@ -7,6 +7,6 @@
         "fnServerParams": function (aoData) {
             aoData.push({ "name": "tableName", "value" : tableName });
         },
-        "sAjaxSource": serverBase + "Tables/JsonDetails"
+        "sAjaxSource": serverBase + "Tables/DataTableDetails"
     });
 };

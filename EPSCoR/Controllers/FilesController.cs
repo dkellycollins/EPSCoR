@@ -10,6 +10,8 @@ using EPSCoR.Repositories;
 using WebMatrix.WebData;
 using System.Web.Script.Serialization;
 using EPSCoR.Repositories.Basic;
+using EPSCoR.Results;
+using EPSCoR.Models;
 
 namespace EPSCoR.Controllers
 {
@@ -23,10 +25,10 @@ namespace EPSCoR.Controllers
 
         public FilesController()
         {
-            _tableIndexRepo = new BasicModelRepo<TableIndex>();
-            _uploadFileAccessor = BasicFileAccessor.GetUploadAccessor(WebSecurity.CurrentUserName);
-            _conversionFileAccessor = BasicFileAccessor.GetConversionsAccessor(WebSecurity.CurrentUserName);
-            _tempFileAccessor = BasicFileAccessor.GetTempAccessor(WebSecurity.CurrentUserName);
+            _tableIndexRepo = RepositoryFactory.GetModelRepository<TableIndex>();
+            _uploadFileAccessor = RepositoryFactory.GetUploadFileAccessor(WebSecurity.CurrentUserName);
+            _conversionFileAccessor = RepositoryFactory.GetConvertionFileAccessor(WebSecurity.CurrentUserName);
+            _tempFileAccessor = RepositoryFactory.GetTempFileAccessor(WebSecurity.CurrentUserName);
         }
 
         public FilesController(
@@ -48,8 +50,10 @@ namespace EPSCoR.Controllers
             base.OnActionExecuted(filterContext);
         }
 
-        //
-        // GET: /Upload/
+        /// <summary>
+        /// Returns the upload view.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public ActionResult Upload()
         {
@@ -59,6 +63,11 @@ namespace EPSCoR.Controllers
             return View(fileNames);
         }
 
+        /// <summary>
+        /// The post method for a "simple" file upload. This expects the file to be uploaded through a basic form.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Upload(HttpPostedFileBase file)
         {
@@ -85,15 +94,15 @@ namespace EPSCoR.Controllers
             return RedirectToAction("Index");
         }
 
-        //
-        // POST: /Table/Upload/
+        /// <summary>
+        /// The post method for the jQueryFileUpload
+        /// </summary>
+        /// <param name="file">Contains information on the file.</param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult UploadFiles(FileUpload file)
         {
             string fileName = Path.GetFileName(file.FileName);
-            string tableName = Path.GetFileNameWithoutExtension(file.FileName);
-            string userName = WebSecurity.CurrentUserName;
-            
 
             //Save the chunk.
             FileStreamWrapper wrapper = new FileStreamWrapper()
@@ -106,22 +115,29 @@ namespace EPSCoR.Controllers
 
             bool saveSuccessful = _tempFileAccessor.SaveFiles(wrapper);
 
-            return new FileUploadResult(fileName);
+            if(saveSuccessful)
+                return new FileUploadResult(fileName);
+            return new FileUploadResult(fileName, "Could not save chunk.");
         }
 
+        /// <summary>
+        /// Finalizes the file upload.
+        /// </summary>
+        /// <param name="id">File to finalize.</param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult CompleteUpload(string id)
         {
+            string tableName = Path.GetFileNameWithoutExtension(id);
             string userName = WebSecurity.CurrentUserName;
-            TableIndex existingTable = _tableIndexRepo.GetAll().Where(t => t.Name == id && t.UploadedByUser == userName).FirstOrDefault();
+            TableIndex existingTable = _tableIndexRepo.GetAll().Where(t => t.Name == tableName && t.UploadedByUser == userName).FirstOrDefault();
             if (existingTable != null)
                 return new FileUploadResult(id, "Table already exists. Delete exisiting table before uploading a new one.");
             if (!_tempFileAccessor.FileExist(id))
                 return new FileUploadResult(id, "File has not been uploaded.");
 
             bool result = false;
-            FileStream fileStream = _tempFileAccessor.OpenFile(id);
-            if (fileStream != null)
+            using(FileStream fileStream = _tempFileAccessor.OpenFile(id))
             {
                 FileStreamWrapper wrapper = new FileStreamWrapper()
                 {
@@ -129,15 +145,18 @@ namespace EPSCoR.Controllers
                     InputStream = fileStream
                 };
                 result = _uploadFileAccessor.SaveFiles(wrapper);
-                _tempFileAccessor.CloseFile(fileStream);
-                _tempFileAccessor.DeleteFiles(id);
             }
+            _tempFileAccessor.DeleteFiles(id);
 
             if (result)
                 return new FileUploadResult(id);
             return new FileUploadResult(id, "Could not complete file upload.");
         }
 
+        /// <summary>
+        /// Returns a view listing all files that can be downloaded.
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Download()
         {
             var tableIndexes = _tableIndexRepo.GetAll().ToList();
@@ -150,6 +169,11 @@ namespace EPSCoR.Controllers
             return View(existingConversions);
         }
 
+        /// <summary>
+        /// Download a csv file.
+        /// </summary>
+        /// <param name="id">Name of the file to download.</param>
+        /// <returns></returns>
         public ActionResult DownloadCsv(string id)
         {
             string fileName = id + ".csv";
@@ -165,104 +189,6 @@ namespace EPSCoR.Controllers
             };
             Response.AppendHeader("Content-Disposition", cd.ToString());
             return File(_conversionFileAccessor.OpenFile(fileName), "text/csv");
-        }
-
-        #region Helpers
-
-        #endregion
-    }
-
-    [ModelBinder(typeof(ModelBinder))]
-    public class FileUpload
-    {
-        public string FileName { get; set; }
-        public Stream InputStream { get; set; }
-        public int StartPosition { get; set; }
-        public int TotalFileLength { get; set; }
-
-        public class ModelBinder : IModelBinder
-        {
-            public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
-            {
-                var request = controllerContext.RequestContext.HttpContext.Request;
-
-                string fileName = request.Files[0].FileName;
-                Stream inputStream = request.Files[0].InputStream;
-                int startPos;
-                int totalFileLength;
-                if (request.Headers["Content-Range"] != null)
-                {
-                    string[] fileInfo = request.Headers["Content-Range"].Split('/', '-');
-                    startPos = Int32.Parse(fileInfo[0].Remove(0, 5));
-                    totalFileLength = Int32.Parse(fileInfo[2]);
-                }
-                else
-                {
-                    startPos = 0;
-                    totalFileLength = request.Files[0].ContentLength;
-                }
-
-                return new FileUpload()
-                {
-                    FileName = fileName,
-                    InputStream = inputStream,
-                    StartPosition = startPos,
-                    TotalFileLength = totalFileLength
-                };
-            }
-        }
-    }
-
-    public class FileUploadResult : ActionResult
-    {
-        /// <summary>
-        /// This wraps up data to be serailized into the Json object returned.
-        /// </summary>
-        public class FileStatus
-        {
-            public string Name { get; set; }
-            public string Error { get; set; }
-        }
-
-        private JavaScriptSerializer _serializer;
-        private FileStatus _status;
-
-        public FileUploadResult(FileStatus status)
-        {
-            _serializer = new JavaScriptSerializer();
-            _status = status;
-        }
-
-        public FileUploadResult(string FileName, string error = null)
-        {
-            _serializer = new JavaScriptSerializer();
-            _status = new FileStatus()
-            {
-                Name = FileName,
-                Error = error
-            };
-        }
-
-        public override void ExecuteResult(ControllerContext context)
-        {
-            var request = context.HttpContext.Request;
-            var response = context.HttpContext.Response;
-
-            response.AddHeader("Vary", "Accept");
-            try
-            {
-                if (request["HTTP_ACCEPT"].Contains("application/json"))
-                    response.ContentType = "application/json";
-                else
-                    response.ContentType = "text/plain";
-            }
-            catch
-            {
-                response.ContentType = "text/plain";
-            }
-
-            var jsonObj = _serializer.Serialize(_status);
-            response.Write(jsonObj);
         }
     }
 }

@@ -169,6 +169,12 @@
     <Compile Include="Controllers\API\TablesController.cs" />
     <Compile Include="Controllers\BootstrapBaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Repositories\RepositoryFactory.cs" />
+    <Compile Include="Models\CalcRequest.cs" />
+    <Compile Include="Models\DataTableParams.cs" />
+    <Compile Include="Models\FileUpload.cs" />
+    <Compile Include="Results\DataTableResult.cs" />
+    <Compile Include="Results\FileUploadResult.cs" />
     <Compile Include="Controllers\TablesController.cs" />
     <Compile Include="Controllers\FilesController.cs" />
     <Compile Include="Extensions\HttpRequestBaseExtensions.cs" />
@@ -419,6 +425,7 @@
     <Content Include="Content\DataTables-1.9.4\extras\TableTools\media\images\psd\file_types.psd" />
     <Content Include="Content\DataTables-1.9.4\extras\TableTools\media\images\psd\copy document.psd" />
     <Content Include="Content\DataTables-1.9.4\extras\TableTools\media\images\psd\collection.psd" />
+    <Content Include="ClassDiagram1.cd" />
     <None Include="Scripts\jQuery\jquery-1.9.1.intellisense.js" />
     <Content Include="Scripts\jQueryFileUpload\main.js" />
     <Content Include="Scripts\jQuery\jquery-1.9.1.js" />
@@ -488,12 +495,14 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\EPSCoR.Database\EPSCoR.Database.csproj">
       <Project>{cabe2c57-7bb7-40de-8f38-2b18bffbee38}</Project>
       <Name>EPSCoR.Database</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

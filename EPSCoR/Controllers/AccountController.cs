@@ -25,8 +25,8 @@ namespace EPSCoR.Controllers
 
         public AccountController()
         {
-            _userProfileRepo = new BasicModelRepo<UserProfile>();
-            _rootRepo = new BasicRootRepo();
+            _userProfileRepo = RepositoryFactory.GetModelRepository<UserProfile>();
+            _rootRepo = RepositoryFactory.GetRootRepository();
         }
 
         protected override void OnActionExecuted(ActionExecutedContext filterContext)
@@ -57,6 +57,7 @@ namespace EPSCoR.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        //Adds a new user to the database.
         private void createProfile()
         {
             UserProfile profile = new UserProfile()
@@ -66,6 +67,7 @@ namespace EPSCoR.Controllers
             _userProfileRepo.Create(profile);
         }
 
+        //If the url is a local url redirect to that. Otherwise redirect to the homepage.
         private ActionResult redirectToLocal(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))

@@ -11,25 +11,10 @@ namespace EPSCoR.Repositories.Basic
 {
     public class BasicFileAccessor : IFileAccessor
     {
-        public static BasicFileAccessor GetUploadAccessor(string userName)
-        {
-            return new BasicFileAccessor(DirectoryManager.UploadDir, userName);
-        }
-
-        public static BasicFileAccessor GetConversionsAccessor(string userName)
-        {
-            return new BasicFileAccessor(DirectoryManager.ConversionDir, userName);
-        }
-
-        public static BasicFileAccessor GetTempAccessor(string userName)
-        {
-            return new BasicFileAccessor(DirectoryManager.TempDir, userName);
-        }
-
         private string _userDirectory;
         private string _lockFile;
 
-        private BasicFileAccessor(string directory, string userName)
+        public BasicFileAccessor(string directory, string userName)
         {   
             _userDirectory = Path.Combine(directory, userName);
             if (!Directory.Exists(_userDirectory))
