@@ -32,7 +32,7 @@ namespace EPSCoR.Controllers.API
             if (string.IsNullOrEmpty(user))
                 return null;
 
-            using (IModelRepository<TableIndex> repo = new BasicModelRepo<TableIndex>())
+            using (IModelRepository<TableIndex> repo = RepositoryFactory.GetModelRepository<TableIndex>())
             {
                 var tables = repo.GetAll().Where((t) =>
                     t.UploadedByUser == user);
@@ -48,7 +48,7 @@ namespace EPSCoR.Controllers.API
                 || string.IsNullOrEmpty(user))
                 return null;
 
-            using (ITableRepository repo = new BasicTableRepo(user))
+            using (ITableRepository repo = RepositoryFactory.GetTableRepository(user))
             {
                 var dataTable = repo.Read(table);
                 dataTable.TableName = table;

@@ -22,12 +22,39 @@ namespace EPSCoR.Database.DbProcedure
             _context = context;
         }
 
+        /// <summary>
+        /// Adds an empty table using the given file.
+        /// </summary>
+        /// <param name="file"></param>
         internal abstract void AddTableFromFile(string file);
-        internal abstract void PopulateTableFromFile(string file);
-        public abstract void SumTables(string attTable, string usTable, string calcTable);
-        public abstract void AvgTables(string attTable, string usTable, string calcTable);
-        public abstract void CreateDatabase(string databaseName);
 
+        /// <summary>
+        /// Populates the table using the given file.
+        /// </summary>
+        /// <param name="file"></param>
+        internal abstract void PopulateTableFromFile(string file);
+
+        /// <summary>
+        /// Creates a new table that performs a sum on join table of the attTable and the usTable.
+        /// </summary>
+        /// <param name="attTable">Name of the Attribute table to use.</param>
+        /// <param name="usTable">Name of the Upstream table to use.</param>
+        /// <param name="calcTable">Name of the calc table to create.</param>
+        public abstract void SumTables(string attTable, string usTable, string calcTable);
+
+        /// <summary>
+        /// Creates a new table that performs an average on join table of the attTable and the usTable.
+        /// </summary>
+        /// <param name="attTable">Name of the Attribute table to use.</param>
+        /// <param name="usTable">Name of the Upstream table to use.</param>
+        /// <param name="calcTable">Name of the calc table to create.</param>
+        public abstract void AvgTables(string attTable, string usTable, string calcTable);
+
+        /// <summary>
+        /// Selects everything from a table and returns it in a datatable object.
+        /// </summary>
+        /// <param name="table"></param>
+        /// <returns></returns>
         public virtual DataTable SelectAllFrom(string table)
         {
             ThrowExceptionIfInvalidSql(table);

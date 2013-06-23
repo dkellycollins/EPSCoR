@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace EPSCoR.Repositories
+namespace EPSCoR.Repositories.Factory
 {
     public class RepositoryFactory
     {
@@ -29,11 +29,6 @@ namespace EPSCoR.Repositories
             where T : class, IModel
         {
             return new BasicModelRepo<T>();
-        }
-
-        public static IRootRepository GetRootRepository()
-        {
-            return new BasicRootRepo();
         }
 
         public static ITableRepository GetTableRepository(string userName)

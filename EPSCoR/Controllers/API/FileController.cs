@@ -20,7 +20,7 @@ namespace EPSCoR.Controllers.API
             if (string.IsNullOrEmpty(user))
                 return new List<string>();
 
-            IFileAccessor conversionFiles = BasicFileAccessor.GetConversionsAccessor(user);
+            IFileAccessor conversionFiles = RepositoryFactory.GetConvertionFileAccessor(user);
             return conversionFiles.GetFiles();
         }
 

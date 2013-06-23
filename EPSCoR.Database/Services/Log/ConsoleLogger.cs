@@ -2,6 +2,9 @@
 
 namespace EPSCoR.Database.Services.Log
 {
+    /// <summary>
+    /// Prints message to the console.
+    /// </summary>
     public class ConsoleLogger : ILogger
     {
         public ConsoleLogger()

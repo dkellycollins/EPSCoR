@@ -31,6 +31,11 @@ namespace EPSCoR.Database.Services.Log
             logFileStream.Close();
         }
 
+        /// <summary>
+        /// Appends the entry to the log with the current time. Also will write out the error message and stack trace for the exception. If the exception has an inner exception will write out that as well.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="e"></param>
         public void Log(string message, Exception e)
         {
             StreamWriter logFileStream = new StreamWriter(File.Open(_logFile, FileMode.Append));

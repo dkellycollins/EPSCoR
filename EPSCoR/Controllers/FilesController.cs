@@ -11,7 +11,7 @@ using WebMatrix.WebData;
 using System.Web.Script.Serialization;
 using EPSCoR.Repositories.Basic;
 using EPSCoR.Results;
-using EPSCoR.Models;
+using EPSCoR.ViewModels;
 
 namespace EPSCoR.Controllers
 {

@@ -21,6 +21,7 @@ namespace EPSCoR.Database
             DirectoryManager.Initialize(HttpContext.Current.Server);
         }
 
+        private static TimeSpan WAIT_TIME = new TimeSpan(0, 1, 0);
         private FileSystemWatcher _fileWatcher;
 
         public FileProcessor()
@@ -55,15 +56,13 @@ namespace EPSCoR.Database
             LoggerFactory.Log("FILE WATCHER FAILED.", e.GetException());
         }
 
-        private static TimeSpan WAIT_TIME = new TimeSpan(0, 1, 0);
-
         private static void convertFile(string file)
         {
             //Wait until the file can be opened.
             DateTime timeStamp = DateTime.Now;
             while (!IsFileReady(file))
             {
-                if (DateTime.Now - timeStamp > WAIT_TIME)
+                if (DateTime.Now - timeStamp > WAIT_TIME) //If we have been trying for too long just stop.
                 {
                     LoggerFactory.Log("Failed to access file: " + file);
                     return;
@@ -83,7 +82,7 @@ namespace EPSCoR.Database
                         DateCreated = DateTime.Now,
                         DateUpdated = DateTime.Now,
                         Status = "Queued for processing",
-                        Type = (tableName.Contains("_CALC")) ? TableTypes.CALC : (tableName.Contains("_US")) ? TableTypes.UPSTREAM : TableTypes.ATTRIBUTE,
+                        Type = (tableName.Contains("_US")) ? TableTypes.UPSTREAM : TableTypes.ATTRIBUTE,
                         UploadedByUser = userName
                     };
                     defaultContext.Tables.Add(tableIndex);

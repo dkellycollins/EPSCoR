@@ -59,6 +59,12 @@ namespace EPSCoR.Database.Services.FileConverter
             return processedFile;
         }
 
+        /// <summary>
+        /// Attempts to parse a number that is in scientific notation.
+        /// </summary>
+        /// <param name="value">The string value.</param>
+        /// <param name="result">If the convertion is successfull then the result will be stored here. Otherwise this will equal 0.</param>
+        /// <returns>True if the conversion was successfull.</returns>
         private bool TryParseSci(string value, out double result)
         {
             try

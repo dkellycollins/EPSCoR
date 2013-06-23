@@ -7,6 +7,9 @@ namespace EPSCoR.Database.Services.Log
         private static ConsoleLogger _consoleLogger;
         private static FileLogger _fileLogger;
 
+        /// <summary>
+        /// Statically initalizes the logger.
+        /// </summary>
         private static void Init()
         {
             if (_consoleLogger == null)
@@ -15,6 +18,11 @@ namespace EPSCoR.Database.Services.Log
                 _fileLogger = new FileLogger();
         }
 
+        /// <summary>
+        /// Writes out the message and exception.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="e"></param>
         public static void Log(string message, Exception e = null)
         {
             Init();

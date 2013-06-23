@@ -5,14 +5,29 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace EPSCoR.Models
+namespace EPSCoR.ViewModels
 {
     [ModelBinder(typeof(ModelBinder))]
     public class FileUpload
     {
+        /// <summary>
+        /// Name of the file that is being uploaded.
+        /// </summary>
         public string FileName { get; set; }
+
+        /// <summary>
+        /// The stream for the file.
+        /// </summary>
         public Stream InputStream { get; set; }
+
+        /// <summary>
+        /// Where the stream starts in the complete file.
+        /// </summary>
         public int StartPosition { get; set; }
+
+        /// <summary>
+        /// The length of the complete file.
+        /// </summary>
         public int TotalFileLength { get; set; }
 
         public class ModelBinder : IModelBinder

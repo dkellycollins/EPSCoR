@@ -15,7 +15,7 @@ using EPSCoR.Repositories.Basic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WebMatrix.WebData;
-using EPSCoR.Models;
+using EPSCoR.ViewModels;
 using EPSCoR.Results;
 
 namespace EPSCoR.Controllers

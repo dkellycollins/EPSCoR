@@ -5,6 +5,9 @@ using EPSCoR.Database.Models;
 
 namespace EPSCoR.Database
 {
+    /// <summary>
+    /// Provides access the default database.
+    /// </summary>
     public class DefaultContext : DbContext
     {
         /*
