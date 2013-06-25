@@ -53,12 +53,12 @@ namespace EPSCoR.Database
 
         private void _fileWatcher_Error(object sender, ErrorEventArgs e)
         {
-            LoggerFactory.Log("FILE WATCHER FAILED.", e.GetException());
+            LoggerFactory.GetLogger().Log("FILE WATCHER FAILED.", e.GetException());
         }
 
         private static void convertFile(string file)
         {
-            LoggerFactory.Log("File uploaded:" + file);
+            LoggerFactory.GetLogger().Log("File uploaded:" + file);
 
             using (DefaultContext defaultContext = new DefaultContext())
             {
@@ -108,12 +108,12 @@ namespace EPSCoR.Database
                     File.Move(file, archivePath);
 
                     //Log when the file was processed.
-                    LoggerFactory.Log("File processed: " + file);
+                    LoggerFactory.GetLogger().Log("File processed: " + file);
                 }
                 catch (Exception e)
                 {
                     updateTableStatus(defaultContext, tableIndex, "An error occured while processing the file.");
-                    LoggerFactory.Log("Exception while processing file: " + file, e);
+                    LoggerFactory.GetLogger().Log("Exception while processing file: " + file, e);
                     //Move the invalid file.
                     string invalidPath = Path.Combine(DirectoryManager.InvalidDir, userName, Path.GetFileName(file));
                     validateDestination(invalidPath);

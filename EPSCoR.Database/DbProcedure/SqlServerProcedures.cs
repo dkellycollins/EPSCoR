@@ -49,7 +49,7 @@ namespace EPSCoR.Database.DbProcedure
                 "CREATE TABLE " + Path.GetFileNameWithoutExtension(file) + " (" + columnsBuilder.ToString() + ")"
                 );
 
-            LoggerFactory.Log("Table " + Path.GetFileNameWithoutExtension(file) + " added to the database.");
+            LoggerFactory.GetLogger().Log("Table " + Path.GetFileNameWithoutExtension(file) + " added to the database.");
         }
 
         internal override void PopulateTableFromFile(string file)

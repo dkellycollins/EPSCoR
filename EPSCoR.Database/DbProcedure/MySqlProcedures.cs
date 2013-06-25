@@ -66,7 +66,7 @@ namespace EPSCoR.Database.DbProcedure
                 + "DEFAULT CHARSET=latin1";
             _context.Database.ExecuteSqlCommand(cmd);
             _context.SaveChanges();
-            LoggerFactory.Log("Table " + tableName + " added to " + DatabaseName);
+            LoggerFactory.GetLogger().Log("Table " + tableName + " added to " + DatabaseName);
         }
 
         private string getValueType(string sample)
@@ -122,7 +122,7 @@ namespace EPSCoR.Database.DbProcedure
                     + "LINES TERMINATED BY '\n'"
                     + "IGNORE 1 LINES";
             int rowsUpdated = _context.Database.ExecuteSqlCommand(cmd);
-            LoggerFactory.Log(rowsUpdated + " rows updated in table " + table + ", " + DatabaseName);
+            LoggerFactory.GetLogger().Log(rowsUpdated + " rows updated in table " + table + ", " + DatabaseName);
         }
 
         /// <summary>
@@ -178,7 +178,7 @@ namespace EPSCoR.Database.DbProcedure
                 + "GROUP BY Prod.POLYLINEID ";
             _context.Database.ExecuteSqlCommand(cmd);
             _context.SaveChanges();
-            LoggerFactory.Log(calc + " table " + calcTable + "created in " + DatabaseName);
+            LoggerFactory.GetLogger().Log(calc + " table " + calcTable + "created in " + DatabaseName);
         }
     }
 }

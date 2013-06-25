@@ -23,7 +23,7 @@ namespace EPSCoR.Database.Services.FileConverter
             //Ensure that the contents of the csv can be used as doubles. Remove any data that connot be used.
             string processedFile = Path.Combine(DirectoryManager.ConversionDir, User, Path.GetFileName(FilePath));
 
-            LoggerFactory.Log("Begining to validate file: " + FilePath);
+            LoggerFactory.GetLogger().Log("Begining to validate file: " + FilePath);
 
             using (TextReader reader = File.OpenText(FilePath))
             {
@@ -59,7 +59,7 @@ namespace EPSCoR.Database.Services.FileConverter
                 }
             }
 
-            LoggerFactory.Log("Validated file: " + FilePath);
+            LoggerFactory.GetLogger().Log("Validated file: " + FilePath);
 
             return processedFile;
         }
