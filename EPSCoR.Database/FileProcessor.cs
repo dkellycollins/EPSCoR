@@ -58,35 +58,36 @@ namespace EPSCoR.Database
 
         private static void convertFile(string file)
         {
-            //Wait until the file can be opened.
-            DateTime timeStamp = DateTime.Now;
-            while (!IsFileReady(file))
-            {
-                if (DateTime.Now - timeStamp > WAIT_TIME) //If we have been trying for too long just stop.
-                {
-                    LoggerFactory.Log("Failed to access file: " + file);
-                    return;
-                }
-            }
+            LoggerFactory.Log("File uploaded:" + file);
 
             using (DefaultContext defaultContext = new DefaultContext())
             {
+                //Create table entry.
+                string tableName = Path.GetFileNameWithoutExtension(file);
+                string userName = Directory.GetParent(file).Name;
+                TableIndex tableIndex = new TableIndex()
+                {
+                    Name = tableName,
+                    DateCreated = DateTime.Now,
+                    DateUpdated = DateTime.Now,
+                    Status = "Queued for processing",
+                    Type = (tableName.Contains("_US")) ? TableTypes.UPSTREAM : TableTypes.ATTRIBUTE,
+                    UploadedByUser = userName
+                };
+                defaultContext.Tables.Add(tableIndex);
+                defaultContext.SaveChanges();
+
                 try
                 {
-                    //Create table entry.
-                    string tableName = Path.GetFileNameWithoutExtension(file);
-                    string userName = Directory.GetParent(file).Name;
-                    TableIndex tableIndex = new TableIndex()
+                    //Wait until the file can be opened.
+                    DateTime timeStamp = DateTime.Now;
+                    while (!IsFileReady(file))
                     {
-                        Name = tableName,
-                        DateCreated = DateTime.Now,
-                        DateUpdated = DateTime.Now,
-                        Status = "Queued for processing",
-                        Type = (tableName.Contains("_US")) ? TableTypes.UPSTREAM : TableTypes.ATTRIBUTE,
-                        UploadedByUser = userName
-                    };
-                    defaultContext.Tables.Add(tableIndex);
-                    defaultContext.SaveChanges();
+                        if (DateTime.Now - timeStamp > WAIT_TIME) //If we have been trying for too long just stop.
+                        {
+                            throw new Exception("Could not open file.");
+                        }
+                    }
 
                     //Convert the file.
                     updateTableStatus(defaultContext, tableIndex, "Converting uploaded file.");
@@ -111,9 +112,10 @@ namespace EPSCoR.Database
                 }
                 catch (Exception e)
                 {
+                    updateTableStatus(defaultContext, tableIndex, "An error occured while processing the file.");
                     LoggerFactory.Log("Exception while processing file: " + file, e);
                     //Move the invalid file.
-                    string invalidPath = Path.Combine(DirectoryManager.InvalidDir, Path.GetFileName(file));
+                    string invalidPath = Path.Combine(DirectoryManager.InvalidDir, userName, Path.GetFileName(file));
                     validateDestination(invalidPath);
                     File.Move(file, invalidPath);
                 }

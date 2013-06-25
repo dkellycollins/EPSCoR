@@ -13,6 +13,7 @@ using EPSCoR.Filters;
 using EPSCoR.Repositories;
 using DotNetCasClient;
 using EPSCoR.Repositories.Basic;
+using EPSCoR.Repositories.Factory;
 
 namespace EPSCoR.Controllers
 {
@@ -21,18 +22,15 @@ namespace EPSCoR.Controllers
     public class AccountController : Controller
     {
         private IModelRepository<UserProfile> _userProfileRepo;
-        private IRootRepository _rootRepo;
 
         public AccountController()
         {
             _userProfileRepo = RepositoryFactory.GetModelRepository<UserProfile>();
-            _rootRepo = RepositoryFactory.GetRootRepository();
         }
 
         protected override void OnActionExecuted(ActionExecutedContext filterContext)
         {
             _userProfileRepo.Dispose();
-            _rootRepo.Dispose();
 
             base.OnActionExecuted(filterContext);
         }

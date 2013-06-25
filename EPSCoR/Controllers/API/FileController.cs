@@ -7,6 +7,7 @@ using System.Web.Http;
 using EPSCoR.Database.Models;
 using EPSCoR.Repositories;
 using EPSCoR.Repositories.Basic;
+using EPSCoR.Repositories.Factory;
 
 namespace EPSCoR.Controllers.API
 {
@@ -15,13 +16,29 @@ namespace EPSCoR.Controllers.API
 
         // GET api/file
         [AcceptVerbs("GET", "HEAD")]
-        public IEnumerable<string> Get(string user)
+        public IEnumerable<string> Get(string user, string directory)
         {
-            if (string.IsNullOrEmpty(user))
-                return new List<string>();
+            /*
+            if(!validateUser(user))
+                return new HttpNotFoundResult();
 
-            IFileAccessor conversionFiles = RepositoryFactory.GetConvertionFileAccessor(user);
-            return conversionFiles.GetFiles();
+            IFileAccessor files;
+            switch (directory.ToLower())
+            {
+                case "conversion":
+                    files = RepositoryFactory.GetConvertionFileAccessor(user);
+                    break;
+                case "archive":
+                    files = RepositoryFactory.GetArchiveFileAccessor(user);
+                    break;
+                default:
+                    return new HttpNotFoundResult();
+            }
+
+            return files.GetFiles();
+             */
+
+            return new List<string>();
         }
 
         // GET api/file/5
@@ -50,6 +67,15 @@ namespace EPSCoR.Controllers.API
         public void Delete(int id)
         {
             throw new NotImplementedException();
+        }
+
+        private bool validateUser(string userName)
+        {
+            using(IModelRepository<UserProfile> userProfileRepo = RepositoryFactory.GetModelRepository<UserProfile>())
+            {
+                UserProfile profile = userProfileRepo.GetAll().Where((p) => p.UserName == userName).FirstOrDefault();
+                return profile != null;
+            }
         }
     }
 }

@@ -4,37 +4,25 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 
 namespace EPSCoR.Results
 {
+    /// <summary>
+    /// This wraps up data to be serailized into the Json object returned.
+    /// </summary>
     public class FileUploadResult : ActionResult
     {
-        /// <summary>
-        /// This wraps up data to be serailized into the Json object returned.
-        /// </summary>
-        public class FileStatus
-        {
-            public string Name { get; set; }
-            public string Error { get; set; }
-        }
+        public string Name { get; set; }
+        public string Error { get; set; }
+        public int UploadedBytes { get; set; }
 
-        private JavaScriptSerializer _serializer;
-        private FileStatus _status;
+        public FileUploadResult() { }
 
-        public FileUploadResult(FileStatus status)
+        public FileUploadResult(string fileName, string error = null)
         {
-            _serializer = new JavaScriptSerializer();
-            _status = status;
-        }
-
-        public FileUploadResult(string FileName, string error = null)
-        {
-            _serializer = new JavaScriptSerializer();
-            _status = new FileStatus()
-            {
-                Name = FileName,
-                Error = error
-            };
+            Name = fileName;
+            Error = error;
         }
 
         public override void ExecuteResult(ControllerContext context)
@@ -42,21 +30,10 @@ namespace EPSCoR.Results
             var request = context.HttpContext.Request;
             var response = context.HttpContext.Response;
 
-            response.AddHeader("Vary", "Accept");
-            try
-            {
-                if (request["HTTP_ACCEPT"].Contains("application/json"))
-                    response.ContentType = "application/json";
-                else
-                    response.ContentType = "text/plain";
-            }
-            catch
-            {
-                response.ContentType = "text/plain";
-            }
+            response.ContentType = "application/json";
 
-            var jsonObj = _serializer.Serialize(_status);
-            response.Write(jsonObj);
+            string json = JsonConvert.SerializeObject(this);
+            response.Write(json);
         }
     }
 }

@@ -17,6 +17,7 @@ using Newtonsoft.Json.Linq;
 using WebMatrix.WebData;
 using EPSCoR.ViewModels;
 using EPSCoR.Results;
+using EPSCoR.Repositories.Factory;
 
 namespace EPSCoR.Controllers
 {
@@ -156,9 +157,13 @@ namespace EPSCoR.Controllers
         /// <returns></returns>
         public ActionResult Status()
         {
+            IQueryable<TableIndex> tableIndexes = _tableIndexRepo.GetAll();
+            ViewBag.ProcessedTables = tableIndexes.Where((index) => index.Processed).ToList();
+            ViewBag.NotProcessedTables = tableIndexes.Where((index) => !index.Processed).ToList();
+
             if (Request.IsAjaxRequest())
-                return PartialView("StatusPartial", _tableIndexRepo.GetAll().ToList());
-            return View(_tableIndexRepo.GetAll().ToList());
+                return PartialView("StatusPartial");
+            return View();
         }
 
         /// <summary>

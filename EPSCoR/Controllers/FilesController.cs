@@ -12,6 +12,7 @@ using System.Web.Script.Serialization;
 using EPSCoR.Repositories.Basic;
 using EPSCoR.Results;
 using EPSCoR.ViewModels;
+using EPSCoR.Repositories.Factory;
 
 namespace EPSCoR.Controllers
 {
@@ -57,10 +58,7 @@ namespace EPSCoR.Controllers
         [HttpGet]
         public ActionResult Upload()
         {
-            List<string> fileNames = new List<string>();
-            foreach (string fullFilePath in _uploadFileAccessor.GetFiles())
-                fileNames.Add(Path.GetFileName(fullFilePath));
-            return View(fileNames);
+            return View();
         }
 
         /// <summary>
@@ -118,6 +116,25 @@ namespace EPSCoR.Controllers
             if(saveSuccessful)
                 return new FileUploadResult(fileName);
             return new FileUploadResult(fileName, "Could not save chunk.");
+        }
+
+        /// <summary>
+        /// Returns file info if the file is stored in temp uploads.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult CheckFile(string id)
+        {
+            FileUploadResult result = new FileUploadResult();
+            result.Name = id;
+
+            if (_tempFileAccessor.FileExist(id))
+            {
+                FileInfo info = _tempFileAccessor.GetFileInfo(id);
+                result.UploadedBytes = (int)info.Length;
+            }
+
+            return result;
         }
 
         /// <summary>

@@ -1,28 +1,12 @@
-﻿/*jslint unparam: true */
-/*global window, $ */
+﻿/*jslint unparam: true, white: true, indent: 4 */
+/* global: $ serverBase */
 $(function () {
     'use strict';
-    // Change this to the location of your server-side upload handler:
     var baseUrl = serverBase + 'Files/',
         uploadUrl = baseUrl + 'UploadFiles',
         completeUrl = baseUrl + 'CompleteUpload',
-        cancelButton = $('<button/>')
-            .addClass('btn btn-warning')
-            .text('Cancel')
-            .on('click', function () {
-                var $this = $(this),
-                    data = $this.data(),
-                    $context = data.context;
-                data.abort();
-                setErrorStatus('Cancelled.', $context);
-            }),
-        closeButton = $('<button type="button" class="close hidden" data-dismiss="alert">x</button>'),
-        progressBar = $('<div/>')
-            .addClass('progress progress-success')
-            .append($('<div/>')
-                .addClass('bar')
-            ),
-        filesToUpload = new Array(),
+        checkUrl = baseUrl + 'CheckFile',
+        filesToUpload = [],
         setStatus = function (status, $context) {
             var $status = $('.status', $context);
             $status.text(status);
@@ -42,8 +26,25 @@ $(function () {
                 .removeClass('alert-info')
                 .addClass('alert-success');
             $('.close', $context).removeClass('hidden');
-            setStatus(status);
-        };
+            setStatus(status, $context);
+        },
+        cancelButton = $('<button class="btn btn-warning">Cancel</button>')
+            .on('click', function () {
+                var $this = $(this),
+                    data = $this.data(),
+                    $context = data.context,
+                    index = $context.queueIndex;
+                if ($context.jqXHR) {
+                    $context.jqXHR.abort();
+                }
+                if (index !== -1) {
+                    filesToUpload.splice(index, 1);
+                    setErrorStatus('Cancelled.', $context);
+                    $(this).remove();
+                }
+            }),
+        closeButton = $('<button type="button" class="close hidden" data-dismiss="alert">x</button>'),
+        progressBar = $('<div class="progress progress-success"><div class="bar"></div></div>');
 
     $('#fileupload').fileupload({
         url: uploadUrl,
@@ -52,7 +53,7 @@ $(function () {
         acceptFileTypes: /(\.|\/)(csv)$/i,
         //sequentialUploads: true,
         //multipart: false, //This is required for chunking to work in firefox.
-        maxChunkSize: 5000000, // 5 MB
+        maxChunkSize: 5000000 // 5 MB
     })
     //This is called when files are added.
     .bind('fileuploadadd', function (e, data) {
@@ -64,20 +65,27 @@ $(function () {
             $context.append(closeButton.clone(true));
             $context.append($('<span/>').text(file.name));
             $context.append($('<br/>'));
-            $context.append($('<span/>').text('Processing...').addClass('status'));
+            $context.append($('<span class="status">Processing...</span>'));
             $context.append(progressBar.clone(true));
             $context.append(cancelButton.clone(true).data(data));
-        })
+
+            $.getJSON(checkUrl, { id: file.name }, function (result) {
+                var file = result.file;
+                data.uploadedBytes = file && file.size;
+                $.blueimp.fileupload.prototype.options.add.call(that, e, data);
+            });
+        });
     })
     //This is called if an added file is successfully processed.
     .bind('fileuploadprocessdone', function(e, data) {
-        filesToUpload.push(data);
+        data.context.queueIndex = filesToUpload.push(data) - 1;
         setStatus('Ready to upload', data.context);
     })
     //This is called if an added file is not successfully processed.
     .bind('fileuploadprocessfail', function (e, data) {
         var error = data.files[data.index].error;
         setErrorStatus(error, data.context);
+        $('.btn-warning', data.context).remove();
     })
     //This is called eveytime an individual file's progress is updated.
     .bind('fileuploadprogress', function (e, data) {
@@ -87,21 +95,23 @@ $(function () {
             'width',
             progress + '%'
         );
-        if (data.loaded / data.total === 1)
+        if (data.loaded / data.total === 1) {
             setStatus('Processing...', data.context);
-        else
-            setStatus(progressTxt, data.context) 
+        } else {
+            setStatus(progressTxt, data.context);
+        }
     })
     //This is called when a file is successfully uploaded.
     .bind('fileuploaddone', function (e, data) {
         var fileName = data.files[data.index].name,
             $context = data.context;
         $.post(completeUrl + '/?id=' + fileName,
-            function (data) {
-                if (data.error)
-                    setErrorStatus(data.error, $context);
-                else
+            function (requestData) {
+                if (requestData.Error) {
+                    setErrorStatus(requestData.Error, $context);
+                } else {
                     setSuccessStatus('File uploaded.', $context);
+                }
                 $('.btn-warning', $context).remove();
             });
     })
@@ -113,8 +123,9 @@ $(function () {
 
     $('#btnUpload').on('click', function () {
         filesToUpload.forEach(function (value, index) {
-            value.submit();
+            value.context.jqXHR = value.submit();
+            value.context.queueIndex = -1;
         });
-        filesToUpload = new Array();
+        filesToUpload = [];
     });
 });
