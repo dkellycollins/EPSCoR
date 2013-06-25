@@ -18,6 +18,7 @@ using WebMatrix.WebData;
 using EPSCoR.ViewModels;
 using EPSCoR.Results;
 using EPSCoR.Repositories.Factory;
+using System.Threading.Tasks;
 
 namespace EPSCoR.Controllers
 {
@@ -120,16 +121,16 @@ namespace EPSCoR.Controllers
         /// <param name="formCollection"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Calc(CalcRequest calcRequest)
+        public async Task<ActionResult> Calc(CalcRequest calcRequest)
         {
             CalcResult result = CalcResult.Unknown;
             switch (calcRequest.CalcType)
             {
                 case "Sum":
-                    result = _dbCalc.SumTables(calcRequest.AttributeTable, calcRequest.UpstreamTable);
+                    result = await Task.Factory.StartNew(() => _dbCalc.SumTables(calcRequest.AttributeTable, calcRequest.UpstreamTable));
                     break;
                 case "Avg":
-                    result = _dbCalc.AvgTables(calcRequest.AttributeTable, calcRequest.UpstreamTable);
+                    result = await Task.Factory.StartNew(() => _dbCalc.AvgTables(calcRequest.AttributeTable, calcRequest.UpstreamTable));
                     break;
             }
 
