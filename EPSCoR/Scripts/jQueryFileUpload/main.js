@@ -2,10 +2,10 @@
 /* global: $ serverBase */
 $(function () {
     'use strict';
-    var baseUrl = serverBase + 'Files/',
-        uploadUrl = baseUrl + 'UploadFiles',
-        completeUrl = baseUrl + 'CompleteUpload',
-        checkUrl = baseUrl + 'CheckFile',
+    var baseUrl = '/Files/',
+        uploadUrl = baseUrl + '/UploadFiles',
+        completeUrl = baseUrl + '/CompleteUpload',
+        checkUrl = baseUrl + '/CheckFile',
         filesToUpload = [],
         setStatus = function (status, $context) {
             var $status = $('.status', $context);
