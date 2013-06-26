@@ -4,26 +4,17 @@
 
 <h3>The How To Page</h3>
 
-<p>
-	<pre>
-        Step 1 : 
-	</pre>
-    <span class="center">
-        First @Html.ActionLink("Upload Tables", "Upload", "Files") in .csv (comma delimited) format using the username "ftpuser" and its password
-	</span>
-	<pre>
-        Step 2 : 
-	</pre>
-    <span class="center">
-        After uploading your tables, you will be sent to a submission page where you can view the  progress of your upload as it is added to the database.
-    </span>
-	<pre>
-        Step 3 :
-	</pre>
-    <span id="center">
-        After your file conversions are complete, select your loaded Attribute and Field tables (based on filename of uploaded files) as well as the calculations you'd like to do. Submit your calculations.
-    </span>
-	<span class="center">
-         *** At this point you should be sent back to a submission page where you can see the  <a href='view_subs.php'>progress</a> of your calculation. Once finished you will have the option to preview or download the results in .csv format ***</center></h5>
-	</span>
-</p>
+<ol>
+    <li>
+        <p>Navigate to the @Html.ActionLink("upload", "Upload", "Files", null, null) page.</p>
+    </li>
+    <li>
+        <p>Click "Select files" to select files to upload. Currently only csv files are supported. Also, make suret that the first first line of the file is a "header" in that it describes each column in the table.</p>
+    </li>
+    <li>
+        <p>Once you have selected the files you want to upload, click "Upload" to begin uploading files to the server. Currently, upload pausing/resuming is not suported, so do not navigate away from this page while hte upload is in progress. If you need to cancel an upload, just click "Cancel underneath the item you want to cancel.</p>
+    </li>
+    <li>
+        <p>Once the file has been upload you should see "File uploaded" for the status of that item. To see the progress on adding the file to the database you can check the @Html.ActionLink("status", "Status", "Tables", null, null) page.</p>
+    </li>
+</ol>

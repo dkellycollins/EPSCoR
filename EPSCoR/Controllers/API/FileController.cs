@@ -20,14 +20,29 @@ namespace EPSCoR.Controllers.API
 
         // GET api/file
         [AcceptVerbs("GET", "HEAD")]
-        public IEnumerable<string> Get()
+        public IEnumerable<string> Get(string user, string directory)
         {
-            List<string> result = new List<string>();
+            /*
+            if(!validateUser(user))
+                return new HttpNotFoundResult();
 
-            IFileAccessor archiveFiles = RepositoryFactory.GetArchiveFileAccessor(WebSecurity.CurrentUserName);
-            result.AddRange(archiveFiles.GetFiles());
+            IFileAccessor files;
+            switch (directory.ToLower())
+            {
+                case "conversion":
+                    files = RepositoryFactory.GetConvertionFileAccessor(user);
+                    break;
+                case "archive":
+                    files = RepositoryFactory.GetArchiveFileAccessor(user);
+                    break;
+                default:
+                    return new HttpNotFoundResult();
+            }
 
-            return result;
+            return files.GetFiles();
+             */
+
+            return new List<string>();
         }
 
         // GET api/file/5
@@ -85,6 +100,15 @@ namespace EPSCoR.Controllers.API
         public HttpResponseMessage Delete(int id)
         {
             throw new NotImplementedException();
+        }
+
+        private bool validateUser(string userName)
+        {
+            using(IModelRepository<UserProfile> userProfileRepo = RepositoryFactory.GetModelRepository<UserProfile>())
+            {
+                UserProfile profile = userProfileRepo.GetAll().Where((p) => p.UserName == userName).FirstOrDefault();
+                return profile != null;
+            }
         }
     }
 }

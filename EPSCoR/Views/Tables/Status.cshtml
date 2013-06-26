@@ -1,25 +1,28 @@
-﻿@model IEnumerable<EPSCoR.Database.Models.TableIndex>
-@{
+﻿@{
     ViewBag.Title = "Status";
 }
 
 <h2>Status</h2>
 
 <div id="status">
-    @Html.Partial("StatusPartial", Model)
+    <h3>Processing</h3>
+    @{
+        object notProcessedTables = ViewBag.NotProcessedTables;
+        Html.RenderPartial("StatusPartial", notProcessedTables);    
+    }
+
+    <h3>Processed</h3>
+    @{
+        object processedTables = ViewBag.ProcessedTables;
+        Html.RenderPartial("StatusPartial", processedTables);
+    }
 </div>
 
 @section Scripts
 {
     <script>
-       (function($) {
-           $.fn.poll = function (url) {
-               var interval = 10000; //10 secs
-               setInterval(function () {
-                   $(this).load(url);
-               }, interval);
-           };
-       })(jQuery);
-       $('#status').poll("http://localhost:6615/Tables/Status");
+        setInterval(function () {
+            window.location.reload(true);
+        }, 60000);
     </script>
 }

@@ -8,10 +8,12 @@ namespace EPSCoR.Database.Services.Log
     /// </summary>
     public class FileLogger : ILogger
     {
+        private object _lock;
         private string _logFile;
 
         public FileLogger()
         {
+            _lock = new object();
             _logFile = Path.Combine(DirectoryManager.RootDir, "Log.txt");
             if (!File.Exists(_logFile))
                 File.Create(_logFile).Close();
@@ -23,12 +25,14 @@ namespace EPSCoR.Database.Services.Log
         /// <param name="entry">Log entry.</param>
         public void Log(string entry)
         {
-            StreamWriter logFileStream = new StreamWriter(File.Open(_logFile, FileMode.Append));
-
-            logFileStream.WriteLine(string.Format("{0} - {1}", DateTime.Now.ToString(), entry));
-
-            logFileStream.Flush();
-            logFileStream.Close();
+            lock (_lock)
+            {
+                using (StreamWriter logFileStream = new StreamWriter(File.Open(_logFile, FileMode.Append)))
+                {
+                    logFileStream.WriteLine(string.Format("{0} - {1}", DateTime.Now.ToString(), entry));
+                    logFileStream.Flush();
+                }
+            }
         }
 
         /// <summary>
@@ -38,20 +42,24 @@ namespace EPSCoR.Database.Services.Log
         /// <param name="e"></param>
         public void Log(string message, Exception e)
         {
-            StreamWriter logFileStream = new StreamWriter(File.Open(_logFile, FileMode.Append));
-
-            logFileStream.WriteLine(string.Format("{0} - {1}", DateTime.Now.ToString(), message));
-            
-            Exception currentException = e;
-            while (currentException != null)
+            lock (_lock)
             {
-                logFileStream.WriteLine(e.Message);
-                logFileStream.WriteLine(e.StackTrace);
-                currentException = currentException.InnerException;
-            }
+                using (StreamWriter logFileStream = new StreamWriter(File.Open(_logFile, FileMode.Append)))
+                {
 
-            logFileStream.Flush();
-            logFileStream.Close();
+                    logFileStream.WriteLine(string.Format("{0} - {1}", DateTime.Now.ToString(), message));
+
+                    Exception currentException = e;
+                    while (currentException != null)
+                    {
+                        logFileStream.WriteLine(e.Message);
+                        logFileStream.WriteLine(e.StackTrace);
+                        currentException = currentException.InnerException;
+                    }
+
+                    logFileStream.Flush();
+                }
+            }
         }
     }
 }
