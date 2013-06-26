@@ -169,6 +169,7 @@
     <Compile Include="Controllers\API\TablesController.cs" />
     <Compile Include="Controllers\BootstrapBaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Repositories\Async\AsyncTableRepo.cs" />
     <Compile Include="Repositories\IDatabaseCalc.cs" />
     <Compile Include="Repositories\Factory\RepositoryFactory.cs" />
     <Compile Include="Results\DataTableResult.cs" />
