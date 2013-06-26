@@ -16,10 +16,18 @@ namespace EPSCoR
             #region Custom bundles
 
             bundles.Add(new StyleBundle("~/content/css").Include(
-                       "~/Content/Site.css"));
+                        "~/Content/Bootstrap/bootstrap.css",
+                        "~/Content/Bootstrap/body.css",
+                        "~/Content/Bootstrap/bootstrap-responsive.css",
+                        "~/Content/Bootstrap/bootstrap-mvc-validation.css",
+                        "~/Content/Site.css"));
 
             bundles.Add(new ScriptBundle("~/scripts/main").Include(
-                       "~/Scripts/globalVars.js"));
+                        "~/Scripts/jQuery/jquery-migrate-{version}.js",
+                        "~/Scripts/Bootstrap/bootstrap.js",
+                        "~/Scripts/jQuery/jquery.validate.js",
+                        "~/scripts/jQuery/jquery.validate.unobtrusive.js",
+                        "~/Scripts/jQuery/jquery.validate.unobtrusive-custom-for-bootstrap.js"));
 
             #endregion Custom bundles
 
@@ -30,8 +38,7 @@ namespace EPSCoR
 
             bundles.Add(new ScriptBundle("~/scripts/jquery/jqueryval").Include(
                         "~/Scripts/jQuery/jquery.validate.js",
-                        "~/scripts/jQuery/jquery.validate.unobtrusive.js",
-                        "~/Scripts/jQuery/jquery.validate.unobtrusive-custom-for-bootstrap.js"
+                        "~/scripts/jQuery/jquery.validate.unobtrusive.js"
                         ));
 
             bundles.Add(new ScriptBundle("~/scripts/jquery/jquery-migrate").Include(
@@ -65,11 +72,7 @@ namespace EPSCoR
             #region Bootstrap bundles
 
             bundles.Add(new ScriptBundle("~/scripts/bootstrap/bootstrap-js").Include(
-                "~/Scripts/jQuery/jquery-{version}.js",
-                "~/Scripts/jQuery/jquery-migrate-{version}.js",
                 "~/Scripts/Bootstrap/bootstrap.js",
-                "~/Scripts/jQuery/jquery.validate.js",
-                "~/scripts/jQuery/jquery.validate.unobtrusive.js",
                 "~/Scripts/jQuery/jquery.validate.unobtrusive-custom-for-bootstrap.js"
                 ));
 
