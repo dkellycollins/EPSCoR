@@ -25,6 +25,11 @@ namespace EPSCoR.Repositories.Factory
             return new BasicFileAccessor(DirectoryManager.TempDir, userName);
         }
 
+        public static IFileAccessor GetArchiveFileAccessor(string userName)
+        {
+            return new BasicFileAccessor(DirectoryManager.ArchiveDir, userName);
+        }
+
         public static IModelRepository<T> GetModelRepository<T>()
             where T : class, IModel
         {

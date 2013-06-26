@@ -7,6 +7,11 @@ using System.Web.Http;
 using EPSCoR.Database.Models;
 using EPSCoR.Repositories;
 using EPSCoR.Repositories.Basic;
+using EPSCoR.Repositories.Factory;
+using System.IO;
+using System.Net.Http.Headers;
+using EPSCoR.ViewModels;
+using WebMatrix.WebData;
 
 namespace EPSCoR.Controllers.API
 {
@@ -15,39 +20,69 @@ namespace EPSCoR.Controllers.API
 
         // GET api/file
         [AcceptVerbs("GET", "HEAD")]
-        public IEnumerable<string> Get(string user)
+        public IEnumerable<string> Get()
         {
-            if (string.IsNullOrEmpty(user))
-                return new List<string>();
+            List<string> result = new List<string>();
 
-            IFileAccessor conversionFiles = RepositoryFactory.GetConvertionFileAccessor(user);
-            return conversionFiles.GetFiles();
+            IFileAccessor archiveFiles = RepositoryFactory.GetArchiveFileAccessor(WebSecurity.CurrentUserName);
+            result.AddRange(archiveFiles.GetFiles());
+
+            return result;
         }
 
         // GET api/file/5
         [AcceptVerbs("GET", "HEAD")]
-        public string Get(int id)
+        public HttpResponseMessage Get(string fileName)
         {
-            throw new NotImplementedException();
+            IFileAccessor convertionFileAccessor = RepositoryFactory.GetConvertionFileAccessor(WebSecurity.CurrentUserName);
+            IFileAccessor archiveFileAccessor = RepositoryFactory.GetArchiveFileAccessor(WebSecurity.CurrentUserName);
+            HttpResponseMessage response = new HttpResponseMessage();
+
+            if(convertionFileAccessor.FileExist(fileName))
+            {
+                Stream fileStream = convertionFileAccessor.OpenFile(fileName);
+                response.StatusCode = HttpStatusCode.OK;
+                response.Content = new StreamContent(fileStream);
+                response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+            }
+            else
+            {
+                response.StatusCode = HttpStatusCode.NotFound;
+            }
+
+            return response;
         }
 
         // POST api/file
         [AcceptVerbs("POST")]
-        public void Post([FromBody]string value)
+        public HttpResponseMessage Post(FileUpload fileUpload)
         {
-            throw new NotImplementedException();
+            IFileAccessor uploadFileAccessor = RepositoryFactory.GetUploadFileAccessor(WebSecurity.CurrentUserName);
+            bool result = uploadFileAccessor.SaveFiles(FileStreamWrapper.FromFileUpload(fileUpload));
+
+            HttpResponseMessage response = new HttpResponseMessage();
+            if (result)
+            {
+                response.StatusCode = HttpStatusCode.OK;
+            }
+            else
+            {
+                response.StatusCode = HttpStatusCode.InternalServerError;
+            }
+
+            return response;
         }
 
         // PUT api/file/5
         [AcceptVerbs("PUT")]
-        public void Put(int id, [FromBody]string value)
+        public HttpResponseMessage Put(int id, [FromBody]string value)
         {
             throw new NotImplementedException();
         }
 
         // DELETE api/file/5
         [AcceptVerbs("DELETE")]
-        public void Delete(int id)
+        public HttpResponseMessage Delete(int id)
         {
             throw new NotImplementedException();
         }

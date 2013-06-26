@@ -26,6 +26,11 @@ namespace EPSCoR.ViewModels
         public int StartPosition { get; set; }
 
         /// <summary>
+        /// Where the stream ends in the complete file.
+        /// </summary>
+        public int EndPosition { get; set; }
+
+        /// <summary>
         /// The length of the complete file.
         /// </summary>
         public int TotalFileLength { get; set; }
@@ -39,17 +44,19 @@ namespace EPSCoR.ViewModels
                 string fileName = request.Files[0].FileName;
                 Stream inputStream = request.Files[0].InputStream;
                 int startPos;
+                int endPos;
                 int totalFileLength;
                 if (request.Headers["Content-Range"] != null)
                 {
                     string[] fileInfo = request.Headers["Content-Range"].Split('/', '-');
                     startPos = Int32.Parse(fileInfo[0].Remove(0, 5));
+                    endPos = Int32.Parse(fileInfo[1]);
                     totalFileLength = Int32.Parse(fileInfo[2]);
                 }
                 else
                 {
                     startPos = 0;
-                    totalFileLength = request.Files[0].ContentLength;
+                    endPos = totalFileLength = request.Files[0].ContentLength;
                 }
 
                 return new FileUpload()

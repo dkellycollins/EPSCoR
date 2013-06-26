@@ -2,6 +2,7 @@
 using System.IO;
 using System.Web;
 using EPSCoR.Controllers;
+using EPSCoR.ViewModels;
 
 namespace EPSCoR.Repositories
 {
@@ -40,7 +41,25 @@ namespace EPSCoR.Repositories
             return new FileStreamWrapper()
             {
                 FileName = file.FileName,
-                InputStream = file.InputStream
+                InputStream = file.InputStream,
+                SeekPos = 0,
+                FileSize = (int)file.InputStream.Length
+            };
+        }
+
+        /// <summary>
+        /// Retursn a FileStreamWrapper with populated from the FileUpload.
+        /// </summary>
+        /// <param name="fileUpload"></param>
+        /// <returns></returns>
+        public static FileStreamWrapper FromFileUpload(FileUpload fileUpload)
+        {
+            return new FileStreamWrapper()
+            {
+                FileName = fileUpload.FileName,
+                InputStream = fileUpload.InputStream,
+                SeekPos = fileUpload.StartPosition,
+                FileSize = fileUpload.TotalFileLength
             };
         }
     }
