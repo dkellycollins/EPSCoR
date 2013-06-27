@@ -53,7 +53,7 @@ $(function () {
         acceptFileTypes: /(\.|\/)(csv)$/i,
         //sequentialUploads: true,
         //multipart: false, //This is required for chunking to work in firefox.
-        maxChunkSize: 5000000 // 5 MB
+        maxChunkSize: 1000000 // 3 MB
     })
     //This is called when files are added.
     .bind('fileuploadadd', function (e, data) {
@@ -68,12 +68,6 @@ $(function () {
             $context.append($('<span class="status">Processing...</span>'));
             $context.append(progressBar.clone(true));
             $context.append(cancelButton.clone(true).data(data));
-
-            $.getJSON(checkUrl, { id: file.name }, function (result) {
-                var file = result.file;
-                data.uploadedBytes = file && file.size;
-                $.blueimp.fileupload.prototype.options.add.call(that, e, data);
-            });
         });
     })
     //This is called if an added file is successfully processed.
