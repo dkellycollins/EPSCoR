@@ -13,7 +13,14 @@ namespace EPSCoR.Database.Services.Log
         public static ILogger GetLogger()
         {
             if (_loggerInstance == null)
-                _loggerInstance = new FileLogger();
+            {
+                _loggerInstance = new CompoundLogger(
+                    new FileLogger(),
+                    new EmailLogger(
+                        "dkellycollins@gmail.com"
+                        )
+                    );
+            }
             return _loggerInstance;
         }
     }

@@ -32,6 +32,7 @@ namespace EPSCoR.Database
             _fileWatcher.Error += _fileWatcher_Error;
 
             _fileWatcher.IncludeSubdirectories = true;
+            _fileWatcher.Filter = "*.*";
             _fileWatcher.EnableRaisingEvents = true;
         }
 
@@ -42,7 +43,7 @@ namespace EPSCoR.Database
 
         private void _fileWatcher_Created(object sender, FileSystemEventArgs e)
         {
-            convertFile(e.FullPath);
+            Task.Factory.StartNew(() => convertFile(e.FullPath));
         }
 
         private void _fileWatcher_Changed(object sender, FileSystemEventArgs e)
