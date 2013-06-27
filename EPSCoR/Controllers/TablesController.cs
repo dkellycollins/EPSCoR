@@ -66,7 +66,7 @@ namespace EPSCoR.Controllers
         {
             var tables = from t in _tableIndexRepo.GetAll() select t;
 
-            var allTables = tables.Where(t => t.Processed);
+            var allTables = tables.Where(t => t.Processed && t.UploadedByUser == WebSecurity.CurrentUserName);
             var attTables = allTables.Where(t => t.Type == TableTypes.ATTRIBUTE);
             var usTables = allTables.Where(t => t.Type == TableTypes.UPSTREAM);
 
@@ -158,7 +158,7 @@ namespace EPSCoR.Controllers
         /// <returns></returns>
         public ActionResult Status()
         {
-            IQueryable<TableIndex> tableIndexes = _tableIndexRepo.GetAll();
+            IQueryable<TableIndex> tableIndexes = _tableIndexRepo.GetAll().Where(t => t.UploadedByUser == WebSecurity.CurrentUserName);
             ViewBag.ProcessedTables = tableIndexes.Where((index) => index.Processed).ToList();
             ViewBag.NotProcessedTables = tableIndexes.Where((index) => !index.Processed).ToList();
 

@@ -16,7 +16,7 @@ namespace EPSCoR.Database.Services.Log
             {
                 _loggerInstance = new FileLogger();
             }
-            return _loggerInstance;
+            return _loggerInstance;   
         }
     }
 }
