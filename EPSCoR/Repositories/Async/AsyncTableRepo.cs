@@ -9,13 +9,13 @@ using System.Web;
 
 namespace EPSCoR.Repositories.Async
 {
-    public class BasicTableRepo : ITableRepository, IDatabaseCalc
+    public class AsyncTableRepo : ITableRepository, IAsyncTableRepository, IDatabaseCalc
     {
         DefaultContext _defaultContext;
         UserContext _userContext;
         string currentUser;
 
-        public BasicTableRepo(string userName)
+        public AsyncTableRepo(string userName)
         {
             _defaultContext = new DefaultContext();
             _userContext = UserContext.GetContextForUser(userName);
@@ -29,22 +29,27 @@ namespace EPSCoR.Repositories.Async
             throw new NotImplementedException();
         }
 
-        public DataTable Read(string tableName)
+        public async void CreateAsync(DataTable table)
         {
-            return ReadTaskAsync(tableName).Result;
+            throw new NotImplementedException();
         }
 
-        public async Task<DataTable> ReadTaskAsync(string tableName)
+        public DataTable Read(string tableName)
+        {
+            return ReadAsync(tableName).Result;
+        }
+
+        public async Task<DataTable> ReadAsync(string tableName)
         {
             return await Task.Run(() => _userContext.Procedures.SelectAllFrom(tableName));
         }
 
         public DataTable Read(string tableName, int lowerLimit, int upperLimit)
         {
-            return ReadTaskAsync(tableName, lowerLimit, upperLimit).Result;
+            return ReadAsync(tableName, lowerLimit, upperLimit).Result;
         }
 
-        public async Task<DataTable> ReadTaskAsync(string tableName, int lowerLimit, int upperLimit)
+        public async Task<DataTable> ReadAsync(string tableName, int lowerLimit, int upperLimit)
         {
             int totalRows = 0;
             return await Task.Run(() => _userContext.Procedures.SelectAllFrom(tableName, lowerLimit, upperLimit, out totalRows));
@@ -52,15 +57,20 @@ namespace EPSCoR.Repositories.Async
 
         public int Count(string tableName)
         {
-            return CountTaskAsync(tableName).Result;
+            return CountAsync(tableName).Result;
         }
 
-        public async Task<int> CountTaskAsync(string tableName)
+        public async Task<int> CountAsync(string tableName)
         {
             return await Task.Run(() => _userContext.Procedures.Count(tableName));
         }
 
         public void Update(DataTable table)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async void UpdateAsync(DataTable table)
         {
             throw new NotImplementedException();
         }
@@ -77,7 +87,7 @@ namespace EPSCoR.Repositories.Async
             }
         }
 
-        public async void DropTaskAsync(string tableName)
+        public async void DropAsync(string tableName)
         {
             await Task.Run(() =>
             {
