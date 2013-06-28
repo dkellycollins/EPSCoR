@@ -44,9 +44,50 @@ else
                 </td>
                 <td>
                     @Html.RouteLink("Download Csv", "Default", new { controller="Files", action="DownloadCsv", id=item.Name }, new { @class="btn" })
-                    @Html.RouteLink("X", "Default", new {controller="Tables", action="Delete", id=item.Name }, new { @class="btn-danger" })
+                    <span class="btn btn-danger" onclick="deleteTable('@item.Name')">
+                        X
+                        @using(Html.BeginForm("Delete", "Tables", FormMethod.Post, new { id="delete-"+item.Name, @class="hide" }))
+                        {
+                            <input type="hidden" name="id" value="@item.Name" />
+                        }
+                    </span>
                 </td>
             </tr>
         }
     </table>
+}
+
+@section styles {
+    @Styles.Render("~/content/jqueryui/jqueryui-css")
+}
+
+@section scripts {
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script>
+        function deleteTable(tableName) {
+            yesnodialog('Yes', 'No', 'Are you sure you want to delete ' + tableName + '?', function (r) {
+                if (r) {
+                    $('#delete-' + tableName).submit();
+                }
+            });
+        };
+
+        function yesnodialog(button1, button2, text, onClose){
+            var btns = {};
+            btns[button1] = function(){ 
+                $(this).dialog("close");
+                onClose(true);
+            };
+            btns[button2] = function(){ 
+                $(this).dialog("close");
+                onClose(false);
+            };
+            $("<div><span>"+text+"</div>").dialog({
+                autoOpen: true,
+                title: 'Condition',
+                modal:true,
+                buttons:btns
+            });
+        }
+    </script>
 }
