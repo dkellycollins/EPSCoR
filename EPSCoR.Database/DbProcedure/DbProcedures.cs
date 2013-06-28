@@ -35,6 +35,13 @@ namespace EPSCoR.Database.DbProcedure
         internal abstract void PopulateTableFromFile(string file);
 
         /// <summary>
+        /// Saves the table to a csv file.
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="file"></param>
+        internal abstract void SaveTableToFile(string table, string file);
+
+        /// <summary>
         /// Creates a new table that performs a sum on join table of the attTable and the usTable.
         /// </summary>
         /// <param name="attTable">Name of the Attribute table to use.</param>

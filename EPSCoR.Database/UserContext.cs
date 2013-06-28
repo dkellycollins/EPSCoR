@@ -1,6 +1,8 @@
 ﻿using System.Data.Common;
 using System.Data.Entity;
+using System.IO;
 using EPSCoR.Database.DbProcedure;
+using EPSCoR.Database.Services;
 using MySql.Data.MySqlClient;
 
 namespace EPSCoR.Database
@@ -19,6 +21,7 @@ namespace EPSCoR.Database
             DbConnection conn = new MySqlConnection(connection);
             
             UserContext context = new UserContext(conn);
+            context.User = username;
             context.Procedures = new MySqlProcedures(context);
 
             return context;
@@ -31,11 +34,18 @@ namespace EPSCoR.Database
                 return this.Database.Connection.Database;
             }
         }
+        public string User { get; private set; }
         public DbProcedures Procedures { get; private set; }
 
         private UserContext(DbConnection conn)
             : base(conn, false)
         {
+        }
+
+        public void SaveTableToFile(string table)
+        {
+            string filePath = Path.Combine(DirectoryManager.ConversionDir, User, table + ".csv");
+            Procedures.SaveTableToFile(table, filePath);
         }
     }
 }

@@ -66,5 +66,10 @@ namespace EPSCoR.Database.DbProcedure
         {
             throw new NotImplementedException();
         }
+
+        internal override void SaveTableToFile(string table, string file)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

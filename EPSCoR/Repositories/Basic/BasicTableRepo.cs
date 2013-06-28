@@ -138,8 +138,15 @@ namespace EPSCoR.Repositories.Basic
                         throw new Exception("Unknown calctype");
                 }
 
-                index.Status = "Table created.";
+                index.Status = "Saving table.";
                 index.Processed = true;
+                index.DateUpdated = DateTime.Now;
+                _defaultContext.Entry(index).State = EntityState.Modified;
+                _defaultContext.SaveChanges();
+
+                _userContext.SaveTableToFile(calcTable);
+
+                index.Status = "Table Created.";
                 index.DateUpdated = DateTime.Now;
                 _defaultContext.Entry(index).State = EntityState.Modified;
                 _defaultContext.SaveChanges();

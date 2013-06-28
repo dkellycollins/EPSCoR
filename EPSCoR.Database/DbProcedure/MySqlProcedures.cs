@@ -5,8 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using EPSCoR.Database.Exceptions;
+using EPSCoR.Database.Services;
 using EPSCoR.Database.Services.Log;
 using MySql.Data.MySqlClient;
+using EPSCoR.Database.Extentions;
 
 namespace EPSCoR.Database.DbProcedure
 {
@@ -51,10 +53,9 @@ namespace EPSCoR.Database.DbProcedure
 
             //Build the column paramaters for the Sql query.
             StringBuilder columnsBuilder = new StringBuilder();
-            for (int i = 0; i < fields.Count(); i++)
+            foreach(string field in fields)
             {
-                string type = getValueType(samples[i]);
-                columnsBuilder.Append(fields[i] + " " + type + ", ");
+                columnsBuilder.Append(field + " double, ");
             }
             //Make the first field the primary key.
             columnsBuilder.Append("PRIMARY KEY(" + fields[0] + ")");
@@ -69,17 +70,6 @@ namespace EPSCoR.Database.DbProcedure
             LoggerFactory.GetLogger().Log("Table " + tableName + " added to " + DatabaseName);
         }
 
-        private string getValueType(string sample)
-        {
-            int x;
-            double y;
-            //if (Int32.TryParse(sample, out x))
-            //    return "int";
-            if (Double.TryParse(sample, out y))
-                return "double";
-            return "varchar(25)";
-        }
-
         private const int MAX_CMD_LENGTH = 1048576 / sizeof(char); //1mb divided by the size of a character.
 
         /// <summary>
@@ -91,29 +81,6 @@ namespace EPSCoR.Database.DbProcedure
         {
             string table = Path.GetFileNameWithoutExtension(file);
             ThrowFileExceptionIfInvalidSql(file, table);
-
-            /*
-            InsertCmd insertCmd = new InsertCmd(table);
-            using (TextReader reader = File.OpenText(file))
-            {
-                //Build the column paramaters for the Sql query.
-                string head = reader.ReadLine();
-                head = head.Replace('\"', ' ');
-                string[] fields = head.Split(',');
-                insertCmd.AddColumns(fields);
-
-                //Build the values string.
-                string buf = string.Empty;
-                while ((buf = reader.ReadLine()) != null)
-                {
-                    string[] values = buf.Split(',');
-                    insertCmd.AddRow(values);
-                }
-            }
-
-            int rowsUpdated = insertCmd.ExecuteCmd(_context, MAX_CMD_LENGTH);
-            */
-            
             
             string cmd = "LOAD DATA LOCAL INFILE '" + file.Replace('\\', '/') + "'"
                     + "INTO TABLE " + table + " "
@@ -123,6 +90,19 @@ namespace EPSCoR.Database.DbProcedure
                     + "IGNORE 1 LINES";
             int rowsUpdated = _context.Database.ExecuteSqlCommand(cmd);
             LoggerFactory.GetLogger().Log(rowsUpdated + " rows updated in table " + table + ", " + DatabaseName);
+        }
+
+        internal override void SaveTableToFile(string table, string filePath)
+        {
+            IEnumerable<string> columns = getColumnsForTable(table);
+            string strColumns = columns.ToCommaSeparatedString("'{0}'");
+
+            string cmd = "SELECT " + strColumns + " INTO OUTFILE '" + filePath.Replace('\\', '/') + "'"
+                + "FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' "
+                + "LINES TERMINATED BY '\n' "
+                + "FROM " + table;
+            _context.Database.ExecuteSqlCommand(cmd);
+            LoggerFactory.GetLogger().Log("Table, " + table + ", from database, " + DatabaseName + ", saved to " + filePath);
         }
 
         /// <summary>
@@ -145,15 +125,7 @@ namespace EPSCoR.Database.DbProcedure
             ThrowExceptionIfInvalidSql(attTable, usTable, calcTable);            
 
             // Get columns
-            string showColumns = "SELECT column_name"
-                                + " FROM information_schema.columns"
-                                + " WHERE table_schema = '" + _context.Database.Connection.Database + "'"
-                                + " AND table_name = '" + attTable + "'";
-            IEnumerable<string> columns = _context.Database.SqlQuery<string>(showColumns);
-            if (columns == null || columns.Count() == 0)
-            {
-                throw new Exception("Query to show fields from table failed");
-            }
+            IEnumerable<string> columns = getColumnsForTable(attTable);
 
             //Build two strings. One that has each column name separated by commas and once that has each column name wrapped in SUM()
             StringBuilder newColumns = new StringBuilder();
@@ -163,7 +135,7 @@ namespace EPSCoR.Database.DbProcedure
                 //TODO make this if statement dynamic
                 if (column != "ID" && column != "ARCID" && column != "OBJECTID" && column != "uni")
                 {
-                    newColumns.Append(string.Format(", {0}({1})", calc, column));
+                    newColumns.Append(string.Format(", {0}({1}) AS {0}_{1}", calc, column));
                     curColumns.Append(", " + column);
                 }
             }
@@ -179,6 +151,20 @@ namespace EPSCoR.Database.DbProcedure
             _context.Database.ExecuteSqlCommand(cmd);
             _context.SaveChanges();
             LoggerFactory.GetLogger().Log(calc + " table " + calcTable + "created in " + DatabaseName);
+        }
+
+        private IEnumerable<string> getColumnsForTable(string table)
+        {
+            string showColumns = "SELECT column_name"
+                               + " FROM information_schema.columns"
+                               + " WHERE table_schema = '" + DatabaseName + "'"
+                               + " AND table_name = '" + table + "'";
+            IEnumerable<string> columns = _context.Database.SqlQuery<string>(showColumns);
+            if (columns == null || columns.Count() == 0)
+            {
+                throw new Exception("Query to show fields from table failed");
+            }
+            return columns;
         }
     }
 }
