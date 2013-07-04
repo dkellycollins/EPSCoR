@@ -169,7 +169,13 @@
     <Compile Include="Controllers\API\TablesController.cs" />
     <Compile Include="Controllers\BootstrapBaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Repositories\Async\AsyncFileAccessor.cs" />
+    <Compile Include="Repositories\Async\AsyncModelRepo.cs" />
     <Compile Include="Repositories\Async\AsyncTableRepo.cs" />
+    <Compile Include="Repositories\IAsyncDatabaseCalc.cs" />
+    <Compile Include="Repositories\IAsyncFileAccessor.cs" />
+    <Compile Include="Repositories\IAsyncModelRepository.cs" />
+    <Compile Include="Repositories\IAsyncTableRepository.cs" />
     <Compile Include="Repositories\IDatabaseCalc.cs" />
     <Compile Include="Repositories\Factory\RepositoryFactory.cs" />
     <Compile Include="Results\DataTableResult.cs" />
@@ -423,6 +429,7 @@
     <Content Include="Content\DataTables-1.9.4\extras\TableTools\media\images\psd\copy document.psd" />
     <Content Include="Content\DataTables-1.9.4\extras\TableTools\media\images\psd\collection.psd" />
     <None Include="Properties\PublishProfiles\default.pubxml" />
+    <None Include="Properties\PublishProfiles\testing.pubxml" />
     <None Include="Scripts\jQuery\jquery-1.9.1.intellisense.js" />
     <Content Include="Scripts\jQueryFileUpload\main.js" />
     <Content Include="Scripts\jQuery\jquery-1.9.1.js" />
@@ -521,8 +528,7 @@
           <IISUrl>http://localhost:8331/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl>
-          </CustomServerUrl>
+          <CustomServerUrl>http://daedalus.beocat.cis.ksu.edu/</CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
