@@ -9,7 +9,7 @@ using System.Web;
 
 namespace EPSCoR.Repositories.Async
 {
-    public class AsyncTableRepo : ITableRepository, IAsyncTableRepository, IDatabaseCalc
+    public class AsyncTableRepo : ITableRepository, IAsyncTableRepository, IDatabaseCalc, IAsyncDatabaseCalc
     {
         DefaultContext _defaultContext;
         UserContext _userContext;
@@ -22,14 +22,9 @@ namespace EPSCoR.Repositories.Async
             currentUser = userName;
         }
 
-        #region IRawRepository Members
+        #region ITableRepository Members
 
         public void Create(DataTable table)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async void CreateAsync(DataTable table)
         {
             throw new NotImplementedException();
         }
@@ -39,20 +34,9 @@ namespace EPSCoR.Repositories.Async
             return ReadAsync(tableName).Result;
         }
 
-        public async Task<DataTable> ReadAsync(string tableName)
-        {
-            return await Task.Run(() => _userContext.Procedures.SelectAllFrom(tableName));
-        }
-
         public DataTable Read(string tableName, int lowerLimit, int upperLimit)
         {
             return ReadAsync(tableName, lowerLimit, upperLimit).Result;
-        }
-
-        public async Task<DataTable> ReadAsync(string tableName, int lowerLimit, int upperLimit)
-        {
-            int totalRows = 0;
-            return await Task.Run(() => _userContext.Procedures.SelectAllFrom(tableName, lowerLimit, upperLimit, out totalRows));
         }
 
         public int Count(string tableName)
@@ -60,17 +44,7 @@ namespace EPSCoR.Repositories.Async
             return CountAsync(tableName).Result;
         }
 
-        public async Task<int> CountAsync(string tableName)
-        {
-            return await Task.Run(() => _userContext.Procedures.Count(tableName));
-        }
-
         public void Update(DataTable table)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async void UpdateAsync(DataTable table)
         {
             throw new NotImplementedException();
         }
@@ -85,6 +59,42 @@ namespace EPSCoR.Repositories.Async
                 _defaultContext.Tables.Remove(tableIndex);
                 _defaultContext.SaveChanges();
             }
+        }
+
+        public void Dispose()
+        {
+            _defaultContext.Dispose();
+            _userContext.Dispose();
+        }
+
+        #endregion ITableRepository Members
+
+        #region IAsyncTableRepository Members
+
+        public async void CreateAsync(DataTable table)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<DataTable> ReadAsync(string tableName)
+        {
+            return await Task.Run(() => _userContext.Procedures.SelectAllFrom(tableName));
+        }
+
+        public async Task<DataTable> ReadAsync(string tableName, int lowerLimit, int upperLimit)
+        {
+            int totalRows = 0;
+            return await Task.Run(() => _userContext.Procedures.SelectAllFrom(tableName, lowerLimit, upperLimit, out totalRows));
+        }
+
+        public async Task<int> CountAsync(string tableName)
+        {
+            return await Task.Run(() => _userContext.Procedures.Count(tableName));
+        }
+
+        public async void UpdateAsync(DataTable table)
+        {
+            throw new NotImplementedException();
         }
 
         public async void DropAsync(string tableName)
@@ -102,13 +112,7 @@ namespace EPSCoR.Repositories.Async
             });
         }
 
-        public void Dispose()
-        {
-            _defaultContext.Dispose();
-            _userContext.Dispose();
-        }
-
-        #endregion IRawRepository Members
+        #endregion IAsyncTableRepository
 
         #region IDatabaseCalc Members
 
@@ -123,6 +127,20 @@ namespace EPSCoR.Repositories.Async
         }
 
         #endregion IDatabaseCalc Members
+
+        #region IAysncDatabaseCalc Members
+
+        public Task<CalcResult> SumTablesAysnc(string attTable, string usTable)
+        {
+            return createCalcTableTaskAsync(attTable, usTable, CalcType.SUM);
+        }
+
+        public Task<CalcResult> AvgTablesAsync(string attTable, string usTable)
+        {
+            return createCalcTableTaskAsync(attTable, usTable, CalcType.AVG);
+        }
+
+        #endregion IAsyncDatabaseCalc Members
 
         private enum CalcType
         {

@@ -64,11 +64,22 @@ namespace EPSCoR.Repositories
         }
     }
 
+    public enum FileDirectory
+    {
+        Temp,
+        Upload,
+        Conversion,
+        Archive,
+        Invalid
+    }
+
     /// <summary>
     /// Interface for using the file system on a data base.
     /// </summary>
     public interface IFileAccessor
     {
+        FileDirectory CurrentDirectory { get; set; }
+
         /// <summary>
         /// Saves one or more files to disk.
         /// </summary>

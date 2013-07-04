@@ -7,7 +7,7 @@ using System.Web;
 
 namespace EPSCoR.Repositories
 {
-    public interface IAsyncTableRepository
+    public interface IAsyncTableRepository : IDisposable
     {
         /// <summary>
         /// Creates a new table in the database using table.

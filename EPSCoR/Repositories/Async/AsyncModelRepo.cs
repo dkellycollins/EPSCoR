@@ -13,7 +13,7 @@ namespace EPSCoR.Repositories.Async
     /// This implementation uses a DbContext to access the database
     /// </summary>
     /// <typeparam name="T">Model type</typeparam>
-    public class AsyncModelRepo<T> : IModelRepository<T>
+    public class AsyncModelRepo<T> : IModelRepository<T>, IAsyncModelRepository<T>
         where T : class, IModel
     {
         private DbContext _context;

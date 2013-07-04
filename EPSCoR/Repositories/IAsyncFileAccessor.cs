@@ -12,6 +12,8 @@ namespace EPSCoR.Repositories
     /// </summary>
     public interface IAsyncFileAccessor
     {
+        FileDirectory CurrentDirectory { get; set; }
+
         /// <summary>
         /// Saves one or more files to disk.
         /// </summary>

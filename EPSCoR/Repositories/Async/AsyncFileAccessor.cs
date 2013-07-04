@@ -5,29 +5,25 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using EPSCoR.Database.Services;
 
 namespace EPSCoR.Repositories.Async
 {
-    /*public class AsyncFileAccessor : IFileAccessor
+    public class AsyncFileAccessor : IAsyncFileAccessor, IFileAccessor
     {
-        private string _userDirectory;
-        private string _lockFile;
+        private string _user;
 
-        public AsyncFileAccessor(string directory, string userName)
+        public AsyncFileAccessor(string userName)
         {
-            _userDirectory = Path.Combine(directory, userName);
-            if (!Directory.Exists(_userDirectory))
-                Directory.CreateDirectory(_userDirectory);
-
-            _lockFile = Path.Combine(_userDirectory, "lock");
+            _user = userName;
         }
 
         #region IFileAccessor Members
 
+        public IFileAccessor.FileDirectory CurrentDirectory { get; set; }
+
         public bool SaveFiles(params FileStreamWrapper[] files)
         {
-            //waitForLock();
-
             bool result = true;
             foreach (FileStreamWrapper file in files)
             {
@@ -38,24 +34,22 @@ namespace EPSCoR.Repositories.Async
                 }
             }
 
-            //releaseLock();
-
             return result;
         }
 
         public async Task<bool> SaveFilesTaskAsync(params FileStreamWrapper[] files)
         {
-            Task<bool[]>[] tasks = from file in files 
+            IEnumerable<Task<bool>> tasks = from file in files 
                                    select saveFileTaskAsync(file, FileMode.Create);
 
-            Task.WaitAll(tasks);
+            Task.WaitAll(tasks.ToArray());
+
+            return tasks.Any(t => !t.Result);
         }
 
         public FileStream OpenFile(string fileName)
         {
-            //waitForLock();
-
-            string path = Path.Combine(_userDirectory, fileName);
+            string path = Path.Combine(getUserDirectory(), fileName);
 
             try
             {
@@ -64,41 +58,30 @@ namespace EPSCoR.Repositories.Async
             catch (Exception e)
             {
                 Debug.WriteLine(e.ToString());
-                releaseLock();
                 return null;
             }
         }
 
-        public void CloseFile(FileStream fileStream)
-        {
-            fileStream.Close();
-            //releaseLock();
-        }
-
         public IEnumerable<string> GetFiles()
         {
-            return Directory.GetFiles(_userDirectory);
+            return Directory.GetFiles(getUserDirectory());
         }
 
         public void DeleteFiles(params string[] fileNames)
         {
-            //waitForLock();
-
             foreach (string fileName in fileNames)
                 deleteFile(fileName);
-
-            //releaseLock();
         }
 
         public bool FileExist(string fileName)
         {
-            string path = Path.Combine(_userDirectory, fileName);
+            string path = Path.Combine(getUserDirectory(), fileName);
             return File.Exists(path);
         }
 
         public FileInfo GetFileInfo(string fileName)
         {
-            string path = Path.Combine(_userDirectory, fileName);
+            string path = Path.Combine(getUserDirectory(), fileName);
             return new FileInfo(path);
         }
 
@@ -110,7 +93,7 @@ namespace EPSCoR.Repositories.Async
         {
             bool result = true;
             var fileName = Path.GetFileName(file.FileName);
-            var path = Path.Combine(_userDirectory, fileName);
+            var path = Path.Combine(getUserDirectory(), fileName);
 
             return await Task.Run(() =>
             {
@@ -136,22 +119,41 @@ namespace EPSCoR.Repositories.Async
 
         private void deleteFile(string fileName)
         {
-            string path = Path.Combine(_userDirectory, fileName);
+            string path = Path.Combine(getUserDirectory(), fileName);
             if (File.Exists(path))
                 File.Delete(path);
         }
 
-        private void waitForLock()
+        private string getUserDirectory()
         {
-            while (Directory.GetFiles(_userDirectory).Contains(_lockFile)) ;
-            File.Create(_lockFile).Close();
-        }
+            string dir = string.Empty;
+            switch (CurrentDirectory)
+            {
+                case IFileAccessor.FileDirectory.Archive:
+                    dir = Path.Combine(DirectoryManager.ArchiveDir, _user);
+                    break;
+                case IFileAccessor.FileDirectory.Conversion:
+                    dir = Path.Combine(DirectoryManager.ConversionDir, _user);
+                    break;
+                case IFileAccessor.FileDirectory.Invalid:
+                    dir = Path.Combine(DirectoryManager.InvalidDir, _user);
+                    break;
+                case IFileAccessor.FileDirectory.Temp:
+                    dir = Path.Combine(DirectoryManager.TempDir, _user);
+                    break;
+                case IFileAccessor.FileDirectory.Upload:
+                    dir = Path.Combine(DirectoryManager.UploadDir, _user);
+                    break;
+                default:
+                    throw new Exception("Unknown Directory");
+            }
 
-        private void releaseLock()
-        {
-            File.Delete(_lockFile);
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
+            return dir;
         }
 
         #endregion Private Members
-    }*/
+    }
 }
