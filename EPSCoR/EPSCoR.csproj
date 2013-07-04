@@ -494,6 +494,7 @@
     <Content Include="Views\Files\Download.cshtml" />
     <Content Include="Views\Tables\Status.cshtml" />
     <Content Include="Views\Tables\StatusPartial.cshtml" />
+    <Content Include="Views\2.0\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

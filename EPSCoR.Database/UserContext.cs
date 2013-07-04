@@ -14,7 +14,7 @@ namespace EPSCoR.Database
             string connection =
                 "server=localhost;"
                 + "User Id=root;"
-                + "password=KsUwI1dC4tS!;"
+                + "password=root;"
                 + "Persist Security Info=True;"
                 + "database=cybercomm_" + username + ";"
                 + "DefaultCommandTimeout=0";
