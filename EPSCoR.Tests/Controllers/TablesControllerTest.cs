@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
@@ -62,15 +63,15 @@ namespace EPSCoR.Tests.Controllers
         };
 
         private Mock<IModelRepository<TableIndex>> _tableIndexRepo;
-        private Mock<ITableRepository> _tableRepo;
-        private Mock<IDatabaseCalc> _dbCalc;
+        private Mock<IAsyncTableRepository> _tableRepo;
+        private Mock<IAsyncDatabaseCalc> _dbCalc;
 
         [TestInitialize]
         public void TestInitialize()
         {
             _tableIndexRepo = new Mock<IModelRepository<TableIndex>>();
-            _tableRepo = new Mock<ITableRepository>();
-            _dbCalc = new Mock<IDatabaseCalc>();
+            _tableRepo = new Mock<IAsyncTableRepository>();
+            _dbCalc = new Mock<IAsyncDatabaseCalc>();
         }
 
         #region IndexTests

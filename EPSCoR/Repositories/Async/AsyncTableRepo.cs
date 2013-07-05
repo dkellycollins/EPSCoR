@@ -130,7 +130,7 @@ namespace EPSCoR.Repositories.Async
 
         #region IAysncDatabaseCalc Members
 
-        public Task<CalcResult> SumTablesAysnc(string attTable, string usTable)
+        public Task<CalcResult> SumTablesAsync(string attTable, string usTable)
         {
             return createCalcTableTaskAsync(attTable, usTable, CalcType.SUM);
         }

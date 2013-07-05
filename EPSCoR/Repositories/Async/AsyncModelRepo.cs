@@ -30,20 +30,20 @@ namespace EPSCoR.Repositories.Async
 
         public T Get(int entityID)
         {
-            return GetTaskAsync(entityID).Result;
+            return GetAsync(entityID).Result;
         }
 
-        public async Task<T> GetTaskAsync(int entityID)
+        public async Task<T> GetAsync(int entityID)
         {
             return await Task.Run(() => _context.Set<T>().Find(entityID));
         }
 
         public IQueryable<T> GetAll()
         {
-            return GetAllTaskAsync().Result;
+            return GetAllAsync().Result;
         }
 
-        public async Task<IQueryable<T>> GetAllTaskAsync()
+        public async Task<IQueryable<T>> GetAllAsync()
         {
             return await Task.Run(() => _context.Set<T>().AsQueryable());
         }
@@ -86,7 +86,7 @@ namespace EPSCoR.Repositories.Async
 
         public async void RemoveAsync(int entityID)
         {
-            T itemToRemove = await GetTaskAsync(entityID);
+            T itemToRemove = await GetAsync(entityID);
             await Task.Run(() =>
             {
                 _context.Set<T>().Remove(itemToRemove);

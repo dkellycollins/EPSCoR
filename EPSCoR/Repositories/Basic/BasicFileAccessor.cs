@@ -20,7 +20,7 @@ namespace EPSCoR.Repositories.Basic
 
         #region IFileAccessor Members
 
-        public IFileAccessor.FileDirectory CurrentDirectory { get; set; }
+        public FileDirectory CurrentDirectory { get; set; }
 
         public bool SaveFiles(params FileStreamWrapper[] files)
         {
@@ -125,15 +125,15 @@ namespace EPSCoR.Repositories.Basic
         {
             switch (CurrentDirectory)
             {
-                case IFileAccessor.FileDirectory.Archive:
+                case FileDirectory.Archive:
                     return Path.Combine(DirectoryManager.ArchiveDir, _user);
-                case IFileAccessor.FileDirectory.Conversion:
+                case FileDirectory.Conversion:
                     return Path.Combine(DirectoryManager.ConversionDir, _user);
-                case IFileAccessor.FileDirectory.Invalid:
+                case FileDirectory.Invalid:
                     return Path.Combine(DirectoryManager.InvalidDir, _user);
-                case IFileAccessor.FileDirectory.Temp:
+                case FileDirectory.Temp:
                     return Path.Combine(DirectoryManager.TempDir, _user);
-                case IFileAccessor.FileDirectory.Upload:
+                case FileDirectory.Upload:
                     return Path.Combine(DirectoryManager.UploadDir, _user);
                 default:
                     throw new Exception("Unknown Directory");

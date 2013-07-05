@@ -27,6 +27,8 @@ namespace EPSCoR
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
+            RouteTable.Routes.MapHubs();
+
             _fileProcessor = new FileProcessor();
         }
 

@@ -38,6 +38,7 @@ namespace EPSCoR
             routes.MapNavigationRoute<FilesController>("Download", c => c.Download());
             routes.MapNavigationRoute<TablesController>("Data", c => c.Index());
             routes.MapNavigationRoute<TablesController>("Status", c => c.Status());
+            routes.MapNavigationRoute<NewController>("New Site", c => c.Index());
             //routes.MapNavigationRoute<WatershedController>("Watershed", c => c.Index());
         }
     }

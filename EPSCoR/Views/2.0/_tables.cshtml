@@ -1,0 +1,37 @@
+﻿@model IEnumerable<EPSCoR.Database.Models.TableIndex>
+
+@foreach(var index in Model) {
+    if(index.Processed)
+    {
+        <div id="@index.Name" class="well">
+            <span class="btn" onclick="toggleTableView('@index.Name')"><i class="icon-plus icon-black"></i></span>
+            <b>@index.Name</b>
+            <span class="pull-right">
+                @Html.RouteLink("Download Csv", "Default", new { controller="Files", action="DownloadCsv", id=index.Name }, new { @class="btn btn-success" })
+                <span class="btn btn-danger" onclick="deleteTable('@index.Name')">
+                    X
+                    @using(Html.BeginForm("Delete", "Tables", FormMethod.Post, new { id="delete-"+index.Name, @class="hide" }))
+                    {
+                        <input type="hidden" name="id" value="@index.Name" />
+                    }
+                </span>
+                </span>
+        </div>
+    } else {
+        <div id="@index.Name" class="well">
+            <button class="btn" onclick="toggleTableView('@index.Name')" disabled><i class="icon-plus icon-black"></i></button>
+            <b>@index.Name - @index.Status</b>
+            <span class="pull-right">
+                <button href="#" class="btn btn-success" disabled>Download</button>
+                @Html.RouteLink("Download Csv", "Default", new { controller="Files", action="DownloadCsv", id=index.Name }, new { @class="btn btn-success", disabled=""})
+                <button class="btn btn-danger" onclick="deleteTable('@index.Name')" disabled>
+                    X
+                    @using(Html.BeginForm("Delete", "Tables", FormMethod.Post, new { id="delete-"+index.Name, @class="hide"}))
+                    {
+                        <input type="hidden" name="id" value="@index.Name" />
+                    }
+                </button>
+                </span>
+        </div>
+    }
+}

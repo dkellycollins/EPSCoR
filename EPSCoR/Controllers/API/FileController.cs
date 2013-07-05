@@ -49,8 +49,9 @@ namespace EPSCoR.Controllers.API
         [AcceptVerbs("GET", "HEAD")]
         public HttpResponseMessage Get(string fileName)
         {
-            IFileAccessor convertionFileAccessor = RepositoryFactory.GetConvertionFileAccessor(WebSecurity.CurrentUserName);
-            IFileAccessor archiveFileAccessor = RepositoryFactory.GetArchiveFileAccessor(WebSecurity.CurrentUserName);
+            throw new NotImplementedException();
+            /*
+            IFileAccessor _fileAccessor = RepositoryFactory.GetFileAccessor(WebSecurity.CurrentUserName);
             HttpResponseMessage response = new HttpResponseMessage();
 
             if(convertionFileAccessor.FileExist(fileName))
@@ -66,12 +67,15 @@ namespace EPSCoR.Controllers.API
             }
 
             return response;
+             */
         }
 
         // POST api/file
         [AcceptVerbs("POST")]
         public HttpResponseMessage Post(FileUpload fileUpload)
         {
+            throw new NotImplementedException();
+            /*
             IFileAccessor uploadFileAccessor = RepositoryFactory.GetUploadFileAccessor(WebSecurity.CurrentUserName);
             bool result = uploadFileAccessor.SaveFiles(FileStreamWrapper.FromFileUpload(fileUpload));
 
@@ -86,6 +90,7 @@ namespace EPSCoR.Controllers.API
             }
 
             return response;
+             */
         }
 
         // PUT api/file/5

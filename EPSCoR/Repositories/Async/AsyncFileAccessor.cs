@@ -20,14 +20,14 @@ namespace EPSCoR.Repositories.Async
 
         #region IFileAccessor Members
 
-        public IFileAccessor.FileDirectory CurrentDirectory { get; set; }
+        public FileDirectory CurrentDirectory { get; set; }
 
         public bool SaveFiles(params FileStreamWrapper[] files)
         {
             bool result = true;
             foreach (FileStreamWrapper file in files)
             {
-                if (!saveFile(file, FileMode.Create))
+                //if (!saveFile(file, FileMode.Create))
                 {
                     result = false;
                     break;
@@ -37,7 +37,7 @@ namespace EPSCoR.Repositories.Async
             return result;
         }
 
-        public async Task<bool> SaveFilesTaskAsync(params FileStreamWrapper[] files)
+        public async Task<bool> SaveFilesAsync(params FileStreamWrapper[] files)
         {
             IEnumerable<Task<bool>> tasks = from file in files 
                                    select saveFileTaskAsync(file, FileMode.Create);
@@ -129,19 +129,19 @@ namespace EPSCoR.Repositories.Async
             string dir = string.Empty;
             switch (CurrentDirectory)
             {
-                case IFileAccessor.FileDirectory.Archive:
+                case FileDirectory.Archive:
                     dir = Path.Combine(DirectoryManager.ArchiveDir, _user);
                     break;
-                case IFileAccessor.FileDirectory.Conversion:
+                case FileDirectory.Conversion:
                     dir = Path.Combine(DirectoryManager.ConversionDir, _user);
                     break;
-                case IFileAccessor.FileDirectory.Invalid:
+                case FileDirectory.Invalid:
                     dir = Path.Combine(DirectoryManager.InvalidDir, _user);
                     break;
-                case IFileAccessor.FileDirectory.Temp:
+                case FileDirectory.Temp:
                     dir = Path.Combine(DirectoryManager.TempDir, _user);
                     break;
-                case IFileAccessor.FileDirectory.Upload:
+                case FileDirectory.Upload:
                     dir = Path.Combine(DirectoryManager.UploadDir, _user);
                     break;
                 default:
@@ -155,5 +155,31 @@ namespace EPSCoR.Repositories.Async
         }
 
         #endregion Private Members
+
+
+        public void DeleteFilesAsync(params string[] fileNames)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<FileStream> OpenFileAsync(string fileName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<string>> GetFilesAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<FileInfo> GetFileInfoAsync(string fileName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> FileExistAsync(string fileName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
