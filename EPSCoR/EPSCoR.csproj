@@ -217,6 +217,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\ITableRepository.cs" />
     <Compile Include="Repositories\Basic\BasicTableRepo.cs" />
+    <Content Include="Scripts\alerts.js" />
+    <Content Include="Scripts\dialogs.js" />
     <Compile Include="ViewModels\CalcRequest.cs" />
     <Compile Include="ViewModels\DataTableParams.cs" />
     <Compile Include="ViewModels\FileUpload.cs" />
@@ -424,8 +426,9 @@
     <Content Include="Scripts\DataTables-1.9.4\media\js\jquery.dataTables.js" />
     <Content Include="Scripts\DataTables-1.9.4\media\js\jquery.dataTables.min.js" />
     <Content Include="Scripts\DataTables-1.9.4\media\js\jquery.js" />
-    <Content Include="Scripts\jquery.signalR-1.1.2.js" />
-    <Content Include="Scripts\jquery.signalR-1.1.2.min.js" />
+    <Content Include="Scripts\jQueryExt.js" />
+    <Content Include="Scripts\SignalR\jquery.signalR-1.1.2.js" />
+    <Content Include="Scripts\SignalR\jquery.signalR-1.1.2.min.js" />
     <Content Include="Scripts\jQueryFileUpload\cors\jquery.postmessage-transport.js" />
     <Content Include="Scripts\jQueryFileUpload\cors\jquery.xdr-transport.js" />
     <Content Include="Scripts\jQueryFileUpload\jquery.fileupload-angular.js" />
@@ -468,7 +471,7 @@
     <Content Include="Scripts\Knockout\knockout-2.1.0.debug.js" />
     <Content Include="Scripts\Knockout\knockout-2.1.0.js" />
     <Content Include="Scripts\Modernizr\modernizr-2.5.3.js" />
-    <Content Include="Scripts\poll.js" />
+    <Content Include="Scripts\tables.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -496,7 +499,7 @@
     <Content Include="Views\Tables\Index.cshtml" />
     <Content Include="Views\Tables\DetailsPartial.cshtml" />
     <Content Include="Views\Tables\Details.cshtml" />
-    <Content Include="Views\2.0\_calcForm.cshtml" />
+    <Content Include="Views\Tables\CalcForm.cshtml" />
     <Content Include="Views\Tables\ConvertedTablesForm.cshtml" />
     <Content Include="Views\Shared\LoginPartial.cshtml" />
     <Content Include="Views\Shared\_html5shiv.cshtml" />
@@ -516,7 +519,8 @@
     <Content Include="Views\2.0\_uploadForm.cshtml" />
     <Content Include="Views\2.0\_tables.cshtml" />
     <Content Include="Views\2.0\_navbar.cshtml" />
-    <Content Include="Views\2.0\NewLayout.cshtml" />
+    <Content Include="Views\2.0\Layout2.0.cshtml" />
+    <Content Include="Views\2.0\_calcForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

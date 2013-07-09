@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Mvc;
 using EPSCoR.Database.Models;
 using EPSCoR.Repositories;
@@ -13,9 +10,6 @@ namespace EPSCoR.Controllers
     [Authorize]
     public class NewController : Controller
     {
-        //
-        // GET: /New/
-
         public ActionResult Index()
         {
             using (IModelRepository<TableIndex> repo = RepositoryFactory.GetModelRepository<TableIndex>())
@@ -29,6 +23,5 @@ namespace EPSCoR.Controllers
                 );
             }
         }
-
     }
 }

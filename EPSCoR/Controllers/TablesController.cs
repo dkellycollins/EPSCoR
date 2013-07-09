@@ -20,20 +20,20 @@ namespace EPSCoR.Controllers
     public class TablesController : BootstrapBaseController
     {
         private IModelRepository<TableIndex> _tableIndexRepo;
-        private IAsyncTableRepository _tableRepo;
-        private IAsyncDatabaseCalc _dbCalc;
+        private ITableRepository _tableRepo;
+        private IDatabaseCalc _dbCalc;
 
         public TablesController()
         {
             _tableIndexRepo = RepositoryFactory.GetModelRepository<TableIndex>();
-            _tableRepo = RepositoryFactory.GetAsyncTableRepository(WebSecurity.CurrentUserName);
-            _dbCalc = RepositoryFactory.GetAsyncDatabaseCalc(WebSecurity.CurrentUserName);
+            _tableRepo = RepositoryFactory.GetTableRepository(WebSecurity.CurrentUserName);
+            _dbCalc = RepositoryFactory.GetDatabaseCalc(WebSecurity.CurrentUserName);
         }
 
         public TablesController(
             IModelRepository<TableIndex> tableIndexRepo,
-            IAsyncTableRepository tableRepo,
-            IAsyncDatabaseCalc dbCalc)
+            ITableRepository tableRepo,
+            IDatabaseCalc dbCalc)
         {
             _tableIndexRepo = tableIndexRepo;
             _tableRepo = tableRepo;
@@ -75,10 +75,10 @@ namespace EPSCoR.Controllers
         /// <param name="lowerLimit">The lower limit to return.</param>
         /// <param name="upperLimit">The upper limit to return.</param>
         /// <returns></returns>
-        public async Task<ActionResult> Details(string id, int lowerLimit = 0, int upperLimit = 10)
+        public ActionResult Details(string id, int lowerLimit = 0, int upperLimit = 10)
         {
             //TODO convert to async method
-            DataTable table = await _tableRepo.ReadAsync(id, lowerLimit, upperLimit);
+            DataTable table = _tableRepo.Read(id, lowerLimit, upperLimit);
             if (table == null)
                 return new HttpNotFoundResult();
 
@@ -102,7 +102,7 @@ namespace EPSCoR.Controllers
             if (string.IsNullOrEmpty(id))
                 return HttpNotFound();
 
-            _tableRepo.DropAsync(id);
+            _tableRepo.Drop(id);
             DisplaySuccess(id + " deleted.");
             return RedirectToAction("Index");
         }
@@ -113,17 +113,17 @@ namespace EPSCoR.Controllers
         /// <param name="formCollection"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> Calc(CalcRequest calcRequest)
+        public ActionResult Calc(CalcRequest calcRequest)
         {
             //TODO convert to async method
             CalcResult result = CalcResult.Unknown;
             switch (calcRequest.CalcType)
             {
                 case "Sum":
-                    result = await _dbCalc.SumTablesAsync(calcRequest.AttributeTable, calcRequest.UpstreamTable);
+                    result = _dbCalc.SumTables(calcRequest.AttributeTable, calcRequest.UpstreamTable);
                     break;
                 case "Avg":
-                    result = await _dbCalc.AvgTablesAsync(calcRequest.AttributeTable, calcRequest.UpstreamTable);
+                    result = _dbCalc.AvgTables(calcRequest.AttributeTable, calcRequest.UpstreamTable);
                     break;
             }
 
@@ -165,11 +165,11 @@ namespace EPSCoR.Controllers
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
-        public async Task<ActionResult> DataTableDetails(DataTableParams args)
+        public ActionResult DataTableDetails(DataTableParams args)
         {
             //TODO convert to async method
-            DataTable data = await _tableRepo.ReadAsync(args.TableName, args.DisplayStart, args.DisplayLength);
-            int totalRows = await _tableRepo.CountAsync(args.TableName);
+            DataTable data = _tableRepo.Read(args.TableName, args.DisplayStart, args.DisplayLength);
+            int totalRows = _tableRepo.Count(args.TableName);
             int echo = Int32.Parse(args.Echo);
 
             return new DataTableResult(totalRows, totalRows, echo, data);

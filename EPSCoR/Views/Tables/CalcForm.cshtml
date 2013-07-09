@@ -1,0 +1,22 @@
+﻿<h2>Calculations</h2>
+
+<p>Please select the following</p>
+@using (Html.BeginForm("Calc", "Tables", FormMethod.Post, new { @class = "editform" }))
+{    
+    <label>Attribute Table:</label>
+    @Html.DropDownList("attTable", new SelectList(ViewBag.AttributeTables, "Name", "Name"))
+    <br />
+        
+    <label>Upstream Table:</label>
+    @Html.DropDownList("usTable", new SelectList(ViewBag.UpstreamTables, "Name", "Name"))
+    <br />
+    
+    <label>Calculation:</label>
+    <select name="calc">
+        <option>Sum</option>
+        <option>Avg</option>
+    </select>
+    <br />
+        
+    <input type="submit" class="btn btn-success"/>
+}

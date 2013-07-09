@@ -7,10 +7,14 @@
     @Html.Partial("~/Views/2.0/_navbar.cshtml")
 </div>
 
-<div id="alerts" class="container">
+<div id="alerts" class="container" style="margin-top: 10px; margin-bottom: 10px;">
     <noscript class="alert alert-error">
         This site requires javascript to function. If javascript is disabled, please enabled it.
     </noscript>
+    <!--<div class="alert alert-'alertType'">
+        <button type="button" class="close" data-dismiss="alert">x</button>
+        message
+    </div>-->
     @Html.Partial("_alerts")
 </div>
                 
@@ -21,5 +25,16 @@
 <div class="footer container">
     <p>&copy; Kansas State University @System.DateTime.Now.ToString("yyyy")</p>
 </div>
+
+@section Styles {
+    @Styles.Render("~/content/jqueryui/jqueryui-css")
+    @Styles.Render("~/content/DataTables-1.9.4/datatables-css")
+}
+
+@section Scripts {
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    @Scripts.Render("~/scritps/DataTables-1.9.4/datatables-js")
+    @Scripts.Render("~/scripts/main-2.0")
+}
 
 

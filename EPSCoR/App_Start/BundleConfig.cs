@@ -16,18 +16,19 @@ namespace EPSCoR
             #region Custom bundles
 
             bundles.Add(new StyleBundle("~/content/css").Include(
-                        //"~/Content/Bootstrap/bootstrap.css",
-                        //"~/Content/Bootstrap/body.css",
-                        //"~/Content/Bootstrap/bootstrap-responsive.css",
-                        //"~/Content/Bootstrap/bootstrap-mvc-validation.css",
                         "~/Content/Site.css"));
 
             bundles.Add(new ScriptBundle("~/scripts/main").Include(
                         "~/Scripts/jQuery/jquery-migrate-{version}.js",
-                        //"~/Scripts/Bootstrap/bootstrap.js",
                         "~/Scripts/jQuery/jquery.validate.js",
                         "~/scripts/jQuery/jquery.validate.unobtrusive.js",
                         "~/Scripts/jQuery/jquery.validate.unobtrusive-custom-for-bootstrap.js"));
+
+            bundles.Add(new ScriptBundle("~/scripts/main-2.0").Include(
+                        "~/Scripts/jQueryExt.js",
+                        "~/Scripts/alerts.js",
+                        "~/Scripts/dialogs.js",
+                        "~/Scripts/tables.js"));
 
             #endregion Custom bundles
 
