@@ -123,21 +123,32 @@ namespace EPSCoR.Repositories.Basic
 
         private string getUserDirectory()
         {
+            string userDirectory;
             switch (CurrentDirectory)
             {
                 case FileDirectory.Archive:
-                    return Path.Combine(DirectoryManager.ArchiveDir, _user);
+                    userDirectory = Path.Combine(DirectoryManager.ArchiveDir, _user);
+                    break;
                 case FileDirectory.Conversion:
-                    return Path.Combine(DirectoryManager.ConversionDir, _user);
+                    userDirectory = Path.Combine(DirectoryManager.ConversionDir, _user);
+                    break;
                 case FileDirectory.Invalid:
-                    return Path.Combine(DirectoryManager.InvalidDir, _user);
+                    userDirectory = Path.Combine(DirectoryManager.InvalidDir, _user);
+                    break;
                 case FileDirectory.Temp:
-                    return Path.Combine(DirectoryManager.TempDir, _user);
+                    userDirectory = Path.Combine(DirectoryManager.TempDir, _user);
+                    break;
                 case FileDirectory.Upload:
-                    return Path.Combine(DirectoryManager.UploadDir, _user);
+                    userDirectory = Path.Combine(DirectoryManager.UploadDir, _user);
+                    break;
                 default:
                     throw new Exception("Unknown Directory");
             }
+
+            if (!Directory.Exists(userDirectory))
+                Directory.CreateDirectory(userDirectory);
+
+            return userDirectory;
         }
 
         #endregion Private Members

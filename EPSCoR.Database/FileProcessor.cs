@@ -24,6 +24,13 @@ namespace EPSCoR.Database
         private static TimeSpan WAIT_TIME = new TimeSpan(0, 1, 0);
         private FileSystemWatcher _fileWatcher;
 
+        public delegate void TableIndexEventHandler(TableIndex tableIndex);
+        public static event TableIndexEventHandler TableIndexCreated = delegate { };
+        public static event TableIndexEventHandler TableIndexUpdated = delegate { };
+
+        public delegate void ErrorEventHandler(string user, string errorMsg);
+        public static event ErrorEventHandler Error = delegate { };
+
         public FileProcessor()
         {
             _fileWatcher = new FileSystemWatcher(DirectoryManager.UploadDir);
@@ -77,6 +84,7 @@ namespace EPSCoR.Database
                 };
                 defaultContext.Tables.Add(tableIndex);
                 defaultContext.SaveChanges();
+                TableIndexCreated(tableIndex);
 
                 try
                 {
@@ -158,6 +166,7 @@ namespace EPSCoR.Database
             index.Processed = processed;
             context.Entry(index).State = System.Data.EntityState.Modified;
             context.SaveChanges();
+            TableIndexUpdated(index);
         }
     }
 }

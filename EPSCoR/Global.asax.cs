@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Http;
+﻿using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using EPSCoR.Filters;
 using EPSCoR.Database;
+using EPSCoR.Hubs;
 
 namespace EPSCoR
 {
@@ -22,14 +18,28 @@ namespace EPSCoR
         {
             AreaRegistration.RegisterAllAreas();
 
+            RouteTable.Routes.MapHubs();
+
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-            RouteTable.Routes.MapHubs();
-
             _fileProcessor = new FileProcessor();
+            FileProcessor.TableIndexCreated += FileProcessor_TableIndexCreated;
+            FileProcessor.TableIndexUpdated += FileProcessor_TableIndexUpdated;
+        }
+
+        void FileProcessor_TableIndexUpdated(Database.Models.TableIndex tableIndex)
+        {
+            TableHub hub = new TableHub();
+            hub.UpdateTable(tableIndex);
+        }
+
+        void FileProcessor_TableIndexCreated(Database.Models.TableIndex tableIndex)
+        {
+            TableHub hub = new TableHub();
+            hub.NewTable(tableIndex);
         }
 
         protected void Application_End()

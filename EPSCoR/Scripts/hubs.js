@@ -1,11 +1,10 @@
 ﻿function initHubs() {
-    var tableHub = $.connection.tables,
-        alertHub = $.connection.alerts;
+    var tableHub = $.connection.tableHub;
 
     tableHub.client.newTable = addTable;
     tableHub.client.updateTable = updateTable;
 
-    alertHub.client.newAlert = addAlert;
+    tableHub.client.sendAlert = addAlert;
 
     $.connection.hub.start();
 }

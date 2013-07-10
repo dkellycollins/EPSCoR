@@ -28,7 +28,8 @@ namespace EPSCoR
                         "~/Scripts/jQueryExt.js",
                         "~/Scripts/alerts.js",
                         "~/Scripts/dialogs.js",
-                        "~/Scripts/tables.js"));
+                        "~/Scripts/tables.js",
+                        "~/Scripts/hubs.js"));
 
             #endregion Custom bundles
 
@@ -129,8 +130,9 @@ namespace EPSCoR
             #region SignalR bundles
 
             bundles.Add(new ScriptBundle("~/scripts/SignalR/signalr-js").Include(
-                "~/Scripts/SignalR/jquery.signalR-{version}.js",
-                "~/signalr/hubs"));
+                "~/Scripts/SignalR/jquery.signalR-{version}.js"));
+
+            #endregion SignalR bundles
         }
     }
 }

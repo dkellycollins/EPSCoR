@@ -34,6 +34,13 @@
     @Scripts.Render("~/scripts/SignalR/signalr-js")
     @Scripts.Render("~/scripts/main-2.0")
 
+    <script src="~/signalr/hubs"></script>
+    <script>
+        $(document).on("ready", function () {
+            initHubs();
+        });
+    </script>
+
     <script type="text/x-tmpl" id="alertTmpl">
         <div class="alert alert-{%=o.type%} fade">
             <strong>{%=o.header%}</strong> {%=o.message%}
