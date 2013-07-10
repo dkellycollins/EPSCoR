@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -107,6 +108,21 @@ namespace EPSCoR.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult CalcForm()
+        {
+            var tables = from t in _tableIndexRepo.GetAll() select t;
+
+            var allTables = tables.Where(t => t.Processed && t.UploadedByUser == WebSecurity.CurrentUserName);
+            var attTables = allTables.Where(t => t.Type == TableTypes.ATTRIBUTE);
+            var usTables = allTables.Where(t => t.Type == TableTypes.UPSTREAM);
+
+            ViewBag.AllTables = allTables.ToList();
+            ViewBag.AttributeTables = attTables.ToList();
+            ViewBag.UpstreamTables = usTables.ToList();
+
+            return View();
+        }
+
         /// <summary>
         /// Creates a calc table based on the form information provided.
         /// </summary>
@@ -173,6 +189,12 @@ namespace EPSCoR.Controllers
             int echo = Int32.Parse(args.Echo);
 
             return new DataTableResult(totalRows, totalRows, echo, data);
+        }
+
+        public ActionResult GetAllDetails()
+        {
+            IEnumerable<TableIndex> allDetails = _tableIndexRepo.GetAll().ToList();
+            return new EPSCoR.Results.JsonResult(allDetails);
         }
     }
 }

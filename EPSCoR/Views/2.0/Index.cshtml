@@ -11,10 +11,6 @@
     <noscript class="alert alert-error">
         This site requires javascript to function. If javascript is disabled, please enabled it.
     </noscript>
-    <!--<div class="alert alert-'alertType'">
-        <button type="button" class="close" data-dismiss="alert">x</button>
-        message
-    </div>-->
     @Html.Partial("_alerts")
 </div>
                 
@@ -34,7 +30,41 @@
 @section Scripts {
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
     @Scripts.Render("~/scritps/DataTables-1.9.4/datatables-js")
+    @Scripts.Render("~/scripts/JavaScriptTemplates/main")
+    @Scripts.Render("~/scripts/SignalR/signalr-js")
     @Scripts.Render("~/scripts/main-2.0")
+
+    <script type="text/x-tmpl" id="alertTmpl">
+        <div class="alert alert-{%=o.type%} fade">
+            <strong>{%=o.header%}</strong> {%=o.message%}
+            <button type="button" class="close" data-dismiss="alert">X</button>
+        </div>
+    </script>
+
+    <script type="text/x-tmpl" id="tableIndexTmpl">
+        <div id="{%=o.Name%}" class="well fade">
+            <span class="btn" onclick="toggleTableView('{%=o.Name%}')"><i class="icon icon-plus icon-black"></i></span>
+            <b>
+                {%=o.Name%}
+                {% if(!o.Processed) { %}
+                    - {%=o.Status%}
+                {% } %}
+            </b>
+            <span class="pull-right">
+                <a href="\Files\DownloadCsv\{%=o.Name%}" class="btn btn-success">Download</a>
+                <span class="btn btn-danger" onclick="deleteTable('{%=o.Name%}')">
+                    X
+                    <form action="\Tables\Delete" method="post" id="delete-{%=o.Name%}" class="hide">
+                        <input type="hidden" name="id" value="{%=o.Name%}" />
+                    </form>
+                </span>
+            </span>
+            <div id="{%=o.Name%}Details" class="hide">
+                <hr />
+                 <img class="img-center" class="text-center" src="/Content/images/ajax-loader2.gif" />
+            </div>
+        </div>
+    </script>
 }
 
 

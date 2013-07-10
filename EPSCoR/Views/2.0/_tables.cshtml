@@ -7,7 +7,7 @@
             <span class="btn" onclick="toggleTableView('@index.Name')"><i class="icon icon-plus icon-black"></i></span>
             <b>@index.Name</b>
             <span class="pull-right">
-                @Html.RouteLink("Download Csv", "Default", new { controller="Files", action="DownloadCsv", id=index.Name }, new { @class="btn btn-success" })
+                @Html.RouteLink("Download", "Default", new { controller="Files", action="DownloadCsv", id=index.Name }, new { @class="btn btn-success" })
                 <span class="btn btn-danger" onclick="deleteTable('@index.Name')">
                     X
                     @using(Html.BeginForm("Delete", "Tables", FormMethod.Post, new { id="delete-"+index.Name, @class="hide" }))
@@ -17,7 +17,8 @@
                 </span>
             </span>
             <div id="@string.Format("{0}Details", index.Name)" class="hide">
-                 <img class="text-center" src="~/Content/images/ajax-loader.gif" />
+                <hr />
+                 <img class="img-center" src="~/Content/images/ajax-loader2.gif" />
             </div>
         </div>
     } else {
@@ -25,8 +26,7 @@
             <button class="btn" onclick="toggleTableView('@index.Name')" disabled><i class="icon icon-plus icon-black"></i></button>
             <b>@index.Name - @index.Status</b>
             <span class="pull-right">
-                <button href="#" class="btn btn-success" disabled>Download</button>
-                @Html.RouteLink("Download Csv", "Default", new { controller="Files", action="DownloadCsv", id=index.Name }, new { @class="btn btn-success", disabled=""})
+                @Html.RouteLink("Download", "Default", new { controller="Files", action="DownloadCsv", id=index.Name }, new { @class="btn btn-success", disabled=""})
                 <button class="btn btn-danger" onclick="deleteTable('@index.Name')" disabled>
                     X
                     @using(Html.BeginForm("Delete", "Tables", FormMethod.Post, new { id="delete-"+index.Name, @class="hide"}))
@@ -36,7 +36,8 @@
                 </button>
              </span>
              <div id="@string.Format("{0}Details", index.Name)" class="hide">
-                 <img src="~/Content/images/ajax-loader.gif" />
+                 <hr />
+                 <img class="img-center" src="~/Content/images/ajax-loader2.gif" />
              </div>
         </div>
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
 namespace EPSCoR.Database.Models
 {
@@ -14,6 +15,7 @@ namespace EPSCoR.Database.Models
         /// </summary>
         [Key]
         [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+        [JsonIgnore]
         public int ID { get; set; }
 
         /// <summary>

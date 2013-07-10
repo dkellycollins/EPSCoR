@@ -116,6 +116,21 @@ namespace EPSCoR
                 ));
 
             #endregion jQuery Datatables bundles
+
+            #region JavaScript Templates bundles
+
+            bundles.Add(new ScriptBundle("~/scripts/JavaScriptTemplates/main").Include(
+                //"~/Scripts/JavaScriptTemplates/compile.js",
+                //"~/Scripts/JavaScriptTemplates/runtime.js",
+                "~/Scripts/JavaScriptTemplates/tmpl.js"));
+
+            #endregion JavaScript Templates bundles
+
+            #region SignalR bundles
+
+            bundles.Add(new ScriptBundle("~/scripts/SignalR/signalr-js").Include(
+                "~/Scripts/SignalR/jquery.signalR-{version}.js",
+                "~/signalr/hubs"));
         }
     }
 }

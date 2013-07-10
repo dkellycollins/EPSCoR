@@ -21,7 +21,20 @@ body
     padding-top: 0px;
 }
 
-.loading
+.footer
 {
-    background-image: 
+    margin-bottom: 100px;
+}
+
+.img-center
+{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Override for datatables .clear*/
+.clear
+{
+    margin-bottom: 15px;
 }

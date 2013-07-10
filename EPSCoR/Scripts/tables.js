@@ -20,8 +20,10 @@ function loadTableDetails($context, tableName) {
             "fnServerParams": function (aoData) {
                 aoData.push({ "name": "tableName", "value": tableName });
             },
-            "sAjaxSource": "/Tables/DataTableDetails"
+            "sAjaxSource": "/Tables/DataTableDetails",
+            "sDom": '<"top"flp>rt<"bottom"i><"clear">'
         });
+        $context.prepend('<hr />');
     });
 }
 
@@ -38,11 +40,29 @@ function deleteTable(tableName) {
 
 function addTable(tableIndex) {
     //Expecting tableindex to be a json representation of the Model class TableIndex.
-    //Add a table index to the tables div.
+    $('#tables').append(tmpl('tableIndexTmpl', tableIndex));
+    toggleButtons(tableIndex.Name, !tableIndex.Processed);
+
+    window.setTimeout(function () {
+        $("#"+ tableIndex.Name).addClass('in');
+    }, 100);
+
+}
+
+function addTables(tableIndexes) {
+    $.each(tableIndexes, function (index, tableIndex) {
+        addTable(tableIndex);
+    });
 }
 
 function updateTable(tableIndex) {
-    //Update a table div on the page with the info in tableIndex.
+    var $title = $('#' + tableIndex.Name + ' b');
+    if (tableIndex.Processed) {
+        $title.text = tableIndex.Name;
+    } else {
+        $title.text = tableIndex.Name + ' - ' + tableIndex.Status;
+    }
+    toggleButtons(tableIndex.Name, !tableIndex.Processed);
 }
 
 function toggleButtons(divId, enable) {

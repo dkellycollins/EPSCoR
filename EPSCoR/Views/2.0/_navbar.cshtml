@@ -9,6 +9,7 @@
         <ul class="nav">
             <li><a href="javascript:openUploadFilesDialog()">Upload Files</a></li>
             <li><a href="javascript:openCalcDialog()">Create Calc Table</a></li>
+            <li><a href="javascript:openAboutDialog()">About/Help</a></li>
             <li>
                 <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
                 @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "hidden" }))
