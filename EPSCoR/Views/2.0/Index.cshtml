@@ -36,9 +36,9 @@
 
     <script src="~/signalr/hubs"></script>
     <script>
-        $(document).on("ready", function () {
-            initHubs();
-        });
+        setInterval(function () {
+            window.location.reload(true);
+        }, 60000);
     </script>
 
     <script type="text/x-tmpl" id="alertTmpl">

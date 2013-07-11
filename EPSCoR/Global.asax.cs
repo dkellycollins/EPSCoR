@@ -26,8 +26,6 @@ namespace EPSCoR
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             _fileProcessor = new FileProcessor();
-            FileProcessor.TableIndexCreated += FileProcessor_TableIndexCreated;
-            FileProcessor.TableIndexUpdated += FileProcessor_TableIndexUpdated;
         }
 
         void FileProcessor_TableIndexUpdated(Database.Models.TableIndex tableIndex)
