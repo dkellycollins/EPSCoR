@@ -36,9 +36,15 @@
 
     <script src="~/signalr/hubs"></script>
     <script>
-        setInterval(function () {
-            window.location.reload(true);
-        }, 60000);
+        $(function () {
+            var tableHub = $.connection.tableHub;
+
+            tableHub.client.newTable = addTable;
+            tableHub.client.updateTable = updateTable;
+            tableHub.client.sendAlert = addAlert;
+
+            $.connection.hub.start();
+        });
     </script>
 
     <script type="text/x-tmpl" id="alertTmpl">

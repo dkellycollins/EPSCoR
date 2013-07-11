@@ -70,8 +70,10 @@ namespace EPSCoR.Hubs
         /// Notifies the user who uploaded the table that there is a new table.
         /// </summary>
         /// <param name="tableIndex"></param>
-        public void NewTable(TableIndex tableIndex)
+        public static void NewTable(TableIndex tableIndex)
         {
+            IHubContext context = GlobalHost.ConnectionManager.GetHubContext<TableHub>();
+
             User user;
             Users.TryGetValue(tableIndex.UploadedByUser, out user);
             if (user != null)
@@ -83,7 +85,7 @@ namespace EPSCoR.Hubs
                 }
                 foreach (string connectionId in connectionIds)
                 {
-                    var client = Clients.Client(connectionId);
+                    var client = context.Clients.Client(connectionId);
                     client.newTable(tableIndex);
                 }
             }
@@ -93,8 +95,10 @@ namespace EPSCoR.Hubs
         /// Notifies the user who uploaded the table that the table has been updated.
         /// </summary>
         /// <param name="tableIndex"></param>
-        public void UpdateTable(TableIndex tableIndex)
+        public static void UpdateTable(TableIndex tableIndex)
         {
+            IHubContext context = GlobalHost.ConnectionManager.GetHubContext<TableHub>();
+
             User user;
             Users.TryGetValue(tableIndex.UploadedByUser, out user);
             if (user != null)
@@ -106,7 +110,7 @@ namespace EPSCoR.Hubs
                 }
                 foreach (string connectionId in connectionIds)
                 {
-                    Clients.Client(connectionId).updateTable(tableIndex);
+                    context.Clients.Client(connectionId).updateTable(tableIndex);
                 }
             }
         }
@@ -118,11 +122,13 @@ namespace EPSCoR.Hubs
         /// <param name="userName">Name of the user to send the message to.</param>
         /// <param name="header">Header of the alert.</param>
         /// <param name="alertType">The type of alert. This should be one of the alerts in BootstrapSupport.Alerts</param>
-        public void SendAlert(string message, string userName = null, string header = "", string alertType = Alerts.INFORMATION)
+        public static void SendAlert(string message, string userName = null, string header = "", string alertType = Alerts.INFORMATION)
         {
+            IHubContext context = GlobalHost.ConnectionManager.GetHubContext<TableHub>();
+
             if (string.IsNullOrEmpty(userName))
             {
-                Clients.All.newAlert(message, header, alertType);
+                context.Clients.All.newAlert(message, header, alertType);
             }
             else
             {
@@ -137,7 +143,7 @@ namespace EPSCoR.Hubs
                     }
                     foreach (string connectionId in connectionIds)
                     {
-                        Clients.Client(connectionId).newAlert(message, header, alertType);
+                        context.Clients.Client(connectionId).newAlert(message, header, alertType);
                     }
                 }
             }

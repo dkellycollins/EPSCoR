@@ -5,7 +5,7 @@
     $details.slideToggle();
     $icon.toggleClass('icon-plus').toggleClass('icon-minus');
 
-    if ($context.has('img')) {
+    if ($context.has('img').length) {
         loadTableDetails($details, divId);
     }
 }
@@ -58,9 +58,9 @@ function addTables(tableIndexes) {
 function updateTable(tableIndex) {
     var $title = $('#' + tableIndex.Name + ' b');
     if (tableIndex.Processed) {
-        $title.text = tableIndex.Name;
+        $title.text(tableIndex.Name);
     } else {
-        $title.text = tableIndex.Name + ' - ' + tableIndex.Status;
+        $title.text(tableIndex.Name + ' - ' + tableIndex.Status);
     }
     toggleButtons(tableIndex.Name, !tableIndex.Processed);
 }

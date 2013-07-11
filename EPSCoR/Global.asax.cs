@@ -26,18 +26,18 @@ namespace EPSCoR
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             _fileProcessor = new FileProcessor();
+            FileProcessor.TableIndexCreated += FileProcessor_TableIndexCreated;
+            FileProcessor.TableIndexUpdated += FileProcessor_TableIndexUpdated;
         }
 
         void FileProcessor_TableIndexUpdated(Database.Models.TableIndex tableIndex)
         {
-            TableHub hub = new TableHub();
-            hub.UpdateTable(tableIndex);
+            TableHub.UpdateTable(tableIndex);
         }
 
         void FileProcessor_TableIndexCreated(Database.Models.TableIndex tableIndex)
         {
-            TableHub hub = new TableHub();
-            hub.NewTable(tableIndex);
+            TableHub.NewTable(tableIndex);
         }
 
         protected void Application_End()
