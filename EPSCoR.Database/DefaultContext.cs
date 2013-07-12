@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Linq;
 using EPSCoR.Database.DbProcedure;
 using EPSCoR.Database.Models;
@@ -10,6 +11,12 @@ namespace EPSCoR.Database
     /// </summary>
     public class DefaultContext : DbContext
     {
+        public delegate void ModelEventHandler(IModel model);
+
+        public static event ModelEventHandler ModelCreated = delegate { };
+        public static event ModelEventHandler ModelUpdated = delegate { };
+        public static event ModelEventHandler ModelRemoved = delegate { };
+
         /*
         private static DefaultContext _instance = null;
         private static int referenceCount = 0;
@@ -43,6 +50,68 @@ namespace EPSCoR.Database
             : base("MySqlConnection")
         {
             Procedures = new MySqlProcedures(this);
+        }
+
+        public void CreateModel(IModel model)
+        {
+            model.DateCreated = DateTime.Now;
+            model.DateUpdated = DateTime.Now;
+
+            if (model is TableIndex)
+            {
+                Tables.Add((TableIndex)model);
+            }
+            else if (model is UserProfile)
+            {
+                UserProfiles.Add((UserProfile)model);
+            }
+            else
+            {
+                throw new Exception("Unsupported model type");
+            }
+
+            SaveChanges();
+            ModelCreated(model);
+        }
+
+        public void UpdateModel(IModel model)
+        {
+            model.DateUpdated = DateTime.Now;
+
+            if (model is TableIndex)
+            {
+                Entry<TableIndex>((TableIndex)model).State = System.Data.EntityState.Modified;
+            }
+            else if (model is UserProfile)
+            {
+                Entry<UserProfile>((UserProfile)model).State = System.Data.EntityState.Modified;
+            }
+            else
+            {
+                throw new Exception("Unsupported model type");
+            }
+
+            SaveChanges();
+            ModelUpdated(model);
+        }
+
+        public void RemoveModel(IModel model)
+        {
+            if (model is TableIndex)
+            {
+                Tables.Remove((TableIndex)model);
+            }
+            else if (model is UserProfile)
+            {
+                UserProfiles.Remove((UserProfile)model);
+            }
+            else
+            {
+                throw new Exception("Unsupported model type.");
+            }
+
+            SaveChanges();
+            ModelRemoved(model);
         }
 
         public TableIndex GetTableIndex(string tableName, string UserName)

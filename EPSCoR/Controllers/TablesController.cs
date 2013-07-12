@@ -4,8 +4,10 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using BootstrapSupport;
 using EPSCoR.Database.Models;
 using EPSCoR.Extensions;
+using EPSCoR.Hubs;
 using EPSCoR.Repositories;
 using EPSCoR.Repositories.Factory;
 using EPSCoR.Results;
@@ -86,7 +88,7 @@ namespace EPSCoR.Controllers
 
             _tableRepo.Drop(id);
             DisplaySuccess(id + " deleted.");
-            return new HttpStatusCodeResult(200);
+            return RedirectToAction("Index", "Home");
         }
 
         /// <summary>
@@ -112,19 +114,20 @@ namespace EPSCoR.Controllers
             switch (result)
             {
                 case CalcResult.Success:
-                    DisplaySuccess("Calc table generated");
+                    TableHub.SendAlert("Calc table generated", WebSecurity.CurrentUserName, "Success!", Alerts.SUCCESS);
                     break;
                 case CalcResult.Error:
-                    DisplayError("The server encountered an error while processing you request.");
+                    TableHub.SendAlert("The server encountered an error while processing you request.", WebSecurity.CurrentUserName, "Error!", Alerts.ERROR);
                     break;
                 case CalcResult.TableAlreadyExists:
-                    DisplayError("The calc table already exists. Please delete existing table before createing a new one.");
+                    TableHub.SendAlert("The calc table already exists. Please delete existing table before createing a new one.", WebSecurity.CurrentUserName, "Error!", Alerts.ERROR);
                     break;
                 case CalcResult.SubmittedForProcessing:
-                    DisplaySuccess("The request has been submitted for processing.");
+                    TableHub.SendAlert("The request has been submitted for processing.", WebSecurity.CurrentUserName, "Success!", Alerts.SUCCESS);
                     break;
             }
-            return new HttpStatusCodeResult(200);
+
+            return RedirectToAction("Index", "Home");
         }
 
         /// <summary>

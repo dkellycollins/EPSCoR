@@ -70,7 +70,7 @@ namespace EPSCoR.Hubs
         /// Notifies the user who uploaded the table that there is a new table.
         /// </summary>
         /// <param name="tableIndex"></param>
-        public static void NewTable(TableIndex tableIndex)
+        public static void NotifyNewTable(TableIndex tableIndex)
         {
             IHubContext context = GlobalHost.ConnectionManager.GetHubContext<TableHub>();
 
@@ -86,7 +86,7 @@ namespace EPSCoR.Hubs
                 foreach (string connectionId in connectionIds)
                 {
                     var client = context.Clients.Client(connectionId);
-                    client.newTable(tableIndex);
+                    client.addTable(tableIndex);
                 }
             }
         }
@@ -95,7 +95,7 @@ namespace EPSCoR.Hubs
         /// Notifies the user who uploaded the table that the table has been updated.
         /// </summary>
         /// <param name="tableIndex"></param>
-        public static void UpdateTable(TableIndex tableIndex)
+        public static void NotifyTableUpdated(TableIndex tableIndex)
         {
             IHubContext context = GlobalHost.ConnectionManager.GetHubContext<TableHub>();
 
@@ -111,6 +111,26 @@ namespace EPSCoR.Hubs
                 foreach (string connectionId in connectionIds)
                 {
                     context.Clients.Client(connectionId).updateTable(tableIndex);
+                }
+            }
+        }
+
+        public static void NotifyTableRemoved(TableIndex tableIndex)
+        {
+            IHubContext context = GlobalHost.ConnectionManager.GetHubContext<TableHub>();
+
+            User user;
+            Users.TryGetValue(tableIndex.UploadedByUser, out user);
+            if (user != null)
+            {
+                IEnumerable<string> connectionIds;
+                lock (user.ConnectionIds)
+                {
+                    connectionIds = user.ConnectionIds;
+                }
+                foreach (string connectionId in connectionIds)
+                {
+                    context.Clients.Client(connectionId).removeTable(tableIndex);
                 }
             }
         }

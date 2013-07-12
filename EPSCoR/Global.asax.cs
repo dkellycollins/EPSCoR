@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using EPSCoR.Database;
+using EPSCoR.Database.Models;
 using EPSCoR.Hubs;
 
 namespace EPSCoR
@@ -25,19 +26,35 @@ namespace EPSCoR
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
+            DefaultContext.ModelCreated += DefaultContext_ModelCreated;
+            DefaultContext.ModelRemoved += DefaultContext_ModelRemoved;
+            DefaultContext.ModelUpdated += DefaultContext_ModelUpdated;
+
             _fileProcessor = new FileProcessor();
-            FileProcessor.TableIndexCreated += FileProcessor_TableIndexCreated;
-            FileProcessor.TableIndexUpdated += FileProcessor_TableIndexUpdated;
         }
 
-        void FileProcessor_TableIndexUpdated(Database.Models.TableIndex tableIndex)
+        void DefaultContext_ModelUpdated(Database.Models.IModel model)
         {
-            TableHub.UpdateTable(tableIndex);
+            if (model is TableIndex)
+            {
+                TableHub.NotifyTableUpdated((TableIndex)model);
+            }
         }
 
-        void FileProcessor_TableIndexCreated(Database.Models.TableIndex tableIndex)
+        void DefaultContext_ModelRemoved(Database.Models.IModel model)
         {
-            TableHub.NewTable(tableIndex);
+            if (model is TableIndex)
+            {
+                TableHub.NotifyTableRemoved((TableIndex)model);
+            }
+        }
+
+        void DefaultContext_ModelCreated(Database.Models.IModel model)
+        {
+            if (model is TableIndex)
+            {
+                TableHub.NotifyNewTable((TableIndex)model);
+            }
         }
 
         protected void Application_End()

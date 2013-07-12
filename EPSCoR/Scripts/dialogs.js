@@ -3,8 +3,6 @@
         autoOpen: false,
         resizable: true,
         modal: true,
-        height: window.innerHeight * .8,
-        width: window.innerWidth * .8,
         show: {
             effect: "clip",
             duration: 500
@@ -19,8 +17,8 @@
         autoOpen: false,
         resizable: true,
         modal: true,
-        height: window.innerHeight * .8,
-        width: window.innerWidth * .8,
+        height: "auto",
+        width: "auto",
         show: {
             effect: "clip",
             duration: 500
@@ -35,8 +33,6 @@
         autoOpen: false,
         resizable: true,
         modal: true,
-        height: window.innerHeight * .8,
-        width: window.innerWidth * .8,
         show: {
             effect: "clip",
             duration: 500
@@ -49,15 +45,24 @@
 });
 
 function openUploadFilesDialog() {
-    $('#dialog-uploadFiles').dialog("open");
+    var $dialog = $('#dialog-uploadFiles');
+    $dialog.dialog("option", "height", window.innerHeight * .8);
+    $dialog.dialog("option", "width", window.innerWidth * .8);
+    $dialog.dialog("open");
+    //$dialog.load('Home/UploadForm');
 }
 
 function openCalcDialog() {
-    window.open("Home/CalcForm");
+    var $dialog = $('#dialog-calc');
+    $dialog.dialog("open");
+    $dialog.load('Home/CalcForm');
 }
 
 function openAboutDialog() {
-    $('#dialog-about').dialog("open");
+    var $dialog = $('#dialog-about');
+    $dialog.dialog("option", "height", window.innerHeight * .8);
+    $dialog.dialog("option", "width", window.innerWidth * .8);
+    $dialog.dialog("open");
 }
 
 function showDiv(divid) {

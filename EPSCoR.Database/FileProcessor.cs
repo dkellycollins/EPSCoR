@@ -82,9 +82,7 @@ namespace EPSCoR.Database
                     Type = (tableName.Contains("_US")) ? TableTypes.UPSTREAM : TableTypes.ATTRIBUTE,
                     UploadedByUser = userName
                 };
-                defaultContext.Tables.Add(tableIndex);
-                defaultContext.SaveChanges();
-                TableIndexCreated(tableIndex);
+                defaultContext.CreateModel(tableIndex);
 
                 try
                 {
@@ -162,11 +160,8 @@ namespace EPSCoR.Database
         private static void updateTableStatus(DefaultContext context, TableIndex index, string status, bool processed = false)
         {
             index.Status = status;
-            index.DateUpdated = DateTime.Now;
             index.Processed = processed;
-            context.Entry(index).State = System.Data.EntityState.Modified;
-            context.SaveChanges();
-            TableIndexUpdated(index);
+            context.UpdateModel(index);
         }
     }
 }

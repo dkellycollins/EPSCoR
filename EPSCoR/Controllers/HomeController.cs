@@ -36,18 +36,27 @@ namespace EPSCoR.Controllers
                 ViewBag.AttributeTables = attTables.ToList();
                 ViewBag.UpstreamTables = usTables.ToList();
 
-                return View("_calcForm");
+                if (Request.IsAjaxRequest()) //Handle ajax request.
+                    return PartialView("_calcForm");
+                else //Handle all other request.
+                    return View("_calcForm");
             }
         }
 
         public ActionResult UploadForm()
         {
-            return View("_uploadForm");
+            if (Request.IsAjaxRequest()) //Handle ajax request.
+                return PartialView("_uploadForm");
+            else //Handle all other request.
+                return View("_uploadForm");
         }
 
         public ActionResult AboutForm()
         {
-            return View("_aboutForm");
+            if (Request.IsAjaxRequest()) //Handle ajax request.
+                return PartialView("_aboutForm");
+            else //Handle all other request.
+                return View("_aboutForm");
         }
     }
 }

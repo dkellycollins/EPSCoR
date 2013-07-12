@@ -15,16 +15,11 @@ namespace EPSCoR.Repositories.Basic
     public class BasicModelRepo<T> : IModelRepository<T>
         where T : class, IModel
     {
-        private DbContext _context;
+        private DefaultContext _context;
 
         public BasicModelRepo()
         {
             _context = new DefaultContext();
-        }
-
-        public BasicModelRepo(DbContext context)
-        {
-            _context = context;
         }
 
         public T Get(int entityID)
@@ -39,24 +34,18 @@ namespace EPSCoR.Repositories.Basic
 
         public void Create(T itemToCreate)
         {
-            itemToCreate.DateCreated = DateTime.Now;
-            itemToCreate.DateUpdated = DateTime.Now;
-            _context.Set<T>().Add(itemToCreate);
-            _context.SaveChanges();
+            _context.CreateModel(itemToCreate);
         }
 
         public void Update(T itemToUpdate)
         {
-            itemToUpdate.DateUpdated = DateTime.Now;
-            _context.Entry(itemToUpdate).State = System.Data.EntityState.Modified;
-            _context.SaveChanges();
+            _context.UpdateModel(itemToUpdate);
         }
 
         public void Remove(int entityID)
         {
             T itemToRemove = Get(entityID);
-            _context.Set<T>().Remove(itemToRemove);
-            _context.SaveChanges();
+            _context.RemoveModel(itemToRemove);
         }
 
         public void Dispose()

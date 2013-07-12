@@ -23,7 +23,9 @@
 </div>
 
 @Html.Partial("_uploadForm")
-@{/*Html.Partial("_calcForm") */}
+<div id="dialog-calc" title="Generate Table" class="container">
+    <img class="img-center" src="~/Content/images/ajax-loader2.gif" />
+</div>
 @Html.Partial("_aboutForm")
 
 @section Styles {
