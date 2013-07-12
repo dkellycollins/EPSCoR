@@ -1,13 +1,13 @@
 ﻿function openUploadFilesDialog() {
-    window.open("UploadForm");
+    window.open("Home/UploadForm");
 }
 
 function openCalcDialog() {
-    window.open("CalcForm");
+    window.open("Home/CalcForm");
 }
 
 function openAboutDialog() {
-    window.open("AboutForm");
+    window.open("Home/AboutForm");
 }
 
 function yesnodialog(yesBtn, noBtn, title, text, onClose) {
