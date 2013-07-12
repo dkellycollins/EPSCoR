@@ -29,17 +29,6 @@ namespace EPSCoR
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional },
                 namespaces: new string[] { "EPSCoR.Controllers" }
             );
-
-            routes.MapNavigationRoute<HomeController>("Home", c => c.Index());
-            routes.MapNavigationRoute<AboutController>("How To", c => c.Index())
-                .AddChildRoute<AboutController>("Export Access Table", c => c.HowToExport())
-                .AddChildRoute<AboutController>("Upload Data Table", c => c.HowToUpload());
-            routes.MapNavigationRoute<FilesController>("Load Tables", c => c.Upload());
-            routes.MapNavigationRoute<FilesController>("Download", c => c.Download());
-            routes.MapNavigationRoute<TablesController>("Data", c => c.Index());
-            routes.MapNavigationRoute<TablesController>("Status", c => c.Status());
-            routes.MapNavigationRoute<NewController>("New Site", c => c.Index());
-            //routes.MapNavigationRoute<WatershedController>("Watershed", c => c.Index());
         }
     }
 }

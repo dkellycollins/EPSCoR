@@ -1,24 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Mvc;
+using EPSCoR.Database.Models;
+using EPSCoR.Repositories;
+using EPSCoR.Repositories.Factory;
+using WebMatrix.WebData;
 
 namespace EPSCoR.Controllers
 {
-    /// <summary>
-    /// Contains public info pages such as the welcome page.
-    /// </summary>
+    [Authorize]
     public class HomeController : Controller
     {
-        /// <summary>
-        /// Returns the homepage.
-        /// </summary>
-        /// <returns></returns>
-        [OutputCache(Duration = 0)]
         public ActionResult Index()
         {
-            return View();
+            using (IModelRepository<TableIndex> repo = RepositoryFactory.GetModelRepository<TableIndex>())
+            {
+                return View(
+                    repo.GetAll()
+                        .Where(index => index.UploadedByUser == WebSecurity.CurrentUserName)
+                        .ToList()
+                );
+            }
+        }
+
+        public ActionResult CalcForm()
+        {
+            using (IModelRepository<TableIndex> repo = RepositoryFactory.GetModelRepository<TableIndex>())
+            {
+                var tables = repo.GetAll();
+
+                var allTables = tables.Where(t => t.Processed && t.UploadedByUser == WebSecurity.CurrentUserName);
+                var attTables = allTables.Where(t => t.Type == TableTypes.ATTRIBUTE);
+                var usTables = allTables.Where(t => t.Type == TableTypes.UPSTREAM);
+
+                ViewBag.AllTables = allTables.ToList();
+                ViewBag.AttributeTables = attTables.ToList();
+                ViewBag.UpstreamTables = usTables.ToList();
+
+                return View("_calcForm");
+            }
+        }
+
+        public ActionResult UploadForm()
+        {
+            return View("_uploadForm");
+        }
+
+        public ActionResult AboutForm()
+        {
+            return View("_aboutForm");
         }
     }
 }

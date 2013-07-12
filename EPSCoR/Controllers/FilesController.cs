@@ -45,16 +45,6 @@ namespace EPSCoR.Controllers
         }
 
         /// <summary>
-        /// Returns the upload view.
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public ActionResult Upload()
-        {
-            return View();
-        }
-
-        /// <summary>
         /// The post method for a "simple" file upload. This expects the file to be uploaded through a basic form.
         /// </summary>
         /// <param name="file"></param>
@@ -83,7 +73,7 @@ namespace EPSCoR.Controllers
                 DisplayError("Upload failed.");
             }
 
-            return RedirectToAction("Index");
+            return new HttpStatusCodeResult(200);
         }
 
         /// <summary>
@@ -170,23 +160,6 @@ namespace EPSCoR.Controllers
             if (result)
                 return new FileUploadResult(id);
             return new FileUploadResult(id, "Could not complete file upload.");
-        }
-
-        /// <summary>
-        /// Returns a view listing all files that can be downloaded.
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult Download()
-        {
-            _fileAccessor.CurrentDirectory = FileDirectory.Temp;
-            var tableIndexes = _tableIndexRepo.GetAll().ToList();
-            List<TableIndex> existingConversions = new List<TableIndex>();
-            foreach (TableIndex tableIndex in tableIndexes)
-            {
-                if (_fileAccessor.FileExist(tableIndex.Name + ".csv"))
-                    existingConversions.Add(tableIndex);
-            }
-            return View(existingConversions);
         }
 
         /// <summary>

@@ -51,25 +51,6 @@ namespace EPSCoR.Controllers
         }
 
         /// <summary>
-        /// Returns a view that can display uploaded tables.
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult Index()
-        {
-            var tables = from t in _tableIndexRepo.GetAll() select t;
-
-            var allTables = tables.Where(t => t.Processed && t.UploadedByUser == WebSecurity.CurrentUserName);
-            var attTables = allTables.Where(t => t.Type == TableTypes.ATTRIBUTE);
-            var usTables = allTables.Where(t => t.Type == TableTypes.UPSTREAM);
-
-            ViewBag.AllTables = allTables.ToList();
-            ViewBag.AttributeTables = attTables.ToList();
-            ViewBag.UpstreamTables = usTables.ToList();
-
-            return View();
-        }
-
-        /// <summary>
         /// Returns a view that displays the table.
         /// </summary>
         /// <param name="id">Name of the table.</param>
@@ -105,22 +86,7 @@ namespace EPSCoR.Controllers
 
             _tableRepo.Drop(id);
             DisplaySuccess(id + " deleted.");
-            return RedirectToAction("Index");
-        }
-
-        public ActionResult CalcForm()
-        {
-            var tables = from t in _tableIndexRepo.GetAll() select t;
-
-            var allTables = tables.Where(t => t.Processed && t.UploadedByUser == WebSecurity.CurrentUserName);
-            var attTables = allTables.Where(t => t.Type == TableTypes.ATTRIBUTE);
-            var usTables = allTables.Where(t => t.Type == TableTypes.UPSTREAM);
-
-            ViewBag.AllTables = allTables.ToList();
-            ViewBag.AttributeTables = attTables.ToList();
-            ViewBag.UpstreamTables = usTables.ToList();
-
-            return View();
+            return new HttpStatusCodeResult(200);
         }
 
         /// <summary>
@@ -158,22 +124,7 @@ namespace EPSCoR.Controllers
                     DisplaySuccess("The request has been submitted for processing.");
                     break;
             }
-            return RedirectToAction("Index");
-        }
-
-        /// <summary>
-        /// Returns a view listing all table status.
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult Status()
-        {
-            IQueryable<TableIndex> tableIndexes = _tableIndexRepo.GetAll().Where(t => t.UploadedByUser == WebSecurity.CurrentUserName);
-            ViewBag.ProcessedTables = tableIndexes.Where((index) => index.Processed).ToList();
-            ViewBag.NotProcessedTables = tableIndexes.Where((index) => !index.Processed).ToList();
-
-            if (Request.IsAjaxRequest())
-                return PartialView("StatusPartial");
-            return View();
+            return new HttpStatusCodeResult(200);
         }
 
         /// <summary>
