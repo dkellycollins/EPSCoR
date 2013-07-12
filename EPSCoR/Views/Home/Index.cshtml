@@ -22,31 +22,24 @@
     <p>&copy; Kansas State University @System.DateTime.Now.ToString("yyyy")</p>
 </div>
 
+@Html.Partial("_uploadForm")
+@{/*Html.Partial("_calcForm") */}
+@Html.Partial("_aboutForm")
+
 @section Styles {
-    @Styles.Render("~/content/jqueryui/jqueryui-css")
+    <link href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" rel="stylesheet">
+    @Styles.Render("~/content/jQueryFileUpload/fileUpload-css")
     @Styles.Render("~/content/DataTables-1.9.4/datatables-css")
 }
 
 @section Scripts {
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    @Scripts.Render("~/scripts/jqueryfileupload/fileUpload-js")
     @Scripts.Render("~/scritps/DataTables-1.9.4/datatables-js")
     @Scripts.Render("~/scripts/JavaScriptTemplates/main")
     @Scripts.Render("~/scripts/SignalR/signalr-js")
-    @Scripts.Render("~/scripts/main-2.0")
-
     <script src="~/signalr/hubs"></script>
-    <script>
-        $(function () {
-            //Setup hub.
-            var tableHub = $.connection.tableHub;
-
-            tableHub.client.newTable = addTable;
-            tableHub.client.updateTable = updateTable;
-            tableHub.client.sendAlert = addAlert;
-
-            $.connection.hub.start();
-        });
-    </script>
+    @Scripts.Render("~/scripts/main-2.0")
 
     <script type="text/x-tmpl" id="alertTmpl">
         <div class="alert alert-{%=o.type%} fade">

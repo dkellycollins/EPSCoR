@@ -1,4 +1,4 @@
-﻿function initHubs() {
+﻿$(function () {
     var tableHub = $.connection.tableHub;
 
     tableHub.client.newTable = addTable;
@@ -7,4 +7,4 @@
     tableHub.client.sendAlert = addAlert;
 
     $.connection.hub.start();
-}
+});

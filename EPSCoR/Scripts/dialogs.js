@@ -1,13 +1,68 @@
-﻿function openUploadFilesDialog() {
-    window.open("UploadForm");
+﻿$(function() {
+    $('#dialog-uploadFiles').dialog({
+        autoOpen: false,
+        resizable: true,
+        modal: true,
+        height: window.innerHeight * .8,
+        width: window.innerWidth * .8,
+        show: {
+            effect: "clip",
+            duration: 500
+        },
+        hide: {
+            effect: "clip",
+            duration: 500
+        }
+    });
+
+    $('#dialog-calc').dialog({
+        autoOpen: false,
+        resizable: true,
+        modal: true,
+        height: window.innerHeight * .8,
+        width: window.innerWidth * .8,
+        show: {
+            effect: "clip",
+            duration: 500
+        },
+        hide: {
+            effect: "clip",
+            duration: 500
+        }
+    });
+
+    $('#dialog-about').dialog({
+        autoOpen: false,
+        resizable: true,
+        modal: true,
+        height: window.innerHeight * .8,
+        width: window.innerWidth * .8,
+        show: {
+            effect: "clip",
+            duration: 500
+        },
+        hide: {
+            effect: "clip",
+            duration: 500
+        }
+    });
+});
+
+function openUploadFilesDialog() {
+    $('#dialog-uploadFiles').dialog("open");
 }
 
 function openCalcDialog() {
-    window.open("CalcForm");
+    window.open("Home/CalcForm");
 }
 
 function openAboutDialog() {
-    window.open("AboutForm");
+    $('#dialog-about').dialog("open");
+}
+
+function showDiv(divid) {
+    $('#content div').hide(200);
+    $('#' + divid).show(200);
 }
 
 function yesnodialog(yesBtn, noBtn, title, text, onClose) {
