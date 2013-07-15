@@ -179,6 +179,7 @@
     <Compile Include="BootstrapSupport\ControlGroupExtensions.cs" />
     <Compile Include="BootstrapSupport\ViewHelperExtensions.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\API\FileController.cs" />
     <Compile Include="Controllers\API\TablesController.cs" />
     <Compile Include="Controllers\BootstrapBaseController.cs" />
@@ -219,8 +220,8 @@
     <Compile Include="Repositories\ITableRepository.cs" />
     <Compile Include="Repositories\Basic\BasicTableRepo.cs" />
     <Content Include="Content\images\ajax-loader2.gif" />
-    <Content Include="Scripts\alerts.js" />
-    <Content Include="Scripts\dialogs.js" />
+    <Content Include="Scripts\EPSCoR.Alerts.js" />
+    <Content Include="Scripts\EPSCoR.Dialogs.js" />
     <Compile Include="Results\JsonResult.cs" />
     <Compile Include="ViewModels\CalcRequest.cs" />
     <Compile Include="ViewModels\DataTableParams.cs" />
@@ -435,6 +436,7 @@
     <Content Include="Scripts\JavaScriptTemplates\runtime.js" />
     <Content Include="Scripts\JavaScriptTemplates\tmpl.js" />
     <Content Include="Scripts\JavaScriptTemplates\tmpl.min.js" />
+    <Content Include="Scripts\EPSCoR.js" />
     <Content Include="Scripts\SignalR\jquery.signalR-1.1.2.js" />
     <Content Include="Scripts\SignalR\jquery.signalR-1.1.2.min.js" />
     <Content Include="Scripts\jQueryFileUpload\cors\jquery.postmessage-transport.js" />
@@ -479,7 +481,7 @@
     <Content Include="Scripts\Knockout\knockout-2.1.0.debug.js" />
     <Content Include="Scripts\Knockout\knockout-2.1.0.js" />
     <Content Include="Scripts\Modernizr\modernizr-2.5.3.js" />
-    <Content Include="Scripts\tables.js" />
+    <Content Include="Scripts\EPSCoR.Tables.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -504,6 +506,7 @@
     <Content Include="Views\Shared\_Layout2.0.cshtml" />
     <Content Include="Views\Home\_calcForm.cshtml" />
     <Content Include="Views\Home\_aboutForm.cshtml" />
+    <Content Include="Views\Home\_adminForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

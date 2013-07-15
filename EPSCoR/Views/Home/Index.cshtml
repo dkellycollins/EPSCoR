@@ -25,6 +25,10 @@
     <img class="img-center" src="~/Content/images/ajax-loader2.gif" />
 </div>
 @Html.Partial("_aboutForm")
+@if (User.IsInRole("Admin"))
+{
+    Html.Partial("_adminForm");
+}
 
 @section Styles {
     <link href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" rel="stylesheet">
@@ -41,14 +45,6 @@
     <script src="~/signalr/hubs"></script>
     @Scripts.Render("~/scripts/main-2.0")
 
-    <script>
-        $(function () {
-            $.getJSON('Tables/GetAllDetails', function (tables) {
-                addTables(tables);
-            });
-        });
-    </script>
-
     <script type="text/x-tmpl" id="alertTmpl">
         <div class="alert alert-{%=o.type%} fade">
             <strong>{%=o.header%}</strong> {%=o.message%}
@@ -58,7 +54,7 @@
 
     <script type="text/x-tmpl" id="tableIndexTmpl">
         <div id="{%=o.Name%}" class="well fade">
-            <span class="btn" onclick="toggleTableView('{%=o.Name%}')"><i class="icon icon-plus icon-black"></i></span>
+            <span class="btn" onclick="EPSCoR.Tables.toggleTableView('{%=o.Name%}')"><i class="icon icon-plus icon-black"></i></span>
             <b>
                 {%=o.Name%}
                 {% if(!o.Processed) { %}
@@ -67,7 +63,7 @@
             </b>
             <span class="pull-right">
                 <a href="\Files\DownloadCsv\{%=o.Name%}" class="btn btn-success">Download</a>
-                <span class="btn btn-danger" onclick="deleteTable('{%=o.Name%}')">
+                <span class="btn btn-danger" onclick="EPSCoR.Tables.deleteTable('{%=o.Name%}')">
                     X
                     <form action="\Tables\Delete" method="post" id="delete-{%=o.Name%}" class="hide">
                         <input type="hidden" name="id" value="{%=o.Name%}" />

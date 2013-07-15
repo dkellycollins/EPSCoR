@@ -26,10 +26,10 @@ namespace EPSCoR
 
             bundles.Add(new ScriptBundle("~/scripts/main-2.0").Include(
                         "~/Scripts/jQueryExt.js",
-                        "~/Scripts/alerts.js",
-                        "~/Scripts/dialogs.js",
-                        "~/Scripts/tables.js",
-                        "~/Scripts/hubs.js"));
+                        "~/Scripts/EPSCoR.js",
+                        "~/Scripts/EPSCoR.Alerts.js",
+                        "~/Scripts/EPSCoR.Dialogs.js",
+                        "~/Scripts/EPSCoR.Tables.js"));
 
             #endregion Custom bundles
 
