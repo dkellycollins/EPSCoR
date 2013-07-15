@@ -114,16 +114,16 @@ namespace EPSCoR.Controllers
             switch (result)
             {
                 case CalcResult.Success:
-                    TableHub.SendAlert("Calc table generated", WebSecurity.CurrentUserName, "Success!", Alerts.SUCCESS);
+                    AlertsHub.SendAlertToUser("Calc table generated", WebSecurity.CurrentUserName, "Success!", Alerts.SUCCESS);
                     break;
                 case CalcResult.Error:
-                    TableHub.SendAlert("The server encountered an error while processing you request.", WebSecurity.CurrentUserName, "Error!", Alerts.ERROR);
+                    AlertsHub.SendAlertToUser("The server encountered an error while processing you request.", WebSecurity.CurrentUserName, "Error!", Alerts.ERROR);
                     break;
                 case CalcResult.TableAlreadyExists:
-                    TableHub.SendAlert("The calc table already exists. Please delete existing table before createing a new one.", WebSecurity.CurrentUserName, "Error!", Alerts.ERROR);
+                    AlertsHub.SendAlertToUser("The calc table already exists. Please delete existing table before createing a new one.", WebSecurity.CurrentUserName, "Error!", Alerts.ERROR);
                     break;
                 case CalcResult.SubmittedForProcessing:
-                    TableHub.SendAlert("The request has been submitted for processing.", WebSecurity.CurrentUserName, "Success!", Alerts.SUCCESS);
+                    AlertsHub.SendAlertToUser("The request has been submitted for processing.", WebSecurity.CurrentUserName, "Success!", Alerts.SUCCESS);
                     break;
             }
 

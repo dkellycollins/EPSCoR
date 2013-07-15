@@ -183,7 +183,9 @@
     <Compile Include="Controllers\API\TablesController.cs" />
     <Compile Include="Controllers\BootstrapBaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Hubs\AlertsHub.cs" />
     <Compile Include="Hubs\TableHub.cs" />
+    <Compile Include="Hubs\UserHub.cs" />
     <Compile Include="Repositories\Async\AsyncFileAccessor.cs" />
     <Compile Include="Repositories\Async\AsyncModelRepo.cs" />
     <Compile Include="Repositories\Async\AsyncTableRepo.cs" />
@@ -502,7 +504,6 @@
     <Content Include="Views\Shared\_Layout2.0.cshtml" />
     <Content Include="Views\Home\_calcForm.cshtml" />
     <Content Include="Views\Home\_aboutForm.cshtml" />
-    <Content Include="Views\Home\_tables.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
