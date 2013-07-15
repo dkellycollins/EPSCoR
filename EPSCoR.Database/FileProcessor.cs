@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using EPSCoR.Database.Exceptions;
@@ -16,63 +18,75 @@ namespace EPSCoR.Database
     /// <remarks>This needs to be refactored to run as an independent application.</remarks>
     public class FileProcessor
     {
-        static FileProcessor()
-        {
-            DirectoryManager.Initialize(HttpContext.Current.Server);
-        }
-
         private static TimeSpan WAIT_TIME = new TimeSpan(0, 1, 0);
-        private FileSystemWatcher _fileWatcher;
+        private static FileSystemWatcher _fileWatcher;
 
-        public delegate void TableIndexEventHandler(TableIndex tableIndex);
-        public static event TableIndexEventHandler TableIndexCreated = delegate { };
-        public static event TableIndexEventHandler TableIndexUpdated = delegate { };
-
-        public delegate void ErrorEventHandler(string user, string errorMsg);
-        public static event ErrorEventHandler Error = delegate { };
-
-        public FileProcessor()
+        public static void Init(string dataDirectory)
         {
+            DirectoryManager.Initialize(dataDirectory);
+            
             _fileWatcher = new FileSystemWatcher(DirectoryManager.UploadDir);
             _fileWatcher.Created += _fileWatcher_Created;
-            //_fileWatcher.Changed += _fileWatcher_Changed;
             _fileWatcher.Error += _fileWatcher_Error;
 
             _fileWatcher.IncludeSubdirectories = true;
             _fileWatcher.Filter = "*.*";
             _fileWatcher.EnableRaisingEvents = true;
+
+            FirstTimeScan();
         }
 
-        public void Dispose()
+        public static void Dispose()
         {
             _fileWatcher.Dispose();
         }
 
-        private void _fileWatcher_Created(object sender, FileSystemEventArgs e)
+        public static void FirstTimeScan()
         {
-            Task.Factory.StartNew(() => convertFile(e.FullPath));
+            foreach (string file in Directory.GetFiles(DirectoryManager.UploadDir))
+            {
+                string tableName = Path.GetFileNameWithoutExtension(file);
+                string userName = Directory.GetParent(file).Name;
+                Task.Factory.StartNew(() => convertFile(file, tableName, userName));
+            }
         }
 
-        private void _fileWatcher_Changed(object sender, FileSystemEventArgs e)
+        public static void ProcessFile(string filePath, string tableName = null, string userName = null)
         {
-            if (e.ChangeType == WatcherChangeTypes.Changed || e.ChangeType == WatcherChangeTypes.Created)
-                Task.Factory.StartNew(() => convertFile(e.FullPath));
+            if (string.IsNullOrEmpty(tableName))
+            {
+                tableName = Path.GetFileNameWithoutExtension(filePath);
+            }
+            if (string.IsNullOrEmpty(userName))
+            {
+                userName = Directory.GetParent(filePath).Name;
+            }
+
+            Task.Factory.StartNew(() => convertFile(filePath, tableName, userName));
         }
 
-        private void _fileWatcher_Error(object sender, ErrorEventArgs e)
+        private static void _fileWatcher_Created(object sender, FileSystemEventArgs e)
+        {
+            if (File.Exists(e.FullPath)) //This makes sure it was a file that was created.
+            {
+                string tableName = Path.GetFileNameWithoutExtension(e.FullPath);
+                string userName = Directory.GetParent(e.FullPath).Name;
+                Task.Factory.StartNew(() => convertFile(e.FullPath, tableName, userName));
+            }
+        }
+
+        private static void _fileWatcher_Error(object sender, ErrorEventArgs e)
         {
             LoggerFactory.GetLogger().Log("FILE WATCHER FAILED.", e.GetException());
         }
 
-        private static void convertFile(string file)
+        private static void convertFile(string file, string tableName, string userName)
         {
             LoggerFactory.GetLogger().Log("File uploaded:" + file);
 
             using (DefaultContext defaultContext = new DefaultContext())
             {
                 //Create table entry.
-                string tableName = Path.GetFileNameWithoutExtension(file);
-                string userName = Directory.GetParent(file).Name;
                 TableIndex tableIndex = new TableIndex()
                 {
                     Name = tableName,

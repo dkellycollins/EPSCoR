@@ -12,9 +12,11 @@ namespace EPSCoR.Database.Services
         /// Maps the root directory of the server.
         /// </summary>
         /// <param name="server"></param>
-        public static void Initialize(HttpServerUtility server)
+        public static void Initialize(string rootDir)
         {
-            RootDir = server.MapPath("~/App_Data");
+            if (!Directory.Exists(rootDir))
+                Directory.CreateDirectory(rootDir);
+            RootDir = rootDir;
         }
 
         public static string RootDir = string.Empty;

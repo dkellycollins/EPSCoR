@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{CABE2C57-7BB7-40DE-8F38-2B18BFFBEE38}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EPSCoR.Database</RootNamespace>
     <AssemblyName>EPSCoR.Database</AssemblyName>
@@ -65,6 +65,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\IModel.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Services\CompleteFileWatcher.cs">
       <SubType>Component</SubType>
     </Compile>

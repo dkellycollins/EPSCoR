@@ -1,5 +1,4 @@
-﻿@model IEnumerable<EPSCoR.Database.Models.TableIndex>
-@{
+﻿@{
     ViewBag.Title = "EPSCoR Data Processing Tool";
 }
 
@@ -15,7 +14,6 @@
 </div>
                 
 <div id="tables" class="container"> 
-    @Html.Partial("_tables", Model)
 </div>
 
 <div class="footer container">
@@ -42,6 +40,14 @@
     @Scripts.Render("~/scripts/SignalR/signalr-js")
     <script src="~/signalr/hubs"></script>
     @Scripts.Render("~/scripts/main-2.0")
+
+    <script>
+        $(function () {
+            $.getJSON('Tables/GetAllDetails', function (tables) {
+                addTables(tables);
+            });
+        });
+    </script>
 
     <script type="text/x-tmpl" id="alertTmpl">
         <div class="alert alert-{%=o.type%} fade">

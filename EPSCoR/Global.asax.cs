@@ -30,7 +30,7 @@ namespace EPSCoR
             DefaultContext.ModelRemoved += DefaultContext_ModelRemoved;
             DefaultContext.ModelUpdated += DefaultContext_ModelUpdated;
 
-            _fileProcessor = new FileProcessor();
+            FileProcessor.Init(Server.MapPath("~/App_Data"));
         }
 
         void DefaultContext_ModelUpdated(Database.Models.IModel model)
@@ -55,11 +55,6 @@ namespace EPSCoR
             {
                 TableHub.NotifyNewTable((TableIndex)model);
             }
-        }
-
-        protected void Application_End()
-        {
-            _fileProcessor.Dispose();
         }
     }
 }

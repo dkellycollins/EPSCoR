@@ -12,14 +12,7 @@ namespace EPSCoR.Controllers
     {
         public ActionResult Index()
         {
-            using (IModelRepository<TableIndex> repo = RepositoryFactory.GetModelRepository<TableIndex>())
-            {
-                return View(
-                    repo.GetAll()
-                        .Where(index => index.UploadedByUser == WebSecurity.CurrentUserName)
-                        .ToList()
-                );
-            }
+            return View();
         }
 
         public ActionResult CalcForm()
