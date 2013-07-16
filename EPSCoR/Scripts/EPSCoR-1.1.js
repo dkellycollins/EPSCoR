@@ -55,6 +55,26 @@ $(function () {
                         duration: 500
                     }
                 });
+
+                //Calc dialog requires special setup.
+                $('#dialog-calc').on('dialogopen', function (event, ui) {
+                    var $attSelect = $('#attTable'),
+                        $usSelect = $('#usTable');
+
+                    $attSelect.empty();
+                    $.each(EPSCoR.Tables.attributeTables, function (index, tableName) {
+                        $attSelect.append($('<option></option>')
+                            .attr('value', tableName)
+                            .text(tableName));
+                    });
+
+                    $usSelect.empty();
+                    $.each(EPSCoR.Tables.upstreamTables, function (index, tableName) {
+                        $usSelect.append($('<option></option>')
+                            .attr('value', tableName)
+                            .text(tableName));
+                    });
+                });
             },
             //Opens the dialog with the given id.
             openDialog: function (id, options) {
@@ -93,6 +113,11 @@ $(function () {
         /* Defines functions for interacting with the tables on the page.
         */
         Tables: {
+
+            upstreamTables: [],
+            attributeTables: [],
+            calcTables: [],
+
             //Displays or hides the table. Assumes the table has a div with the id of the given id plus 'Details'. If the details div contains an img tag then will attempt to load the table.
             toggleTableView: function (divId) {
                 var $context = $('#' + divId),
@@ -127,6 +152,16 @@ $(function () {
                 EPSCoR.Dialogs.yesNoDialog('Confirm delete', 'Are you sure you want to delete ' + tableName + '?', function (result) {
                     if (result) {
                         $('#delete-' + tableName).submit();
+
+                        var index = -1;
+                        if ((index = EPSCoR.Tables.attributeTables.indexOf(tableName)) >= 0) {
+                            EPSCoR.Tables.attributeTables = EPSCoR.Tables.attributeTables.splice(index, 1);
+                        } else if ((index = EPSCoR.Tables.upstreamTables.indexOf(tableName)) >= 0) {
+                            EPSCoR.Tables.attributeTables = EPSCoR.Tables.upstreamTables.splice(index, 1);
+                        } else if ((index = EPSCoR.Tables.calcTables.indexOf(tableName)) >= 0) {
+                            EPSCoR.Tables.attributeTables = EPSCoR.Tables.calcTables.splice(index, 1);
+                        }
+
                         $('#' + tableName).slideUp(500, function () {
                             $('#' + tableName).remove();
                         });
@@ -136,6 +171,15 @@ $(function () {
             //Adds a new table to the page.
             addTable: function (tableIndex) {
                 //Expecting tableindex to be a json representation of the Model class TableIndex.
+                
+                if (tableIndex.Type === 'att') {
+                    EPSCoR.Tables.attributeTables = EPSCoR.Tables.attributeTables.concat([tableIndex.Name]);
+                } else if (tableIndex.Type === 'us') {
+                    EPSCoR.Tables.upstreamTables = EPSCoR.Tables.upstreamTables.concat([tableIndex.Name]);
+                } else {
+                    EPSCoR.Tables.calcTables = EPSCoR.Tables.calcTables.concat([tableIndex.Name]);
+                }
+
                 $('#tables').append(tmpl('tableIndexTmpl', tableIndex));
                 EPSCoR.Tables.toggleButtons(tableIndex.Name, !tableIndex.Processed);
 

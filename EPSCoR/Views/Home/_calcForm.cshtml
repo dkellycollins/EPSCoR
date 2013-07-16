@@ -1,20 +1,22 @@
-﻿<p>Please select the following</p>
-@using (Html.BeginForm("Calc", "Tables", FormMethod.Post, new { id="calcForm", @class = "editform" }))
-{    
-    <label>Attribute Table:</label>
-    @Html.DropDownList("attTable", new SelectList(ViewBag.AttributeTables, "Name", "Name"))
-    <br />
+﻿<div id="dialog-calc" title="Generate Table" class="container hide">
+    <p>Please select the following</p>
+    @using (Html.BeginForm("Calc", "Tables", FormMethod.Post, new { id="calcForm", @class = "editform" }))
+    {    
+        <label>Attribute Table:</label>
+        <select id="attTable" name="attTable"></select>
+        <br />
         
-    <label>Upstream Table:</label>
-    @Html.DropDownList("usTable", new SelectList(ViewBag.UpstreamTables, "Name", "Name"))
-    <br />
+        <label>Upstream Table:</label>
+        <select id="usTable" name="usTable"></select>
+        <br />
     
-    <label>Calculation:</label>
-    <select name="calc">
-        <option>Sum</option>
-        <option>Avg</option>
-    </select>
-    <br />
+        <label>Calculation:</label>
+        <select name="calc">
+            <option>Sum</option>
+            <option>Avg</option>
+        </select>
+        <br />
         
-    <button onclick="javascript: $('#dialog-calc').dialog('close');" type="submit" class="btn btn-success pull-right">Submit</button>
-}
+        <button onclick="javascript: $('#dialog-calc').dialog('close');" type="submit" class="btn btn-success pull-right">Submit</button>
+    }
+</div>

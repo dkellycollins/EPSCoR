@@ -21,9 +21,7 @@
 </div>
 
 @Html.Partial("_uploadForm")
-<div id="dialog-calc" title="Generate Table" class="container">
-    <img class="img-center" src="~/Content/images/ajax-loader2.gif" />
-</div>
+@Html.Partial("_calcForm")
 @Html.Partial("_aboutForm")
 @if (User.IsInRole("Admin"))
 {
