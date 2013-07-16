@@ -32,18 +32,18 @@
 
 @section Styles {
     <link href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" rel="stylesheet">
-    @Styles.Render("~/content/jQueryFileUpload/fileUpload-css")
-    @Styles.Render("~/content/DataTables-1.9.4/datatables-css")
+    @Styles.Render("~/content/jQueryFileUpload/fileUpload.css")
+    @Styles.Render("~/content/DataTables/datatables.css")
 }
 
 @section Scripts {
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-    @Scripts.Render("~/scripts/jqueryfileupload/fileUpload-js")
-    @Scripts.Render("~/scritps/DataTables-1.9.4/datatables-js")
-    @Scripts.Render("~/scripts/JavaScriptTemplates/main")
-    @Scripts.Render("~/scripts/SignalR/signalr-js")
+    @Scripts.Render("~/scripts/jqueryfileupload/fileUpload.js")
+    @Scripts.Render("~/scripts/DataTables/datatables.js")
+    @Scripts.Render("~/scripts/JavaScriptTemplates/javascripttemplates.js")
+    @Scripts.Render("~/scripts/SignalR/signalr.js")
     <script src="~/signalr/hubs"></script>
-    @Scripts.Render("~/scripts/main-2.0")
+    @Scripts.Render("~/scripts/EPSCoR.js")
 
     <script type="text/x-tmpl" id="alertTmpl">
         <div class="alert alert-{%=o.type%} fade">

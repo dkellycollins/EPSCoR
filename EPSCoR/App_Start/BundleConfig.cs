@@ -18,18 +18,9 @@ namespace EPSCoR
             bundles.Add(new StyleBundle("~/content/css").Include(
                         "~/Content/Site.css"));
 
-            bundles.Add(new ScriptBundle("~/scripts/main").Include(
-                        "~/Scripts/jQuery/jquery-migrate-{version}.js",
-                        "~/Scripts/jQuery/jquery.validate.js",
-                        "~/scripts/jQuery/jquery.validate.unobtrusive.js",
-                        "~/Scripts/jQuery/jquery.validate.unobtrusive-custom-for-bootstrap.js"));
-
-            bundles.Add(new ScriptBundle("~/scripts/main-2.0").Include(
+            bundles.Add(new ScriptBundle("~/scripts/EPSCoR.js").Include(
                         "~/Scripts/jQueryExt.js",
-                        "~/Scripts/EPSCoR.js",
-                        "~/Scripts/EPSCoR.Alerts.js",
-                        "~/Scripts/EPSCoR.Dialogs.js",
-                        "~/Scripts/EPSCoR.Tables.js"));
+                        "~/Scripts/EPSCoR-{version}.js"));
 
             #endregion Custom bundles
 
@@ -89,7 +80,7 @@ namespace EPSCoR
 
             #region jQueryFileUpload bundles
 
-            bundles.Add(new ScriptBundle("~/scripts/jqueryfileupload/fileUpload-js").Include(
+            bundles.Add(new ScriptBundle("~/scripts/jqueryfileupload/fileUpload.js").Include(
                 "~/Scripts/jQueryFileUpload/jquery.iframe-transport.js",
                 "~/Scripts/jQueryFileUpload/jquery.fileupload.js",
                 "~/Scripts/jQueryFileUpload/jquery.fileupload-process.js",
@@ -98,7 +89,7 @@ namespace EPSCoR
                 "~/Scripts/jQueryFileUpload/main.js"
                 ));
 
-            bundles.Add(new StyleBundle("~/content/jQueryFileUpload/fileUpload-css").Include(
+            bundles.Add(new StyleBundle("~/content/jQueryFileUpload/fileUpload.css").Include(
                 "~/Content/jQueryFileUpload/jquery.fileupload-ui.css",
                 "~/Content/jQueryFileUpload/style.css"
                 ));
@@ -107,12 +98,11 @@ namespace EPSCoR
 
             #region jQuery Datatables bundles
             
-            bundles.Add(new ScriptBundle("~/scritps/DataTables-1.9.4/datatables-js").Include(
-                "~/Scripts/DataTables-1.9.4/media/js/jquery.dataTables.js",
-                "~/Scripts/DataTables-1.9.4/main.js"
+            bundles.Add(new ScriptBundle("~/scripts/DataTables/datatables.js").Include(
+                "~/Scripts/DataTables-1.9.4/media/js/jquery.dataTables.js"
                 ));
 
-            bundles.Add(new StyleBundle("~/content/DataTables-1.9.4/datatables-css").Include(
+            bundles.Add(new StyleBundle("~/content/DataTables/datatables.css").Include(
                 "~/Content/DataTables-1.9.4/media/css/jquery.dataTables.css"
                 ));
 
@@ -120,16 +110,14 @@ namespace EPSCoR
 
             #region JavaScript Templates bundles
 
-            bundles.Add(new ScriptBundle("~/scripts/JavaScriptTemplates/main").Include(
-                //"~/Scripts/JavaScriptTemplates/compile.js",
-                //"~/Scripts/JavaScriptTemplates/runtime.js",
+            bundles.Add(new ScriptBundle("~/scripts/JavaScriptTemplates/javascripttemplates.js").Include(
                 "~/Scripts/JavaScriptTemplates/tmpl.js"));
 
             #endregion JavaScript Templates bundles
 
             #region SignalR bundles
 
-            bundles.Add(new ScriptBundle("~/scripts/SignalR/signalr-js").Include(
+            bundles.Add(new ScriptBundle("~/scripts/SignalR/signalr.js").Include(
                 "~/Scripts/SignalR/jquery.signalR-{version}.js"));
 
             #endregion SignalR bundles
