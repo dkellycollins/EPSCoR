@@ -3,9 +3,9 @@
 $(function () {
     'use strict';
     var baseUrl = '/Files/',
-        uploadUrl = baseUrl + '/UploadFiles',
-        completeUrl = baseUrl + '/CompleteUpload',
-        checkUrl = baseUrl + '/CheckFile/',
+        uploadUrl = baseUrl + 'UploadFiles',
+        completeUrl = baseUrl + 'CompleteUpload',
+        checkUrl = baseUrl + 'CheckFile/',
         filesToUpload = [],
         setStatus = function (status, $context) {
             var $status = $('.status', $context);

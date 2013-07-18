@@ -21,7 +21,10 @@ namespace EPSCoR.Database.Services.FileConverter
         public string ConvertToCSV()
         {
             //Ensure that the contents of the csv can be used as doubles. Remove any data that connot be used.
-            string processedFile = Path.Combine(DirectoryManager.ConversionDir, User, Path.GetFileName(FilePath));
+            string userDirectory = Path.Combine(DirectoryManager.ConversionDir, User);
+            if (!Directory.Exists(userDirectory))
+                Directory.CreateDirectory(userDirectory);
+            string processedFile = Path.Combine(userDirectory, Path.GetFileName(FilePath));
 
             LoggerFactory.GetLogger().Log("Begining to validate file: " + FilePath);
 

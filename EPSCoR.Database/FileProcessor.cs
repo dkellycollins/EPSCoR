@@ -82,7 +82,7 @@ namespace EPSCoR.Database
 
         private static void convertFile(string file, string tableName, string userName)
         {
-            LoggerFactory.GetLogger().Log("File uploaded:" + file);
+            LoggerFactory.GetLogger().Log("File uploaded: " + file);
 
             using (DefaultContext defaultContext = new DefaultContext())
             {
