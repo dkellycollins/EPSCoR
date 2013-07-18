@@ -2,22 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using Newtonsoft.Json;
 
 namespace EPSCoR.Results
 {
-    public class JsonResult : System.Web.Mvc.JsonResult
+    /// <summary>
+    /// Serilizes data using Newtonsoft.Json.JsonConvert.
+    /// </summary>
+    public class NewtonsoftJsonResult : ActionResult
     {
-        public JsonResult()
-            : base()
-        {
-            this.ContentType = "application/json";
-        }
+        /// <summary>
+        /// The data to be serialized.
+        /// </summary>
+        public object Data { get; protected set; }
 
-        public JsonResult(object data)
+        public NewtonsoftJsonResult()
+            : base()
+        { }
+
+        public NewtonsoftJsonResult(object data)
             : base()
         {
-            this.ContentType = "application/json";
             this.Data = data;
         }
 
@@ -25,7 +31,7 @@ namespace EPSCoR.Results
         {
             var response = context.HttpContext.Response;
 
-            response.ContentType = this.ContentType;
+            response.ContentType = "application/json";
 
             string json = JsonConvert.SerializeObject(this.Data);
             response.Write(json);

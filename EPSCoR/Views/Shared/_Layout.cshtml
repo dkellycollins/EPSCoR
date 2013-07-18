@@ -1,6 +1,4 @@
-@using System.Web.Optimization
-@using BootstrapSupport
-@using NavigationRoutes
+﻿@using System.Web.Optimization
 
 <!DOCTYPE html>
 <html lang="en">
@@ -12,47 +10,14 @@
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
         @Styles.Render("~/content/css")
         @Html.Partial("_html5shiv")
-        @* favicons and touch icons go here *@
     </head>
     <body>
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="navbar-inner">
-                <img src="~/Content/images/header.jpeg" alt="EPSCoR" class="headerImg" height="160"/>
-                <div class="container">
-                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </a>
-                    <div class="nav-collapse collapse">
-                        <ul class="nav">
-                            @Html.Navigation()
-                        </ul>
-                    </div>
-                    <div class="nav-collapse collapse">
-                        @Html.Partial("LoginPartial")
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <noscript class="alert alert-error">
-            This site requires javascript for many of it's features. If javascript is disabled, please enabled it.
-        </noscript>
-                
-        <div class="container">
-            @Html.Partial("_alerts")
-            @Html.Partial("_validationSummary")
-            @RenderBody()   
-            <hr>
-            
-        </div>
-        <div class="footer container">
-            <p>&copy; Kansas State University @System.DateTime.Now.ToString("yyyy")</p>
-        </div>
+        @RenderBody()
+
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-        @Scripts.Render("~/scripts/main")
         @RenderSection("Scripts", required: false)
     </body>
 </html>
+
+

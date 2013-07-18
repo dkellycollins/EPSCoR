@@ -8,52 +8,60 @@ using Newtonsoft.Json;
 
 namespace EPSCoR.Results
 {
-    public class DataTableResult : ActionResult
+    /// <summary>
+    /// 
+    /// </summary>
+    public class DataTableResult : NewtonsoftJsonResult
     {
         /// <summary>
         /// Total records, before filtering (i.e. the total number of records in the database)
         /// </summary>
-        public int iTotalRecords { get; set; }
+        public int TotalRecords { get; set; }
 
         /// <summary>
         /// Total records, after filtering (i.e. the total number of records after filtering has been applied - not just the number of records being returned in this result set)
         /// </summary>
-        public int iTotalDisplayRecords { get; set; }
+        public int TotalDisplayRecords { get; set; }
 
         /// <summary>
         /// An unaltered copy of sEcho sent from the client side. This parameter will change with each draw (it is basically a draw count) - so it is important that this is implemented. Note that it strongly recommended for security reasons that you 'cast' this parameter to an integer in order to prevent Cross Site Scripting (XSS) attacks.
         /// </summary>
-        public string sEcho { get; set; }
+        public string Echo { get; set; }
 
         /// <summary>
         /// The data in a 2D array. Note that you can change the name of this parameter with sAjaxDataProp.
         /// </summary>
-        public object[,] aaData { get; set; }
+        public object[,] DataTable { get; set; }
 
         public DataTableResult(int totalRecords, int totalDisplayRecords, int echo, DataTable data)
+            : base()
         {
-            iTotalRecords = totalRecords;
-            iTotalDisplayRecords = totalDisplayRecords;
-            sEcho = echo.ToString();
+            TotalRecords = totalRecords;
+            TotalDisplayRecords = totalDisplayRecords;
+            Echo = echo.ToString();
             int numCol = data.Columns.Count;
             int numRow = data.Rows.Count;
-            aaData = new object[numRow, numCol];
+            DataTable = new object[numRow, numCol];
             for (int i = 0; i < numRow; i++)
             {
                 for (int j = 0; j < numCol; j++)
                 {
-                    aaData[i, j] = data.Rows[i][j];
+                    DataTable[i, j] = data.Rows[i][j];
                 }
             }
         }
 
         public override void ExecuteResult(ControllerContext context)
         {
-            string json = JsonConvert.SerializeObject(this);
+            this.Data = new 
+            {
+                iTotalRecords = TotalRecords,
+                iTotalDisplayRecords = TotalDisplayRecords,
+                sEcho = Echo,
+                aaData = DataTable
+            };
 
-            var response = context.HttpContext.Response;
-            response.ContentType = "application/json";
-            response.Write(json);
+            base.ExecuteResult(context);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace EPSCoR.Results
     /// <summary>
     /// This wraps up data to be serailized into the Json object returned.
     /// </summary>
-    public class FileUploadResult : ActionResult
+    public class FileUploadResult : NewtonsoftJsonResult
     {
         public string Name { get; set; }
         public string Error { get; set; }
@@ -27,13 +27,14 @@ namespace EPSCoR.Results
 
         public override void ExecuteResult(ControllerContext context)
         {
-            var request = context.HttpContext.Request;
-            var response = context.HttpContext.Response;
+            this.Data = new
+            {
+                Name = Name,
+                Error = Error,
+                UploadedBytes = UploadedBytes
+            };
 
-            response.ContentType = "application/json";
-
-            string json = JsonConvert.SerializeObject(this);
-            response.Write(json);
+            base.ExecuteResult(context);
         }
     }
 }

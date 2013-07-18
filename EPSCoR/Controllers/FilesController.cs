@@ -17,8 +17,11 @@ using System.Threading.Tasks;
 
 namespace EPSCoR.Controllers
 {
+    /// <summary>
+    /// Provides functions for uploading and retriving files.
+    /// </summary>
     [Authorize]
-    public class FilesController : BootstrapBaseController
+    public class FilesController : Controller
     {
         private IModelRepository<TableIndex> _tableIndexRepo;
         private IFileAccessor _fileAccessor;
@@ -45,42 +48,10 @@ namespace EPSCoR.Controllers
         }
 
         /// <summary>
-        /// The post method for a "simple" file upload. This expects the file to be uploaded through a basic form.
-        /// </summary>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public async Task<ActionResult> Upload(HttpPostedFileBase file)
-        {
-            string userName = WebSecurity.CurrentUserName;
-            string tableName = Path.GetFileNameWithoutExtension(file.FileName);
-            TableIndex existingTable = _tableIndexRepo.GetAll().Where(t => t.Name == tableName && t.UploadedByUser == userName).FirstOrDefault();
-            if (existingTable != null)
-            {
-                DisplayAttention("Table already exist. Remove existing table before uploading the new one.");
-                return RedirectToAction("Upload");
-            }
-
-            _fileAccessor.CurrentDirectory = FileDirectory.Upload;
-            bool saveSuccessfull = _fileAccessor.SaveFiles(FileStreamWrapper.FromHttpPostedFile(file));
-
-            if (saveSuccessfull)
-            {
-                DisplaySuccess("Upload Successful!");
-            }
-            else
-            {
-                DisplayError("Upload failed.");
-            }
-
-            return new HttpStatusCodeResult(200);
-        }
-
-        /// <summary>
-        /// The post method for the jQueryFileUpload
+        /// Handles saveing the posted file to the temp directory.
         /// </summary>
         /// <param name="file">Contains information on the file.</param>
-        /// <returns></returns>
+        /// <returns>Status of the upload.</returns>
         [HttpPost]
         public ActionResult UploadFiles(FileUpload file)
         {
@@ -105,10 +76,11 @@ namespace EPSCoR.Controllers
         }
 
         /// <summary>
-        /// Returns file info if the file is stored in temp uploads.
+        /// Returns json object containing info on the given file.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">Name of the file.</param>
         /// <returns></returns>
+        [HttpGet]
         public ActionResult CheckFile(string id)
         {
             //TODO convert to async method
@@ -127,7 +99,12 @@ namespace EPSCoR.Controllers
                 uploadedBytes = (int)info.Length;
             }
 
-            return new EPSCoR.Results.JsonResult(new { fileName = id, uploadedBytes = uploadedBytes, fileExists = fileExists });
+            return new NewtonsoftJsonResult(new 
+            { 
+                fileName = id, 
+                uploadedBytes = uploadedBytes, 
+                fileExists = fileExists 
+            });
         }
 
         /// <summary>
@@ -168,6 +145,7 @@ namespace EPSCoR.Controllers
         /// </summary>
         /// <param name="id">Name of the file to download.</param>
         /// <returns></returns>
+        [HttpGet]
         public ActionResult DownloadCsv(string id)
         {
             _fileAccessor.CurrentDirectory = FileDirectory.Conversion;

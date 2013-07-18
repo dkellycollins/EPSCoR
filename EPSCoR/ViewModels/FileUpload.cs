@@ -41,8 +41,6 @@ namespace EPSCoR.ViewModels
             {
                 var request = controllerContext.RequestContext.HttpContext.Request;
 
-                //TODO validation
-
                 string fileName = request.Files[0].FileName;
                 Stream inputStream = request.Files[0].InputStream;
                 int startPos;

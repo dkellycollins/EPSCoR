@@ -1,8 +1,4 @@
-﻿@{
-    ViewBag.Title = "Upload Files";
-}
-
-<div id="dialog-uploadFiles" title="Upload Files" class="container hide">
+﻿<div id="dialog-uploadFiles" title="Upload Files" class="container hide">
     <!-- The fileinput-button span is used to style the file input field as button -->
     <span class="btn btn-success fileinput-button">
         <i class="icon-plus icon-white"></i>
@@ -19,25 +15,19 @@
     <!-- The container for the uploaded files -->
     <div id="files"></div>
     <small class="pull-right">Powered by <a href="http://blueimp.github.io/jQuery-File-Upload/" target="_blank">jQuery File Upload</a></small>
-</div>
-
-@section Styles {
-    @Styles.Render("~/content/jQueryFileUpload/fileUpload-css")
-}
-@section Scripts {
-    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-    @Scripts.Render("~/scripts/jqueryfileupload/fileUpload-js")
 
     <script type="text/x-tmpl" id="uploadTmpl">
         <div class="alert alert-info">
-            <button type="button" class="close hidden" data-dismiss="alert">X</button>
-            <span>{%=o.FileName%}</span>
+            <button type="button" class="close hidden" data-dismiss="alert">x</button>
+            <span>{%=o.fileName%}</span>
             <br>
             <span class="status">Ready to upload</span>
             <div class="progress progress-success">
                 <div class="bar"></div>
             </div>
-            <button class="btn btn-warning">Cancel</button>
+            <div id="btns">
+                <button onclick="cancelUpload({%=o.data%})" class="btn btn-warning">Cancel</button>
+            </div>
         </div>
     </script>
-}
+</div>

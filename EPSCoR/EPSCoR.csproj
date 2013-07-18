@@ -179,9 +179,7 @@
     <Compile Include="BootstrapSupport\ControlGroupExtensions.cs" />
     <Compile Include="BootstrapSupport\ViewHelperExtensions.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\API\FileController.cs" />
-    <Compile Include="Controllers\API\TablesController.cs" />
-    <Compile Include="Controllers\BootstrapBaseController.cs" />
+    <Compile Include="Controllers\DataProcessorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Hubs\AlertsHub.cs" />
     <Compile Include="Hubs\TableHub.cs" />
@@ -206,11 +204,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="NavigationRoutes\INavigationRouteFilter.cs" />
-    <Compile Include="NavigationRoutes\NamedRoute.cs" />
-    <Compile Include="NavigationRoutes\NavigationExtensions.cs" />
-    <Compile Include="NavigationRoutes\NavigationRouteConfigurationExtensions.cs" />
-    <Compile Include="NavigationRoutes\NavigationRouteFilter.cs" />
     <Compile Include="Repositories\Basic\BasicFileAccessor.cs" />
     <Compile Include="Repositories\Basic\BasicModelRepo.cs" />
     <Compile Include="Repositories\IFileAccessor.cs" />
@@ -219,7 +212,7 @@
     <Compile Include="Repositories\ITableRepository.cs" />
     <Compile Include="Repositories\Basic\BasicTableRepo.cs" />
     <Content Include="Content\images\ajax-loader2.gif" />
-    <Compile Include="Results\JsonResult.cs" />
+    <Compile Include="Results\NewtonsoftJsonResult.cs" />
     <Content Include="Scripts\EPSCoR-1.1.js" />
     <Compile Include="ViewModels\CalcRequest.cs" />
     <Compile Include="ViewModels\DataTableParams.cs" />
@@ -458,7 +451,7 @@
     <None Include="Properties\PublishProfiles\default.pubxml" />
     <None Include="Properties\PublishProfiles\testing.pubxml" />
     <None Include="Scripts\jQuery\jquery-1.9.1.intellisense.js" />
-    <Content Include="Scripts\jQueryFileUpload\main.js" />
+    <Content Include="Scripts\jQueryFileUploadSetup.js" />
     <Content Include="Scripts\jQuery\jquery-1.9.1.js" />
     <Content Include="Scripts\jQuery\jquery-1.9.1.min.js" />
     <Content Include="Scripts\jQuery\jquery-migrate-1.1.1.js" />
@@ -495,16 +488,15 @@
     <Content Include="Views\Tables\DetailsPartial.cshtml" />
     <Content Include="Views\Tables\Details.cshtml" />
     <Content Include="Views\Shared\_html5shiv.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Shared\_alerts.cshtml" />
     <Content Include="Scripts\jQuery\jquery-1.9.1.min.map" />
-    <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Home\_uploadForm.cshtml" />
-    <Content Include="Views\Home\_navbar.cshtml" />
-    <Content Include="Views\Shared\_Layout2.0.cshtml" />
-    <Content Include="Views\Home\_calcForm.cshtml" />
-    <Content Include="Views\Home\_aboutForm.cshtml" />
-    <Content Include="Views\Home\_adminForm.cshtml" />
+    <Content Include="Views\DataProcessor\Index.cshtml" />
+    <Content Include="Views\DataProcessor\_uploadForm.cshtml" />
+    <Content Include="Views\DataProcessor\_navbar.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\DataProcessor\_calcForm.cshtml" />
+    <Content Include="Views\DataProcessor\_aboutForm.cshtml" />
+    <Content Include="Views\DataProcessor\_adminForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

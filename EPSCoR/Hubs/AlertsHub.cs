@@ -7,17 +7,23 @@ using Microsoft.AspNet.SignalR;
 
 namespace EPSCoR.Hubs
 {
+    /// <summary>
+    /// Handles send alerts to users.
+    /// </summary>
     public class AlertsHub : UserHub
     {
         private static IHubContext _context;
 
+        /// <summary>
+        /// Initializer.
+        /// </summary>
         static AlertsHub()
         {
             _context = GlobalHost.ConnectionManager.GetHubContext<AlertsHub>();
         }
 
         /// <summary>
-        /// Sends an alert to clients. If no user name is given then will broadcast the message to all users.
+        /// Sends an alert to the given user. If the user cannot be found then nothign is sent.
         /// </summary>
         /// <param name="message">The body of the alert.</param>
         /// <param name="userName">Name of the user to send the message to.</param>
@@ -41,6 +47,12 @@ namespace EPSCoR.Hubs
             }
         }
 
+        /// <summary>
+        /// Sends an alert to all users.
+        /// </summary>
+        /// <param name="message">The body of the alert.</param>
+        /// <param name="header">Header of the alert.</param>
+        /// <param name="alertType">The type of alert. This should be one of the alerts in BootstrapSupport.Alerts</param>
         public static void SendAlertToAll(string message, string header = "", string alertType = Alerts.INFORMATION)
         {
             _context.Clients.All.newAlert(message, header, alertType);

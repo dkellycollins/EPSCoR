@@ -20,7 +20,7 @@ namespace EPSCoR.Controllers
     /// Contains views that display and work with uploaded tables.
     /// </summary>
     [Authorize]
-    public class TablesController : BootstrapBaseController
+    public class TablesController : Controller
     {
         private IModelRepository<TableIndex> _tableIndexRepo;
         private ITableRepository _tableRepo;
@@ -90,10 +90,14 @@ namespace EPSCoR.Controllers
             return new DataTableResult(totalRows, totalRows, echo, data);
         }
 
+        /// <summary>
+        /// Gets all table indexes and returns them in Json format.
+        /// </summary>
+        /// <returns></returns>
         public ActionResult GetAllDetails()
         {
             IEnumerable<TableIndex> allDetails = _tableIndexRepo.GetAll().ToList();
-            return new EPSCoR.Results.JsonResult(allDetails);
+            return new NewtonsoftJsonResult(allDetails);
         }
     }
 }

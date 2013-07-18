@@ -86,7 +86,7 @@ namespace EPSCoR
                 "~/Scripts/jQueryFileUpload/jquery.fileupload-process.js",
                 "~/Scripts/jQueryFileUpload/jquery.fileupload-validate.js",
                 "~/Scripts/jQueryFileUpload/jquery.fileupload-ui.js",
-                "~/Scripts/jQueryFileUpload/main.js"
+                "~/Scripts/jQueryFileUploadSetup.js"
                 ));
 
             bundles.Add(new StyleBundle("~/content/jQueryFileUpload/fileUpload.css").Include(

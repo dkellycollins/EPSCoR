@@ -12,6 +12,9 @@ using Microsoft.AspNet.SignalR;
 
 namespace EPSCoR.Hubs
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class TableHub : UserHub
     {
         private static IHubContext _context;
@@ -66,6 +69,10 @@ namespace EPSCoR.Hubs
             }
         }
 
+        /// <summary>
+        /// Notifies the user who uploaded the table that it has been removed.
+        /// </summary>
+        /// <param name="tableIndex"></param>
         public static void NotifyTableRemoved(TableIndex tableIndex)
         {
             User user;
@@ -84,6 +91,10 @@ namespace EPSCoR.Hubs
             }
         }
 
+        /// <summary>
+        /// Removes the given table.
+        /// </summary>
+        /// <param name="tableName">Name of the table to remove.</param>
         public void RemoveTable(string tableName)
         {
             string userName = Context.User.Identity.Name;
@@ -95,6 +106,12 @@ namespace EPSCoR.Hubs
             AlertsHub.SendAlertToUser(tableName + " has beeen deleted", userName);
         }
 
+        /// <summary>
+        /// Creates a new calc table.
+        /// </summary>
+        /// <param name="attTable">Attribute table to use.</param>
+        /// <param name="usTable">Upstream table to use.</param>
+        /// <param name="calcType">Type of calculation to perform.</param>
         public void SubmitCalcTable(string attTable, string usTable, string calcType)
         {
             string userName = Context.User.Identity.Name;

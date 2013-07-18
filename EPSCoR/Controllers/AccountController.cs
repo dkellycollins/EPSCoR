@@ -17,6 +17,9 @@ using EPSCoR.Repositories.Factory;
 
 namespace EPSCoR.Controllers
 {
+    /// <summary>
+    /// Provides webpages and functions for loging a user in and out.
+    /// </summary>
     [Authorize]
     [InitializeSimpleMembership]
     public class AccountController : Controller
@@ -34,9 +37,12 @@ namespace EPSCoR.Controllers
 
             base.OnActionExecuted(filterContext);
         }
-        
-        //
-        // GET: /Account/Login
+
+        /// <summary>
+        /// This will redirect the user to the CAS login page. Once the user is authenticated, adds the user to our database if needed. 
+        /// </summary>
+        /// <param name="returnUrl">Url to redirect the user to.</param>
+        /// <returns></returns>
         public ActionResult Login(string returnUrl)
         {
             //This is where we should check to see if the user has an account.
@@ -47,8 +53,11 @@ namespace EPSCoR.Controllers
             return redirectToLocal(returnUrl);
         }
 
-        //
-        // POST: /Account/LogOff
+        /// <summary>
+        /// Logs the user out of Cas. Then redirect the user to the main page of the app.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
         public ActionResult LogOff()
         {
             CasAuthentication.SingleSignOut();

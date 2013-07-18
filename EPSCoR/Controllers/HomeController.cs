@@ -7,12 +7,14 @@ using WebMatrix.WebData;
 
 namespace EPSCoR.Controllers
 {
-    [Authorize]
+    /// <summary>
+    /// Serves as the entry point for the site.
+    /// </summary>
     public class HomeController : Controller
     {
         public ActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "DataProcessor");
         }
     }
 }

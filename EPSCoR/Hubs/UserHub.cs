@@ -22,6 +22,10 @@ namespace EPSCoR.Hubs
         //Note that this should be moved to persistant storage.
         protected static readonly ConcurrentDictionary<string, User> Users = new ConcurrentDictionary<string, User>();
 
+        /// <summary>
+        /// Adds connectionId to user.
+        /// </summary>
+        /// <returns></returns>
         public override Task OnConnected()
         {
             string userName = Context.User.Identity.Name;
@@ -41,6 +45,10 @@ namespace EPSCoR.Hubs
             return base.OnConnected();
         }
 
+        /// <summary>
+        /// Removes connectionId from user.
+        /// </summary>
+        /// <returns></returns>
         public override Task OnDisconnected()
         {
             string userName = Context.User.Identity.Name;

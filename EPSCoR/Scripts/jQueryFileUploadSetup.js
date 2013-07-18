@@ -69,7 +69,7 @@ $(function () {
             $context.append($('<br/>'));
             $context.append($('<span class="status">Processing...</span>'));
             $context.append(progressBar.clone(true));
-            $context.append($('<span class="btns"></span>')
+            $context.append($('<div class="btns"></div>')
                 .append(cancelButton.clone(true).data(data))
                 );
         });

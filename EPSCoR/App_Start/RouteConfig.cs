@@ -5,7 +5,6 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using EPSCoR.Controllers;
-using NavigationRoutes;
 
 namespace EPSCoR
 {
@@ -14,14 +13,6 @@ namespace EPSCoR
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-
-            /*
-            routes.MapRoute(
-                name: "ApiRoute",
-                url: "api/{controller}/{action}/",
-                namespaces: new string[] { "EPSCoR.Controllers.API" }
-            );
-             */
 
             routes.MapRoute(
                 name: "Default",
