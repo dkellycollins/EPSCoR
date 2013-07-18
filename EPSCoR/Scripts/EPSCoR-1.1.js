@@ -155,11 +155,11 @@ $(function () {
 
                         var index = -1;
                         if ((index = EPSCoR.Tables.attributeTables.indexOf(tableName)) >= 0) {
-                            EPSCoR.Tables.attributeTables = EPSCoR.Tables.attributeTables.splice(index, 1);
+                            EPSCoR.Tables.attributeTables.splice(index, 1);
                         } else if ((index = EPSCoR.Tables.upstreamTables.indexOf(tableName)) >= 0) {
-                            EPSCoR.Tables.attributeTables = EPSCoR.Tables.upstreamTables.splice(index, 1);
+                            EPSCoR.Tables.upstreamTables.splice(index, 1);
                         } else if ((index = EPSCoR.Tables.calcTables.indexOf(tableName)) >= 0) {
-                            EPSCoR.Tables.attributeTables = EPSCoR.Tables.calcTables.splice(index, 1);
+                            EPSCoR.Tables.calcTables.splice(index, 1);
                         }
 
                         $('#' + tableName).slideUp(500, function () {
