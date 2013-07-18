@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Web;
 using BootstrapSupport;
 using EPSCoR.Database.Models;
+using EPSCoR.Repositories;
+using EPSCoR.Repositories.Factory;
 using Microsoft.AspNet.SignalR;
 
 namespace EPSCoR.Hubs
@@ -79,6 +81,51 @@ namespace EPSCoR.Hubs
                 {
                     _context.Clients.Client(connectionId).removeTable(tableIndex);
                 }
+            }
+        }
+
+        public void RemoveTable(string tableName)
+        {
+            string userName = Context.User.Identity.Name;
+            using (ITableRepository repo = RepositoryFactory.GetTableRepository(userName))
+            {
+                repo.Drop(tableName);
+            }
+
+            AlertsHub.SendAlertToUser(tableName + " has beeen deleted", userName);
+        }
+
+        public void SubmitCalcTable(string attTable, string usTable, string calcType)
+        {
+            string userName = Context.User.Identity.Name;
+            using (IAsyncDatabaseCalc dbCalc = RepositoryFactory.GetAsyncDatabaseCalc(userName))
+            {
+                Task<CalcResult> t = null;
+                switch (calcType)
+                {
+                    case "Sum":
+                        t = dbCalc.SumTablesAsync(attTable, usTable);
+                        break;
+                    case "Avg":
+                        t = dbCalc.AvgTablesAsync(attTable, usTable);
+                        break;
+                }
+
+                t.ContinueWith((t2) =>
+                {
+                    switch (t2.Result)
+                    {
+                        case CalcResult.Error:
+                            AlertsHub.SendAlertToUser("An error occured while generating the table.", userName, "", Alerts.ERROR);
+                            break;
+                        case CalcResult.Success:
+                            AlertsHub.SendAlertToUser("Calc table successfully generated.", userName, "", Alerts.SUCCESS);
+                            break;
+                        case CalcResult.TableAlreadyExists:
+                            AlertsHub.SendAlertToUser("Calc table already exists. Please delete existing table before generating a new one.", userName, "", Alerts.ERROR);
+                            break;
+                    }
+                });
             }
         }
     }

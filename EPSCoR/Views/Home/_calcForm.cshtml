@@ -11,12 +11,12 @@
         <br />
     
         <label>Calculation:</label>
-        <select name="calc">
+        <select id="calc" name="calc">
             <option>Sum</option>
             <option>Avg</option>
         </select>
         <br />
         
-        <button onclick="javascript: $('#dialog-calc').dialog('close');" type="submit" class="btn btn-success pull-right">Submit</button>
+        <button onclick="javascript: EPSCoR.Tables.submitCalcTable($('#attTable').val(), $('#usTable').val(), $('#calc').val()); $('#dialog-calc').dialog('close');" type="submit" class="btn btn-success pull-right">Submit</button>
     }
 </div>

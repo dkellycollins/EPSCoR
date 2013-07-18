@@ -151,7 +151,7 @@ $(function () {
             deleteTable: function (tableName) {
                 EPSCoR.Dialogs.yesNoDialog('Confirm delete', 'Are you sure you want to delete ' + tableName + '?', function (result) {
                     if (result) {
-                        $('#delete-' + tableName).submit();
+                        tableHub.server.removeTable(tableName);
 
                         var index = -1;
                         if ((index = EPSCoR.Tables.attributeTables.indexOf(tableName)) >= 0) {
@@ -207,6 +207,11 @@ $(function () {
             //Enables or disables buttons on the given div.
             toggleButtons: function (divId, enable) {
                 $('#' + divId + ' .btn').toggleAttr('disabled', enable);
+            },
+
+            submitCalcTable: function(attTable, usTable, calcType)
+            {
+                tableHub.server.submitCalcTable(attTable, usTable, calcType);
             }
         }
     };

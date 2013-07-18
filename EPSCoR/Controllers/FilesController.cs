@@ -112,17 +112,22 @@ namespace EPSCoR.Controllers
         public ActionResult CheckFile(string id)
         {
             //TODO convert to async method
-            FileUploadResult result = new FileUploadResult();
-            result.Name = id;
+            int uploadedBytes = 0;
+            bool fileExists = false;
+            string tableName = Path.GetFileNameWithoutExtension(id);
+            string userName = WebSecurity.CurrentUserName;
+
+            TableIndex existingTable = _tableIndexRepo.GetAll().Where(t => t.Name == tableName && t.UploadedByUser == userName).FirstOrDefault();
+            fileExists = existingTable != null;
 
             _fileAccessor.CurrentDirectory = FileDirectory.Temp;
             if (_fileAccessor.FileExist(id))
             {
                 FileInfo info = _fileAccessor.GetFileInfo(id);
-                result.UploadedBytes = (int)info.Length;
+                uploadedBytes = (int)info.Length;
             }
 
-            return result;
+            return new EPSCoR.Results.JsonResult(new { fileName = id, uploadedBytes = uploadedBytes, fileExists = fileExists });
         }
 
         /// <summary>
@@ -134,11 +139,7 @@ namespace EPSCoR.Controllers
         public ActionResult CompleteUpload(string id)
         {
             //TODO convert to async method
-            string tableName = Path.GetFileNameWithoutExtension(id);
-            string userName = WebSecurity.CurrentUserName;
-            TableIndex existingTable = _tableIndexRepo.GetAll().Where(t => t.Name == tableName && t.UploadedByUser == userName).FirstOrDefault();
-            if (existingTable != null)
-                return new FileUploadResult(id, "Table already exists. Delete exisiting table before uploading a new one.");
+            
             _fileAccessor.CurrentDirectory = FileDirectory.Temp;
             if (!_fileAccessor.FileExist(id))
                 return new FileUploadResult(id, "File has not been uploaded.");

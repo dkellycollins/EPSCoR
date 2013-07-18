@@ -179,7 +179,6 @@
     <Compile Include="BootstrapSupport\ControlGroupExtensions.cs" />
     <Compile Include="BootstrapSupport\ViewHelperExtensions.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\API\FileController.cs" />
     <Compile Include="Controllers\API\TablesController.cs" />
     <Compile Include="Controllers\BootstrapBaseController.cs" />
@@ -478,6 +477,7 @@
     <Content Include="Scripts\Knockout\knockout-2.1.0.debug.js" />
     <Content Include="Scripts\Knockout\knockout-2.1.0.js" />
     <Content Include="Scripts\Modernizr\modernizr-2.5.3.js" />
+    <Content Include="Views\Errors\500.html" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -487,9 +487,11 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Views\Web.config" />
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Errors\404.html" />
     <Content Include="Views\Tables\DetailsPartial.cshtml" />
     <Content Include="Views\Tables\Details.cshtml" />
     <Content Include="Views\Shared\_html5shiv.cshtml" />

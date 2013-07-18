@@ -76,61 +76,6 @@ namespace EPSCoR.Controllers
         }
 
         /// <summary>
-        /// Deletes the table from the database.
-        /// </summary>
-        /// <param name="id">Name of the table to delete.</param>
-        /// <returns></returns>
-        [HttpPost]
-        public ActionResult Delete(string id)
-        {
-            if (string.IsNullOrEmpty(id))
-                return HttpNotFound();
-
-            _tableRepo.Drop(id);
-            DisplaySuccess(id + " deleted.");
-            return RedirectToAction("Index", "Home");
-        }
-
-        /// <summary>
-        /// Creates a calc table based on the form information provided.
-        /// </summary>
-        /// <param name="formCollection"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public ActionResult Calc(CalcRequest calcRequest)
-        {
-            //TODO convert to async method
-            CalcResult result = CalcResult.Unknown;
-            switch (calcRequest.CalcType)
-            {
-                case "Sum":
-                    result = _dbCalc.SumTables(calcRequest.AttributeTable, calcRequest.UpstreamTable);
-                    break;
-                case "Avg":
-                    result = _dbCalc.AvgTables(calcRequest.AttributeTable, calcRequest.UpstreamTable);
-                    break;
-            }
-
-            switch (result)
-            {
-                case CalcResult.Success:
-                    AlertsHub.SendAlertToUser("Calc table generated", WebSecurity.CurrentUserName, "Success!", Alerts.SUCCESS);
-                    break;
-                case CalcResult.Error:
-                    AlertsHub.SendAlertToUser("The server encountered an error while processing you request.", WebSecurity.CurrentUserName, "Error!", Alerts.ERROR);
-                    break;
-                case CalcResult.TableAlreadyExists:
-                    AlertsHub.SendAlertToUser("The calc table already exists. Please delete existing table before createing a new one.", WebSecurity.CurrentUserName, "Error!", Alerts.ERROR);
-                    break;
-                case CalcResult.SubmittedForProcessing:
-                    AlertsHub.SendAlertToUser("The request has been submitted for processing.", WebSecurity.CurrentUserName, "Success!", Alerts.SUCCESS);
-                    break;
-            }
-
-            return RedirectToAction("Index", "Home");
-        }
-
-        /// <summary>
         /// For use with datatable, return a portion of the table.
         /// </summary>
         /// <param name="args"></param>

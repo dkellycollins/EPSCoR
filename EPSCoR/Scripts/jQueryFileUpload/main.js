@@ -5,7 +5,7 @@ $(function () {
     var baseUrl = '/Files/',
         uploadUrl = baseUrl + '/UploadFiles',
         completeUrl = baseUrl + '/CompleteUpload',
-        checkUrl = baseUrl + '/CheckFile',
+        checkUrl = baseUrl + '/CheckFile/',
         filesToUpload = [],
         setStatus = function (status, $context) {
             var $status = $('.status', $context);
@@ -19,6 +19,7 @@ $(function () {
                 .removeClass('alert-info')
                 .addClass('alert-error');
             $('.close', $context).removeClass('hidden');
+            $('.btns', $context).remove();
             setStatus(status, $context);
         },
         setSuccessStatus = function (status, $context) {
@@ -26,6 +27,7 @@ $(function () {
                 .removeClass('alert-info')
                 .addClass('alert-success');
             $('.close', $context).removeClass('hidden');
+            $('.btns', $context).remove();
             setStatus(status, $context);
         },
         cancelButton = $('<button class="btn btn-warning">Cancel</button>')
@@ -67,19 +69,27 @@ $(function () {
             $context.append($('<br/>'));
             $context.append($('<span class="status">Processing...</span>'));
             $context.append(progressBar.clone(true));
-            $context.append(cancelButton.clone(true).data(data));
+            $context.append($('<span class="btns"></span>')
+                .append(cancelButton.clone(true).data(data))
+                );
         });
     })
     //This is called if an added file is successfully processed.
-    .bind('fileuploadprocessdone', function(e, data) {
-        data.context.queueIndex = filesToUpload.push(data) - 1;
-        setStatus('Ready to upload', data.context);
+    .bind('fileuploadprocessdone', function (e, data) {
+        $.getJSON(checkUrl + data.files[data.index].name, function (fileInfo) {
+            if (fileInfo.fileExists) {
+                setErrorStatus("Table already exists. Delete current table before uploading new one.", data.context);
+            } else {
+                data.uploadedBytes = fileInfo.uploadedBytes;
+                data.context.queueIndex = filesToUpload.push(data) - 1;
+                setStatus('Ready to upload', data.context);
+            }
+        });
     })
     //This is called if an added file is not successfully processed.
     .bind('fileuploadprocessfail', function (e, data) {
         var error = data.files[data.index].error;
         setErrorStatus(error, data.context);
-        $('.btn-warning', data.context).remove();
     })
     //This is called eveytime an individual file's progress is updated.
     .bind('fileuploadprogress', function (e, data) {
@@ -106,13 +116,12 @@ $(function () {
                 } else {
                     setSuccessStatus('File uploaded.', $context);
                 }
-                $('.btn-warning', $context).remove();
+                
             });
     })
     //This is called if a fail fails to upload.
     .bind('fileuploadfail', function (e, data) {
         setErrorStatus('File upload failed.', data.context);
-        $('.btn-warning', data.context).remove();
     });
 
     $('#btnUpload').on('click', function () {
