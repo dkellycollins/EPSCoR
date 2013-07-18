@@ -96,7 +96,8 @@ namespace EPSCoR.Controllers
         /// <returns></returns>
         public ActionResult GetAllDetails()
         {
-            IEnumerable<TableIndex> allDetails = _tableIndexRepo.GetAll().ToList();
+            string userName = WebSecurity.CurrentUserName;
+            IEnumerable<TableIndex> allDetails = _tableIndexRepo.GetAll().Where((index) => index.UploadedByUser == userName).ToList();
             return new NewtonsoftJsonResult(allDetails);
         }
     }
