@@ -17,6 +17,19 @@
         </select>
         <br />
         
-        <button onclick="javascript: EPSCoR.Tables.submitCalcTable($('#attTable').val(), $('#usTable').val(), $('#calc').val()); $('#dialog-calc').dialog('close');" type="submit" class="btn btn-success pull-right">Submit</button>
+        <button onclick="javascript: submitCalcTable();" type="button" class="btn btn-success pull-right">Submit</button>
     }
+
+    <script>
+        function submitCalcTable() {
+            var attTable = $('#attTable').val(),
+                usTable = $('#usTable').val(),
+                calcType = $('#calc').val(),
+                tableHub = $.connection.tableHub;
+
+            tableHub.server.submitCalcTable(attTable, usTable, calcType);
+
+            $('#dialog-calc').dialog('close');
+        }
+    </script>
 </div>
