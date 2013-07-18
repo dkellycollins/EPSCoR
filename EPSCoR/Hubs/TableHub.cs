@@ -102,6 +102,12 @@ namespace EPSCoR.Hubs
             {
                 repo.Drop(tableName);
             }
+            IFileAccessor fileAccessor = RepositoryFactory.GetFileAccessor(userName);
+            fileAccessor.CurrentDirectory = FileDirectory.Conversion;
+            fileAccessor.DeleteFiles(tableName);
+
+            fileAccessor.CurrentDirectory = FileDirectory.Archive;
+            fileAccessor.DeleteFiles(tableName);
 
             AlertsHub.SendAlertToUser(tableName + " has beeen deleted", userName);
         }
@@ -115,6 +121,9 @@ namespace EPSCoR.Hubs
         public void SubmitCalcTable(string attTable, string usTable, string calcType)
         {
             string userName = Context.User.Identity.Name;
+
+            AlertsHub.SendAlertToUser("Your request has been submitted.", userName);
+
             using (IAsyncDatabaseCalc dbCalc = RepositoryFactory.GetAsyncDatabaseCalc(userName))
             {
                 Task<CalcResult> t = null;

@@ -216,7 +216,8 @@ $(function () {
         }
     };
 
-    //After everything has been defned initailize the app.
+    //After everything has been defined initailize the app.
+
     //Setup hubs.
     var tableHub = $.connection.tableHub,
         alertHub = $.connection.alertsHub;
