@@ -116,15 +116,12 @@ namespace EPSCoR.Repositories.Basic
                 TableIndex index = new TableIndex()
                 {
                     Name = calcTable,
-                    DateCreated = DateTime.Now,
-                    DateUpdated = DateTime.Now,
                     Status = "Generating table.",
                     Type = TableTypes.CALC,
                     UploadedByUser = currentUser,
                     Processed = false
                 };
-                _defaultContext.Tables.Add(index);
-                _defaultContext.SaveChanges();
+                _defaultContext.CreateModel(index);
 
                 switch (calc)
                 {
@@ -140,16 +137,12 @@ namespace EPSCoR.Repositories.Basic
 
                 index.Status = "Saving table.";
                 index.Processed = true;
-                index.DateUpdated = DateTime.Now;
-                _defaultContext.Entry(index).State = EntityState.Modified;
-                _defaultContext.SaveChanges();
+                _defaultContext.UpdateModel(index);
 
                 _userContext.SaveTableToFile(calcTable);
 
                 index.Status = "Table Created.";
-                index.DateUpdated = DateTime.Now;
-                _defaultContext.Entry(index).State = EntityState.Modified;
-                _defaultContext.SaveChanges();
+                _defaultContext.UpdateModel(index);
 
                 return CalcResult.Success;
             }

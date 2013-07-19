@@ -116,9 +116,21 @@ namespace EPSCoR.Repositories.Basic
 
         private void deleteFile(string fileName)
         {
-            string path = Path.Combine(getUserDirectory(), fileName);
-            if (File.Exists(path))
-                File.Delete(path);
+            string userDirectory = getUserDirectory();
+            if (Path.HasExtension(fileName))
+            {
+                string path = Path.Combine(userDirectory, fileName);
+                if (File.Exists(path))
+                    File.Delete(path);
+            }
+            else
+            {
+                string[] fileNames = Directory.GetFiles(userDirectory, fileName + ".*");
+                foreach (string fn in fileNames)
+                {
+                    File.Delete(fn);
+                }
+            }
         }
 
         private string getUserDirectory()

@@ -124,34 +124,37 @@ namespace EPSCoR.Hubs
 
             AlertsHub.SendAlertToUser("Your request has been submitted.", userName);
 
-            using (IAsyncDatabaseCalc dbCalc = RepositoryFactory.GetAsyncDatabaseCalc(userName))
+            using (IDatabaseCalc dbCalc = RepositoryFactory.GetDatabaseCalc(userName))
             {
-                Task<CalcResult> t = null;
+                CalcResult result;
                 switch (calcType)
                 {
                     case "Sum":
-                        t = dbCalc.SumTablesAsync(attTable, usTable);
+                        result = dbCalc.SumTables(attTable, usTable);
                         break;
                     case "Avg":
-                        t = dbCalc.AvgTablesAsync(attTable, usTable);
+                        result = dbCalc.AvgTables(attTable, usTable);
+                        break;
+                    default:
+                        result = CalcResult.Unknown;
                         break;
                 }
 
-                t.ContinueWith((t2) =>
+                switch (result)
                 {
-                    switch (t2.Result)
-                    {
-                        case CalcResult.Error:
-                            AlertsHub.SendAlertToUser("An error occured while generating the table.", userName, "", Alerts.ERROR);
-                            break;
-                        case CalcResult.Success:
-                            AlertsHub.SendAlertToUser("Calc table successfully generated.", userName, "", Alerts.SUCCESS);
-                            break;
-                        case CalcResult.TableAlreadyExists:
-                            AlertsHub.SendAlertToUser("Calc table already exists. Please delete existing table before generating a new one.", userName, "", Alerts.ERROR);
-                            break;
-                    }
-                });
+                    case CalcResult.Error:
+                        AlertsHub.SendAlertToUser("An error occured while generating the table.", userName, "", Alerts.ERROR);
+                        break;
+                    case CalcResult.Success:
+                        AlertsHub.SendAlertToUser("Calc table successfully generated.", userName, "", Alerts.SUCCESS);
+                        break;
+                    case CalcResult.TableAlreadyExists:
+                        AlertsHub.SendAlertToUser("Calc table already exists. Please delete existing table before generating a new one.", userName, "", Alerts.ERROR);
+                        break;
+                    case CalcResult.Unknown:
+                        AlertsHub.SendAlertToUser("An unknown error occured.", userName, "", Alerts.ERROR);
+                        break;
+                }
             }
         }
     }

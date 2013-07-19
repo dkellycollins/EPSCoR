@@ -11,13 +11,14 @@ namespace EPSCoR.Repositories.Async
 {
     public class AsyncTableRepo : ITableRepository, IAsyncTableRepository, IDatabaseCalc, IAsyncDatabaseCalc
     {
-        DefaultContext _defaultContext;
+        private static DefaultContext _defaultContext;
         UserContext _userContext;
         string currentUser;
 
         public AsyncTableRepo(string userName)
         {
-            _defaultContext = new DefaultContext();
+            if(_defaultContext == null)
+                _defaultContext = new DefaultContext();
             _userContext = UserContext.GetContextForUser(userName);
             currentUser = userName;
         }
@@ -63,7 +64,6 @@ namespace EPSCoR.Repositories.Async
 
         public void Dispose()
         {
-            _defaultContext.Dispose();
             _userContext.Dispose();
         }
 
