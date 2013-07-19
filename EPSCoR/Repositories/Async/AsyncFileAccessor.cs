@@ -9,7 +9,7 @@ using EPSCoR.Database.Services;
 
 namespace EPSCoR.Repositories.Async
 {
-    public class AsyncFileAccessor : IAsyncFileAccessor, IFileAccessor
+    public class AsyncFileAccessor : IAsyncFileAccessor
     {
         private string _user;
 
@@ -18,74 +18,69 @@ namespace EPSCoR.Repositories.Async
             _user = userName;
         }
 
-        #region IFileAccessor Members
-
         public FileDirectory CurrentDirectory { get; set; }
 
-        public bool SaveFiles(params FileStreamWrapper[] files)
-        {
-            bool result = true;
-            foreach (FileStreamWrapper file in files)
-            {
-                //if (!saveFile(file, FileMode.Create))
-                {
-                    result = false;
-                    break;
-                }
-            }
-
-            return result;
-        }
+        #region IAsyncFileAccessor Members
 
         public async Task<bool> SaveFilesAsync(params FileStreamWrapper[] files)
         {
-            IEnumerable<Task<bool>> tasks = from file in files 
-                                   select saveFileTaskAsync(file, FileMode.Create);
+            IEnumerable<Task<bool>> tasks = from file in files
+                                            select saveFileTaskAsync(file, FileMode.Create);
 
-            Task.WaitAll(tasks.ToArray());
+            bool[] results = await Task.WhenAll(tasks.ToArray());
 
-            return tasks.Any(t => !t.Result);
+            return results.All(r => r);
         }
 
-        public FileStream OpenFile(string fileName)
+        public async Task<FileStream> OpenFileAsync(string fileName)
         {
             string path = Path.Combine(getUserDirectory(), fileName);
 
-            try
+            return await Task.Run(() => 
             {
-                return File.Open(path, FileMode.OpenOrCreate, FileAccess.Read);
-            }
-            catch (Exception e)
+                try
+                {
+                    return File.Open(path, FileMode.OpenOrCreate, FileAccess.Read);
+                }
+                catch(Exception e)
+                {
+                    return null;
+                }
+            });
+        }
+
+        public async Task<IEnumerable<string>> GetFilesAsync()
+        {
+            return await Task.Run(() => Directory.GetFiles(getUserDirectory()));
+        }
+
+        public async Task DeleteFilesAsync(params string[] fileNames)
+        {
+            IEnumerable<Task> tasks = from fileName in fileNames
+                                      select deleteFileAsync(fileName);
+
+            await Task.WhenAll(tasks);
+        }
+
+        public async Task<bool> FileExistAsync(string fileName)
+        {
+            return await Task.Run(() =>
             {
-                Debug.WriteLine(e.ToString());
-                return null;
-            }
+                string path = Path.Combine(getUserDirectory(), fileName);
+                return File.Exists(path);
+            });
         }
 
-        public IEnumerable<string> GetFiles()
+        public async Task<FileInfo> GetFileInfoAsync(string fileName)
         {
-            return Directory.GetFiles(getUserDirectory());
+            return await Task.Run(() =>
+            {
+                string path = Path.Combine(getUserDirectory(), fileName);
+                return new FileInfo(path);
+            });
         }
 
-        public void DeleteFiles(params string[] fileNames)
-        {
-            foreach (string fileName in fileNames)
-                deleteFile(fileName);
-        }
-
-        public bool FileExist(string fileName)
-        {
-            string path = Path.Combine(getUserDirectory(), fileName);
-            return File.Exists(path);
-        }
-
-        public FileInfo GetFileInfo(string fileName)
-        {
-            string path = Path.Combine(getUserDirectory(), fileName);
-            return new FileInfo(path);
-        }
-
-        #endregion IFileAccessor Memebers
+        #endregion IAsyncFileAccessor Members
 
         #region Private Members
 
@@ -95,33 +90,47 @@ namespace EPSCoR.Repositories.Async
             var fileName = Path.GetFileName(file.FileName);
             var path = Path.Combine(getUserDirectory(), fileName);
 
-            return await Task.Run(() =>
+            try
             {
-                try
-                {
-                    //If the file does not exist create a new empty file.
-                    FileStream fileStream = File.Open(path, FileMode.OpenOrCreate);
+                //If the file does not exist create a new empty file.
+                FileStream fileStream = File.Open(path, FileMode.OpenOrCreate);
 
-                    //Seek to the staring position of the chunk and copy the stream.
-                    fileStream.Seek(file.SeekPos, SeekOrigin.Begin);
-                    file.InputStream.CopyTo(fileStream);
-                    fileStream.Flush();
-                    fileStream.Close();
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e.ToString());
-                    result = false;
-                }
-                return result;
-            });
+                //Seek to the staring position of the chunk and copy the stream.
+                fileStream.Seek(file.SeekPos, SeekOrigin.Begin);
+                await file.InputStream.CopyToAsync(fileStream);
+                fileStream.Flush();
+                fileStream.Close();
+            }
+            catch (Exception e)
+            {
+                result = false;
+            }
+            return result;
         }
 
-        private void deleteFile(string fileName)
+        private async Task deleteFileAsync(string fileName)
         {
-            string path = Path.Combine(getUserDirectory(), fileName);
-            if (File.Exists(path))
-                File.Delete(path);
+            string userDirectory = getUserDirectory();
+            if (Path.HasExtension(fileName))
+            {
+                await Task.Run(() =>
+                {
+                    string path = Path.Combine(userDirectory, fileName);
+                    if (File.Exists(path))
+                        File.Delete(path);
+                });
+            }
+            else
+            {
+                await Task.Run(() =>
+                {
+                    string[] fileNames = Directory.GetFiles(userDirectory, fileName + ".*");
+                    foreach (string fn in fileNames)
+                    {
+                        File.Delete(fn);
+                    }
+                });
+            }
         }
 
         private string getUserDirectory()
@@ -155,31 +164,5 @@ namespace EPSCoR.Repositories.Async
         }
 
         #endregion Private Members
-
-
-        public void DeleteFilesAsync(params string[] fileNames)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<FileStream> OpenFileAsync(string fileName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<string>> GetFilesAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<FileInfo> GetFileInfoAsync(string fileName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> FileExistAsync(string fileName)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

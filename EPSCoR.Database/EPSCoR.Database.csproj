@@ -66,9 +66,6 @@
     </Compile>
     <Compile Include="Models\IModel.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Services\CompleteFileWatcher.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Extensions\IEnumerableExtentions.cs" />
     <Compile Include="Services\Log\CompoundLogger.cs" />
     <Compile Include="UserContext.cs" />

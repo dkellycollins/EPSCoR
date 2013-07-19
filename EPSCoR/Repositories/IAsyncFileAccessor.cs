@@ -25,7 +25,7 @@ namespace EPSCoR.Repositories
         /// Deletes one or more files from the disk.
         /// </summary>
         /// <param name="fileNames">Names of the files to delete.</param>
-        void DeleteFilesAsync(params string[] fileNames);
+        Task DeleteFilesAsync(params string[] fileNames);
 
         /// <summary>
         /// Returns a read-only file stream for the specified file. If the file does not exist will return null.

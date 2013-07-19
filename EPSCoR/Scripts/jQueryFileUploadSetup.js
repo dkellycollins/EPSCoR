@@ -7,6 +7,7 @@ $(function () {
         completeUrl = baseUrl + 'CompleteUpload',
         checkUrl = baseUrl + 'CheckFile/',
         filesToUpload = [],
+        fileUploadInProgress = false,
         setStatus = function (status, $context) {
             var $status = $('.status', $context);
             $status.text(status);
@@ -84,6 +85,9 @@ $(function () {
                 data.context.queueIndex = filesToUpload.push(data) - 1;
                 setStatus('Ready to upload', data.context);
             }
+        })
+        .fail(function() {
+            setErrorStatus("There was error while processing the file.", data.context);
         });
     })
     //This is called if an added file is not successfully processed.
@@ -116,12 +120,18 @@ $(function () {
                 } else {
                     setSuccessStatus('File uploaded.', $context);
                 }
-                
+
             });
     })
     //This is called if a fail fails to upload.
     .bind('fileuploadfail', function (e, data) {
         setErrorStatus('File upload failed.', data.context);
+    })
+    .bind('fileuploadstart', function (e) {
+        fileUploadInProgress = true;
+    })
+    .bind('fileuploadstop', function (e) {
+        fileUploadInProgress = false;
     });
 
     $('#btnUpload').on('click', function () {
@@ -131,4 +141,12 @@ $(function () {
         });
         filesToUpload = [];
     });
+
+    window.onbeforeunload = function () {
+        if (filesToUpload.length > 0) {
+            return "You have files that are waiting to be uploaded.";
+        } else if (fileUploadInProgress) {
+            return "There is an upload in progress.";
+        }
+    };
 });

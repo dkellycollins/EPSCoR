@@ -14,6 +14,7 @@ using EPSCoR.Results;
 using EPSCoR.ViewModels;
 using EPSCoR.Repositories.Factory;
 using System.Threading.Tasks;
+using EPSCoR.Filters;
 
 namespace EPSCoR.Controllers
 {
@@ -21,20 +22,21 @@ namespace EPSCoR.Controllers
     /// Provides functions for uploading and retriving files.
     /// </summary>
     [Authorize]
+    [LogError]
     public class FilesController : Controller
     {
         private IModelRepository<TableIndex> _tableIndexRepo;
-        private IFileAccessor _fileAccessor;
+        private IAsyncFileAccessor _fileAccessor;
 
         public FilesController()
         {
             _tableIndexRepo = RepositoryFactory.GetModelRepository<TableIndex>();
-            _fileAccessor = RepositoryFactory.GetFileAccessor(WebSecurity.CurrentUserName);
+            _fileAccessor = RepositoryFactory.GetAsyncFileAccessor(WebSecurity.CurrentUserName);
         }
 
         public FilesController(
             IModelRepository<TableIndex> tableIndexRepo,
-            IFileAccessor fileAccessor)
+            IAsyncFileAccessor fileAccessor)
         {
             _tableIndexRepo = tableIndexRepo;
             _fileAccessor = fileAccessor;
@@ -53,7 +55,7 @@ namespace EPSCoR.Controllers
         /// <param name="file">Contains information on the file.</param>
         /// <returns>Status of the upload.</returns>
         [HttpPost]
-        public ActionResult UploadFiles(FileUpload file)
+        public async Task<ActionResult> UploadFiles(FileUpload file)
         {
             //TODO convert to async method
             string fileName = Path.GetFileName(file.FileName);
@@ -68,7 +70,7 @@ namespace EPSCoR.Controllers
             };
 
             _fileAccessor.CurrentDirectory = FileDirectory.Temp;
-            bool saveSuccessful = _fileAccessor.SaveFiles(wrapper);
+            bool saveSuccessful = await _fileAccessor.SaveFilesAsync(wrapper);
 
             if(saveSuccessful)
                 return new FileUploadResult(fileName);
@@ -81,7 +83,7 @@ namespace EPSCoR.Controllers
         /// <param name="id">Name of the file.</param>
         /// <returns></returns>
         [HttpGet]
-        public ActionResult CheckFile(string id)
+        public async Task<ActionResult> CheckFile(string id)
         {
             //TODO convert to async method
             int uploadedBytes = 0;
@@ -89,13 +91,14 @@ namespace EPSCoR.Controllers
             string tableName = Path.GetFileNameWithoutExtension(id);
             string userName = WebSecurity.CurrentUserName;
 
-            TableIndex existingTable = _tableIndexRepo.GetAll().Where(t => t.Name == tableName && t.UploadedByUser == userName).FirstOrDefault();
+            var tables = _tableIndexRepo.GetAll();
+            TableIndex existingTable = tables.Where(t => t.Name == tableName && t.UploadedByUser == userName).FirstOrDefault();
             fileExists = existingTable != null;
 
             _fileAccessor.CurrentDirectory = FileDirectory.Temp;
-            if (_fileAccessor.FileExist(id))
+            if (await _fileAccessor.FileExistAsync(id))
             {
-                FileInfo info = _fileAccessor.GetFileInfo(id);
+                FileInfo info = await _fileAccessor.GetFileInfoAsync(id);
                 uploadedBytes = (int)info.Length;
             }
 
@@ -113,16 +116,16 @@ namespace EPSCoR.Controllers
         /// <param name="id">File to finalize.</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult CompleteUpload(string id)
+        public async Task<ActionResult> CompleteUpload(string id)
         {
             //TODO convert to async method
             
             _fileAccessor.CurrentDirectory = FileDirectory.Temp;
-            if (!_fileAccessor.FileExist(id))
+            if (!(await _fileAccessor.FileExistAsync(id)))
                 return new FileUploadResult(id, "File has not been uploaded.");
 
             bool result = false;
-            using(FileStream fileStream = _fileAccessor.OpenFile(id))
+            using(FileStream fileStream = await _fileAccessor.OpenFileAsync(id))
             {
                 FileStreamWrapper wrapper = new FileStreamWrapper()
                 {
@@ -130,10 +133,10 @@ namespace EPSCoR.Controllers
                     InputStream = fileStream
                 };
                 _fileAccessor.CurrentDirectory = FileDirectory.Upload;
-                result = _fileAccessor.SaveFiles(wrapper);
+                result = await _fileAccessor.SaveFilesAsync(wrapper);
             }
             _fileAccessor.CurrentDirectory = FileDirectory.Temp;
-            _fileAccessor.DeleteFiles(id);
+            await _fileAccessor.DeleteFilesAsync(id);
 
             if (result)
                 return new FileUploadResult(id);
@@ -146,11 +149,11 @@ namespace EPSCoR.Controllers
         /// <param name="id">Name of the file to download.</param>
         /// <returns></returns>
         [HttpGet]
-        public ActionResult DownloadCsv(string id)
+        public async Task<ActionResult> DownloadCsv(string id)
         {
             _fileAccessor.CurrentDirectory = FileDirectory.Conversion;
             string fileName = id + ".csv";
-            if(!_fileAccessor.FileExist(fileName))
+            if(!(await _fileAccessor.FileExistAsync(fileName)))
             {
                 return new HttpNotFoundResult();
             }
@@ -161,7 +164,7 @@ namespace EPSCoR.Controllers
                 Inline = false
             };
             Response.AppendHeader("Content-Disposition", cd.ToString());
-            return File(_fileAccessor.OpenFile(fileName), "text/csv");
+            return File((await _fileAccessor.OpenFileAsync(fileName)), "text/csv");
         }
     }
 }

@@ -235,6 +235,7 @@ $(function () {
 
     //Get initial data.
     $.getJSON('Tables/GetAllDetails', function (tables) {
+        $('#tables').empty();
         EPSCoR.Tables.addTables(tables);
     });
 });

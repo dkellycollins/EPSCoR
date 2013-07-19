@@ -71,8 +71,7 @@ namespace EPSCoR.Repositories.Basic
             TableIndex tableIndex = _defaultContext.Tables.Where((t) => t.Name == tableName).FirstOrDefault();
             if (tableIndex != null)
             {
-                _defaultContext.Tables.Remove(tableIndex);
-                _defaultContext.SaveChanges();
+                _defaultContext.RemoveModel(tableIndex);
             }
         }
 
@@ -86,25 +85,24 @@ namespace EPSCoR.Repositories.Basic
 
         #region IDatabaseCalc Members
 
+        public CalcResult JoinTables(string attTable, string usTable, string calcType)
+        {
+            return createCalcTable(attTable, usTable, calcType);
+        }
+
         public CalcResult SumTables(string attTable, string usTable)
         {
-            return createCalcTable(attTable, usTable, CalcType.SUM);
+            return createCalcTable(attTable, usTable, CalcType.Sum);
         }
 
         public CalcResult AvgTables(string attTable, string usTable)
         {
-            return createCalcTable(attTable, usTable, CalcType.AVG);
+            return createCalcTable(attTable, usTable, CalcType.Avg);
         }
 
         #endregion IDatabaseCalc Members
 
-        private enum CalcType
-        {
-            SUM,
-            AVG,
-        }
-
-        private CalcResult createCalcTable(string attTable, string usTable, CalcType calc)
+        private CalcResult createCalcTable(string attTable, string usTable, string calc)
         {
             string calcTable = string.Format("{0}_{1}_{2}", attTable, usTable, calc.ToString());
             TableIndex exisitingTable = _defaultContext.GetTableIndex(calcTable, currentUser);
@@ -125,10 +123,10 @@ namespace EPSCoR.Repositories.Basic
 
                 switch (calc)
                 {
-                    case CalcType.SUM:
+                    case CalcType.Sum:
                         _userContext.Procedures.SumTables(attTable, usTable, calcTable);
                         break;
-                    case CalcType.AVG:
+                    case CalcType.Avg:
                         _userContext.Procedures.AvgTables(attTable, usTable, calcTable);
                         break;
                     default:
@@ -150,55 +148,6 @@ namespace EPSCoR.Repositories.Basic
             {
                 return CalcResult.Error;
             }
-        }
-
-        private CalcResult createCalcTableAsync(string attTable, string usTable, CalcType calc)
-        {
-            string calcTable = string.Format("{0}_{1}_SUM", attTable, usTable);
-            TableIndex index = new TableIndex()
-            {
-                Name = calcTable,
-                DateCreated = DateTime.Now,
-                DateUpdated = DateTime.Now,
-                Status = "Generating table.",
-                Type = TableTypes.CALC,
-                UploadedByUser = currentUser,
-                Processed = false
-            };
-            _defaultContext.Tables.Add(index);
-            _defaultContext.SaveChanges();
-
-            Task t = Task.Factory.StartNew(() =>
-            {
-                switch (calc)
-                {
-                    case CalcType.SUM:
-                        _userContext.Procedures.SumTables(attTable, usTable, calcTable);
-                        break;
-                    case CalcType.AVG:
-                        _userContext.Procedures.AvgTables(attTable, usTable, calcTable);
-                        break;
-                    default:
-                        throw new Exception("Unknown calctype");
-                }
-            });
-            t.ContinueWith((task) =>
-                {
-                    index.Status = "Table created.";
-                    index.DateUpdated = DateTime.Now;
-                    index.Processed = true;
-                    _defaultContext.Entry(index).State = EntityState.Modified;
-                    _defaultContext.SaveChanges();
-                }, TaskContinuationOptions.OnlyOnRanToCompletion);
-            t.ContinueWith((task) =>
-                {
-                    index.Status = "The server encountered an error while processing your request.";
-                    index.DateUpdated = DateTime.Now;
-                    _defaultContext.Entry(index).State = EntityState.Modified;
-                    _defaultContext.SaveChanges();
-                }, TaskContinuationOptions.OnlyOnFaulted);
-
-            return CalcResult.SubmittedForProcessing;
         }
     }
 }

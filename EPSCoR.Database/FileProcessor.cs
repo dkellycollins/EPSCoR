@@ -96,10 +96,11 @@ namespace EPSCoR.Database
                     Type = (tableName.Contains("_US")) ? TableTypes.UPSTREAM : TableTypes.ATTRIBUTE,
                     UploadedByUser = userName
                 };
-                defaultContext.CreateModel(tableIndex);
 
                 try
                 {
+                    defaultContext.CreateModel(tableIndex);
+
                     //Wait until the file can be opened.
                     DateTime timeStamp = DateTime.Now;
                     while (!IsFileReady(file))

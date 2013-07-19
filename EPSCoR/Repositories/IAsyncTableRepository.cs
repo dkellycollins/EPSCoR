@@ -13,7 +13,7 @@ namespace EPSCoR.Repositories
         /// Creates a new table in the database using table.
         /// </summary>
         /// <param name="table"></param>
-        void CreateAsync(DataTable table);
+        Task CreateAsync(DataTable table);
 
         /// <summary>
         /// Reads the entire table into a Datatable object. Note that if the table is large this might throw an OutOfMemoryException.
@@ -42,12 +42,12 @@ namespace EPSCoR.Repositories
         /// Updates the table using table.
         /// </summary>
         /// <param name="table"></param>
-        void UpdateAsync(DataTable table);
+        Task UpdateAsync(DataTable table);
 
         /// <summary>
         /// Drops the entire table.
         /// </summary>
         /// <param name="tableName"></param>
-        void DropAsync(string tableName);
+        Task DropAsync(string tableName);
     }
 }

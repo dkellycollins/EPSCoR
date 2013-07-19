@@ -52,12 +52,6 @@ namespace EPSCoR.Repositories.Basic
             }
         }
 
-        public void CloseFile(FileStream fileStream)
-        {
-            fileStream.Close();
-            //releaseLock();
-        }
-
         public IEnumerable<string> GetFiles()
         {
             return Directory.GetFiles(getUserDirectory());

@@ -11,6 +11,7 @@ namespace EPSCoR.Repositories
     /// </summary>
     public interface IAsyncDatabaseCalc : IDisposable
     {
+        Task<CalcResult> JoinTablesAsync(string attTable, string usTable, string calcType);
         Task<CalcResult> SumTablesAsync(string attTable, string usTable);
         Task<CalcResult> AvgTablesAsync(string attTable, string usTalbe);
     }

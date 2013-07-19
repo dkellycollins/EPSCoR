@@ -180,7 +180,9 @@
     <Compile Include="BootstrapSupport\ViewHelperExtensions.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\DataProcessorController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Filters\LogErrorAttribute.cs" />
     <Compile Include="Hubs\AlertsHub.cs" />
     <Compile Include="Hubs\TableHub.cs" />
     <Compile Include="Hubs\UserHub.cs" />
@@ -211,6 +213,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\ITableRepository.cs" />
     <Compile Include="Repositories\Basic\BasicTableRepo.cs" />
+    <Content Include="Content\FileUpload\css\bootstrap\bootstrap-ie6.debug.css" />
+    <Content Include="Content\FileUpload\css\bootstrap\bootstrap-image-gallery.debug.css" />
+    <Content Include="Content\FileUpload\css\bootstrap\bootstrap-responsive.debug.css" />
+    <Content Include="Content\FileUpload\css\bootstrap\bootstrap.debug.css" />
+    <Content Include="Content\FileUpload\css\jquery.fileupload-ui-noscript.css" />
+    <Content Include="Content\FileUpload\css\jquery.fileupload-ui.css" />
+    <Content Include="Content\FileUpload\css\jquery.image-gallery.debug.css" />
+    <Content Include="Content\FileUpload\css\jqueryui\jquery.fileupload-jui.css" />
+    <Content Include="Content\FileUpload\img\glyphicons-halflings-white.png" />
+    <Content Include="Content\FileUpload\img\loading.gif" />
+    <Content Include="Content\FileUpload\img\progressbar.gif" />
+    <Content Include="Content\FileUpload\img\progressblue.gif" />
     <Content Include="Content\images\ajax-loader2.gif" />
     <Compile Include="Results\NewtonsoftJsonResult.cs" />
     <Content Include="Scripts\EPSCoR-1.1.js" />
@@ -316,11 +330,6 @@
     <Content Include="Content\images\howto\step5.jpg" />
     <Content Include="Content\images\howto\step6.jpg" />
     <Content Include="Content\images\howto\step7.jpg" />
-    <Content Include="Content\jQueryFileUpload\images\loading.gif" />
-    <Content Include="Content\jQueryFileUpload\images\progressbar.gif" />
-    <Content Include="Content\jQueryFileUpload\jquery.fileupload-ui-noscript.css" />
-    <Content Include="Content\jQueryFileUpload\jquery.fileupload-ui.css" />
-    <Content Include="Content\jQueryFileUpload\style.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\jQueryUI\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\jQueryUI\images\ui-bg_flat_75_ffffff_40x100.png" />
@@ -421,6 +430,31 @@
     <Content Include="Scripts\DataTables-1.9.4\media\js\jquery.dataTables.js" />
     <Content Include="Scripts\DataTables-1.9.4\media\js\jquery.dataTables.min.js" />
     <Content Include="Scripts\DataTables-1.9.4\media\js\jquery.js" />
+    <Content Include="Scripts\ErrorHandling.js" />
+    <Content Include="Scripts\FileUpload\angularjs\angular.debug.js" />
+    <Content Include="Scripts\FileUpload\bootstrap\bootstrap-image-gallery.debug.js" />
+    <Content Include="Scripts\FileUpload\bootstrap\bootstrap.debug.js" />
+    <Content Include="Scripts\FileUpload\canvas-to-blob.debug.js" />
+    <Content Include="Scripts\FileUpload\cors\jquery.postmessage-transport.js" />
+    <Content Include="Scripts\FileUpload\cors\jquery.xdr-transport.js" />
+    <Content Include="Scripts\FileUpload\jquery.fileupload-angular.js" />
+    <Content Include="Scripts\FileUpload\jquery.fileupload-audio.js" />
+    <Content Include="Scripts\FileUpload\jquery.fileupload-fp.js" />
+    <Content Include="Scripts\FileUpload\jquery.fileupload-image.js" />
+    <Content Include="Scripts\FileUpload\jquery.fileupload-jui.js" />
+    <Content Include="Scripts\FileUpload\jquery.fileupload-process.js" />
+    <Content Include="Scripts\FileUpload\jquery.fileupload-ui.js" />
+    <Content Include="Scripts\FileUpload\jquery.fileupload-validate.js" />
+    <Content Include="Scripts\FileUpload\jquery.fileupload-video.js" />
+    <Content Include="Scripts\FileUpload\jquery.fileupload.js" />
+    <Content Include="Scripts\FileUpload\jquery.iframe-transport.js" />
+    <Content Include="Scripts\FileUpload\jquery.image-gallery.debug.js" />
+    <Content Include="Scripts\FileUpload\jqueryui\jquery.fileupload-jui.js" />
+    <Content Include="Scripts\FileUpload\jqueryui\jquery.fileupload-ui.js" />
+    <Content Include="Scripts\FileUpload\jqueryui\jquery.fileupload.js" />
+    <Content Include="Scripts\FileUpload\jqueryui\jquery.ui.widget.js" />
+    <Content Include="Scripts\FileUpload\load-image.debug.js" />
+    <Content Include="Scripts\FileUpload\tmpl.debug.js" />
     <Content Include="Scripts\jQueryExt.js" />
     <Content Include="Scripts\JavaScriptTemplates\compile.js" />
     <Content Include="Scripts\JavaScriptTemplates\runtime.js" />
@@ -428,15 +462,6 @@
     <Content Include="Scripts\JavaScriptTemplates\tmpl.min.js" />
     <Content Include="Scripts\SignalR\jquery.signalR-1.1.2.js" />
     <Content Include="Scripts\SignalR\jquery.signalR-1.1.2.min.js" />
-    <Content Include="Scripts\jQueryFileUpload\cors\jquery.postmessage-transport.js" />
-    <Content Include="Scripts\jQueryFileUpload\cors\jquery.xdr-transport.js" />
-    <Content Include="Scripts\jQueryFileUpload\jquery.fileupload-angular.js" />
-    <Content Include="Scripts\jQueryFileUpload\jquery.fileupload-process.js" />
-    <Content Include="Scripts\jQueryFileUpload\jquery.fileupload-resize.js" />
-    <Content Include="Scripts\jQueryFileUpload\jquery.fileupload-ui.js" />
-    <Content Include="Scripts\jQueryFileUpload\jquery.fileupload-validate.js" />
-    <Content Include="Scripts\jQueryFileUpload\jquery.fileupload.js" />
-    <Content Include="Scripts\jQueryFileUpload\jquery.iframe-transport.js" />
     <Content Include="Scripts\DataTables-1.9.4\extras\TableTools\media\js\TableTools.min.js.gz" />
     <Content Include="Scripts\DataTables-1.9.4\extras\Scroller\media\js\dataTables.scroller.min.js.gz" />
     <Content Include="Scripts\DataTables-1.9.4\extras\FixedColumns\media\js\FixedColumns.min.js.gz" />
@@ -470,7 +495,7 @@
     <Content Include="Scripts\Knockout\knockout-2.1.0.debug.js" />
     <Content Include="Scripts\Knockout\knockout-2.1.0.js" />
     <Content Include="Scripts\Modernizr\modernizr-2.5.3.js" />
-    <Content Include="Views\Errors\500.html" />
+    <Content Include="Views\Errors\Error_500.html" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -484,7 +509,7 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Errors\404.html" />
+    <Content Include="Views\Errors\Error_404.html" />
     <Content Include="Views\Tables\DetailsPartial.cshtml" />
     <Content Include="Views\Tables\Details.cshtml" />
     <Content Include="Views\Shared\_html5shiv.cshtml" />

@@ -31,18 +31,18 @@ namespace EPSCoR.Repositories
         /// Creates a new entity in the database.
         /// </summary>
         /// <param name="itemToCreate"></param>
-        void CreateAsync(T itemToCreate);
+        Task CreateAsync(T itemToCreate);
 
         /// <summary>
         /// Updates an entity in the database with values in itemToUpdate.
         /// </summary>
         /// <param name="itemToUpdate"></param>
-        void UpdateAsync(T itemToUpdate);
+        Task UpdateAsync(T itemToUpdate);
 
         /// <summary>
         /// Removes an entity in the database that has the given id.
         /// </summary>
         /// <param name="entityID"></param>
-        void RemoveAsync(int entityID);
+        Task RemoveAsync(int entityID);
     }
 }

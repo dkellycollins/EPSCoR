@@ -95,19 +95,19 @@ namespace EPSCoR.Hubs
         /// Removes the given table.
         /// </summary>
         /// <param name="tableName">Name of the table to remove.</param>
-        public void RemoveTable(string tableName)
+        public async void RemoveTable(string tableName)
         {
             string userName = Context.User.Identity.Name;
-            using (ITableRepository repo = RepositoryFactory.GetTableRepository(userName))
+            using (IAsyncTableRepository repo = RepositoryFactory.GetAsyncTableRepository(userName))
             {
-                repo.Drop(tableName);
+                await repo.DropAsync(tableName);
             }
-            IFileAccessor fileAccessor = RepositoryFactory.GetFileAccessor(userName);
+            IAsyncFileAccessor fileAccessor = RepositoryFactory.GetAsyncFileAccessor(userName);
             fileAccessor.CurrentDirectory = FileDirectory.Conversion;
-            fileAccessor.DeleteFiles(tableName);
+            await fileAccessor.DeleteFilesAsync(tableName);
 
             fileAccessor.CurrentDirectory = FileDirectory.Archive;
-            fileAccessor.DeleteFiles(tableName);
+            await fileAccessor.DeleteFilesAsync(tableName);
 
             AlertsHub.SendAlertToUser(tableName + " has beeen deleted", userName);
         }
@@ -118,22 +118,22 @@ namespace EPSCoR.Hubs
         /// <param name="attTable">Attribute table to use.</param>
         /// <param name="usTable">Upstream table to use.</param>
         /// <param name="calcType">Type of calculation to perform.</param>
-        public void SubmitCalcTable(string attTable, string usTable, string calcType)
+        public async void SubmitCalcTable(string attTable, string usTable, string calcType)
         {
             string userName = Context.User.Identity.Name;
 
             AlertsHub.SendAlertToUser("Your request has been submitted.", userName);
 
-            using (IDatabaseCalc dbCalc = RepositoryFactory.GetDatabaseCalc(userName))
+            using (IAsyncDatabaseCalc dbCalc = RepositoryFactory.GetAsyncDatabaseCalc(userName))
             {
                 CalcResult result;
                 switch (calcType)
                 {
                     case "Sum":
-                        result = dbCalc.SumTables(attTable, usTable);
+                        result = await dbCalc.SumTablesAsync(attTable, usTable);
                         break;
                     case "Avg":
-                        result = dbCalc.AvgTables(attTable, usTable);
+                        result = await dbCalc.AvgTablesAsync(attTable, usTable);
                         break;
                     default:
                         result = CalcResult.Unknown;

@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using BootstrapSupport;
 using EPSCoR.Database.Models;
 using EPSCoR.Extensions;
+using EPSCoR.Filters;
 using EPSCoR.Hubs;
 using EPSCoR.Repositories;
 using EPSCoR.Repositories.Factory;
@@ -20,23 +21,24 @@ namespace EPSCoR.Controllers
     /// Contains views that display and work with uploaded tables.
     /// </summary>
     [Authorize]
+    [LogError]
     public class TablesController : Controller
     {
         private IModelRepository<TableIndex> _tableIndexRepo;
-        private ITableRepository _tableRepo;
-        private IDatabaseCalc _dbCalc;
+        private IAsyncTableRepository _tableRepo;
+        private IAsyncDatabaseCalc _dbCalc;
 
         public TablesController()
         {
             _tableIndexRepo = RepositoryFactory.GetModelRepository<TableIndex>();
-            _tableRepo = RepositoryFactory.GetTableRepository(WebSecurity.CurrentUserName);
-            _dbCalc = RepositoryFactory.GetDatabaseCalc(WebSecurity.CurrentUserName);
+            _tableRepo = RepositoryFactory.GetAsyncTableRepository(WebSecurity.CurrentUserName);
+            _dbCalc = RepositoryFactory.GetAsyncDatabaseCalc(WebSecurity.CurrentUserName);
         }
 
         public TablesController(
             IModelRepository<TableIndex> tableIndexRepo,
-            ITableRepository tableRepo,
-            IDatabaseCalc dbCalc)
+            IAsyncTableRepository tableRepo,
+            IAsyncDatabaseCalc dbCalc)
         {
             _tableIndexRepo = tableIndexRepo;
             _tableRepo = tableRepo;
@@ -59,10 +61,10 @@ namespace EPSCoR.Controllers
         /// <param name="lowerLimit">The lower limit to return.</param>
         /// <param name="upperLimit">The upper limit to return.</param>
         /// <returns></returns>
-        public ActionResult Details(string id, int lowerLimit = 0, int upperLimit = 10)
+        public async Task<ActionResult> Details(string id, int lowerLimit = 0, int upperLimit = 10)
         {
             //TODO convert to async method
-            DataTable table = _tableRepo.Read(id, lowerLimit, upperLimit);
+            DataTable table = await _tableRepo.ReadAsync(id, lowerLimit, upperLimit);
             if (table == null)
                 return new HttpNotFoundResult();
 
@@ -80,11 +82,11 @@ namespace EPSCoR.Controllers
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
-        public ActionResult DataTableDetails(DataTableParams args)
+        public async Task<ActionResult> DataTableDetails(DataTableParams args)
         {
             //TODO convert to async method
-            DataTable data = _tableRepo.Read(args.TableName, args.DisplayStart, args.DisplayLength);
-            int totalRows = _tableRepo.Count(args.TableName);
+            DataTable data = await _tableRepo.ReadAsync(args.TableName, args.DisplayStart, args.DisplayLength);
+            int totalRows = await _tableRepo.CountAsync(args.TableName);
             int echo = Int32.Parse(args.Echo);
 
             return new DataTableResult(totalRows, totalRows, echo, data);
@@ -97,7 +99,8 @@ namespace EPSCoR.Controllers
         public ActionResult GetAllDetails()
         {
             string userName = WebSecurity.CurrentUserName;
-            IEnumerable<TableIndex> allDetails = _tableIndexRepo.GetAll().Where((index) => index.UploadedByUser == userName).ToList();
+            var tables = _tableIndexRepo.GetAll();
+            IEnumerable<TableIndex> allDetails = tables.Where((index) => index.UploadedByUser == userName).ToList();
             return new NewtonsoftJsonResult(allDetails);
         }
     }
