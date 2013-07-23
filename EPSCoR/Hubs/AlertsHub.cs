@@ -38,7 +38,7 @@ namespace EPSCoR.Hubs
                 IEnumerable<string> connectionIds;
                 lock (user.ConnectionIds)
                 {
-                    connectionIds = user.ConnectionIds;
+                    connectionIds = user.ConnectionIds.ToList();
                 }
                 foreach (string connectionId in connectionIds)
                 {

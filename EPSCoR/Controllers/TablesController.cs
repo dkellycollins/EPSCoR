@@ -63,10 +63,11 @@ namespace EPSCoR.Controllers
         /// <returns></returns>
         public async Task<ActionResult> Details(string id, int lowerLimit = 0, int upperLimit = 10)
         {
-            //TODO convert to async method
             DataTable table = await _tableRepo.ReadAsync(id, lowerLimit, upperLimit);
             if (table == null)
-                return new HttpNotFoundResult();
+            {
+                return HttpNotFound();
+            }
 
             table.TableName = id;
             if (Request.IsJsonRequest()) //Handle json request.
@@ -84,7 +85,6 @@ namespace EPSCoR.Controllers
         /// <returns></returns>
         public async Task<ActionResult> DataTableDetails(DataTableParams args)
         {
-            //TODO convert to async method
             DataTable data = await _tableRepo.ReadAsync(args.TableName, args.DisplayStart, args.DisplayLength);
             int totalRows = await _tableRepo.CountAsync(args.TableName);
             int echo = Int32.Parse(args.Echo);

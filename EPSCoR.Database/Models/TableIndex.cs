@@ -49,9 +49,14 @@ namespace EPSCoR.Database.Models
         public string Status { get; set; }
 
         /// <summary>
-        /// True if the table has been fully processed and can be used.
+        /// True if the table has been fully processed.
         /// </summary>
         public bool Processed { get; set; }
+
+        /// <summary>
+        /// If true then an error occured while processing the table. An actual table may or may not exist
+        /// </summary>
+        //public bool Error { get; set; }
     }
 
     /// <summary>

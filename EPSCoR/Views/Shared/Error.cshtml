@@ -1,0 +1,29 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Error</title>
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+</head>
+<body>
+    <img src="~/Content/images/header.jpeg" alt="EPSCoR" class="headerImg" height="160"/>
+    <h2>
+        Oops! Something broke. Hopefully it wont happen again. If it does email this guy.
+    </h2>
+    @Html.ActionLink("Home", "Index", "Home", new { @class = "btn btn-primary" })
+    @foreach (var ex in Context.AllErrors)
+    {
+        <div class="well">
+            <strong>@ex.Message</strong> 
+            <br />
+            @ex.StackTrace
+        </div>
+    }
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+</body>
+</html>

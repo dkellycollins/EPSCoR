@@ -56,12 +56,6 @@ namespace EPSCoR.Repositories.Async
             await Task.Run(() =>
             {
                 _userContext.Procedures.DropTable(tableName);
-
-                TableIndex tableIndex = _defaultContext.Tables.Where((t) => t.Name == tableName).FirstOrDefault();
-                if (tableIndex != null)
-                {
-                    _defaultContext.RemoveModel(tableIndex);
-                }
             });
         }
 

@@ -57,7 +57,6 @@ namespace EPSCoR.Controllers
         [HttpPost]
         public async Task<ActionResult> UploadFiles(FileUpload file)
         {
-            //TODO convert to async method
             string fileName = Path.GetFileName(file.FileName);
 
             //Save the chunk.
@@ -85,7 +84,6 @@ namespace EPSCoR.Controllers
         [HttpGet]
         public async Task<ActionResult> CheckFile(string id)
         {
-            //TODO convert to async method
             int uploadedBytes = 0;
             bool fileExists = false;
             string tableName = Path.GetFileNameWithoutExtension(id);

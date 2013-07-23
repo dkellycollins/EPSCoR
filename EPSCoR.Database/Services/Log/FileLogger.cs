@@ -16,7 +16,10 @@ namespace EPSCoR.Database.Services.Log
             _lock = new object();
             _logFile = Path.Combine(DirectoryManager.RootDir, "Log.txt");
             if (!File.Exists(_logFile))
-                File.Create(_logFile).Close();
+            {
+                FileStream file = File.Create(_logFile);
+                file.Close();
+            }
         }
 
         /// <summary>

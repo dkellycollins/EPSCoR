@@ -37,7 +37,7 @@ namespace EPSCoR.Hubs
                 IEnumerable<string> connectionIds;
                 lock (user.ConnectionIds)
                 {
-                    connectionIds = user.ConnectionIds;
+                    connectionIds = user.ConnectionIds.ToList();
                 }
                 foreach (string connectionId in connectionIds)
                 {
@@ -60,7 +60,7 @@ namespace EPSCoR.Hubs
                 IEnumerable<string> connectionIds;
                 lock (user.ConnectionIds)
                 {
-                    connectionIds = user.ConnectionIds;
+                    connectionIds = user.ConnectionIds.ToList();
                 }
                 foreach (string connectionId in connectionIds)
                 {
@@ -82,7 +82,7 @@ namespace EPSCoR.Hubs
                 IEnumerable<string> connectionIds;
                 lock (user.ConnectionIds)
                 {
-                    connectionIds = user.ConnectionIds;
+                    connectionIds = user.ConnectionIds.ToList();
                 }
                 foreach (string connectionId in connectionIds)
                 {
@@ -98,10 +98,26 @@ namespace EPSCoR.Hubs
         public async void RemoveTable(string tableName)
         {
             string userName = Context.User.Identity.Name;
-            using (IAsyncTableRepository repo = RepositoryFactory.GetAsyncTableRepository(userName))
+
+            //Remove index.
+            using (IModelRepository<TableIndex> tableIndexRepo = RepositoryFactory.GetModelRepository<TableIndex>())
             {
-                await repo.DropAsync(tableName);
+                TableIndex index = tableIndexRepo.GetAll().Where((i) => i.Name == tableName && i.UploadedByUser == userName).FirstOrDefault();
+                if (index == null)
+                {
+                    AlertsHub.SendAlertToUser("Could not delete table " + tableName, userName, "", Alerts.ERROR);
+                    return;
+                }
+                tableIndexRepo.Remove(index.ID);
             }
+
+            //Drop table.
+            using (IAsyncTableRepository tableRepo = RepositoryFactory.GetAsyncTableRepository(userName))
+            {
+                await tableRepo.DropAsync(tableName);
+            }
+
+            //Delete files.
             IAsyncFileAccessor fileAccessor = RepositoryFactory.GetAsyncFileAccessor(userName);
             fileAccessor.CurrentDirectory = FileDirectory.Conversion;
             await fileAccessor.DeleteFilesAsync(tableName);
@@ -123,6 +139,23 @@ namespace EPSCoR.Hubs
             string userName = Context.User.Identity.Name;
 
             AlertsHub.SendAlertToUser("Your request has been submitted.", userName);
+
+            //Validate input.
+            using (IModelRepository<TableIndex> tableIndexRepo = RepositoryFactory.GetModelRepository<TableIndex>())
+            {
+                TableIndex attTableIndex = tableIndexRepo.GetAll().Where((i) => i.Name == attTable && i.UploadedByUser == userName).FirstOrDefault();
+                TableIndex usTableIndex = tableIndexRepo.GetAll().Where((i) => i.Name == usTable && i.UploadedByUser == userName).FirstOrDefault();
+                if (attTableIndex == null)
+                {
+                    AlertsHub.SendAlertToUser(attTable + " is not a valid table.", userName, "", Alerts.ERROR);
+                    return;
+                }
+                if (usTableIndex == null)
+                {
+                    AlertsHub.SendAlertToUser(usTable + " is not a vlaid table.", userName, "", Alerts.ERROR);
+                    return;
+                }
+            }
 
             using (IAsyncDatabaseCalc dbCalc = RepositoryFactory.GetAsyncDatabaseCalc(userName))
             {
