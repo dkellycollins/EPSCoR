@@ -80,18 +80,17 @@ namespace EPSCoR
 
             #region jQueryFileUpload bundles
 
-            bundles.Add(new ScriptBundle("~/scripts/jqueryfileupload/fileUpload.js").Include(
+            bundles.Add(new ScriptBundle("~/scripts/fileupload/fileUpload.js").Include(
                 "~/Scripts/FileUpload/jquery.iframe-transport.js",
                 "~/Scripts/FileUpload/jquery.fileupload.js",
                 "~/Scripts/FileUpload/jquery.fileupload-process.js",
                 "~/Scripts/FileUpload/jquery.fileupload-validate.js",
                 "~/Scripts/FileUpload/jquery.fileupload-ui.js",
-                "~/Scripts/FileUploadSetup.js"
+                "~/Scripts/jQueryFileUploadSetup.js"
                 ));
 
-            bundles.Add(new StyleBundle("~/content/jQueryFileUpload/fileUpload.css").Include(
-                "~/Content/FileUpload/jquery.fileupload-ui.css",
-                "~/Content/FileUpload/style.css"
+            bundles.Add(new StyleBundle("~/content/fileupload/fileUpload.css").Include(
+                "~/Content/FileUpload/css/jquery.fileupload-ui.css"
                 ));
 
             #endregion jQueryFileUpload bundles

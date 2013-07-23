@@ -61,12 +61,11 @@
     <Reference Include="WebMatrix.WebData, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileProcessor.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="FileProcessor.cs" />
     <Compile Include="Models\IModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Extensions\IEnumerableExtentions.cs" />
+    <Compile Include="Services\FilePoll.cs" />
     <Compile Include="Services\Log\CompoundLogger.cs" />
     <Compile Include="UserContext.cs" />
     <Compile Include="Services\FileConverter\CSVFileConverter.cs" />

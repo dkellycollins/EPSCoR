@@ -30,7 +30,7 @@ namespace EPSCoR
             DefaultContext.ModelRemoved += DefaultContext_ModelRemoved;
             DefaultContext.ModelUpdated += DefaultContext_ModelUpdated;
 
-            FileProcessor.Init(Server.MapPath("~/App_Data"));
+            _fileProcessor = new FileProcessor(Server.MapPath("~/App_Data"));
         }
 
         void DefaultContext_ModelUpdated(Database.Models.IModel model)

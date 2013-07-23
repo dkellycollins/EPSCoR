@@ -10,33 +10,39 @@ namespace EPSCoR.Database
     {
         public static void Main(string[] args)
         {
-            if (args.Length == 0)
-            {
-                startFileProcessor(args);
-                return;
-            }
-            if (args.Length == 1)
-            {
-                printUsage();
-                return;
-            }
+            FileProcessor fileProcessor = new FileProcessor(null);
+            string input = string.Join(" ", args);
 
-            string action = args[1];
-            switch (action.ToLower())
+            do
             {
-                case "start":
-                    startFileProcessor(args);
-                    break;
-                case "stop":
-                    stopFileProcessor(args);
-                    break;
-                case "process":
-                    processFile(args);
-                    break;
-                default:
+                if (args.Length == 1)
+                {
                     printUsage();
-                    break;
-            }
+                    return;
+                }
+
+                string action = args[1];
+                switch (action.ToLower())
+                {
+                    case "start":
+                        startFileProcessor(args);
+                        break;
+                    case "stop":
+                        stopFileProcessor(args);
+                        break;
+                    case "process":
+                        processFile(args);
+                        break;
+                    default:
+                        printUsage();
+                        break;
+                }
+
+                Console.Out.Write(">");
+                input = Console.In.ReadLine();
+            } while (input != "quit");
+
+            fileProcessor.Dispose();
         }
 
         private static void processFile(string[] args)
@@ -70,12 +76,12 @@ namespace EPSCoR.Database
                 userName = Params[index];
             }
 
-            FileProcessor.ProcessFile(filePath, tableName, userName);
+            //FileProcessor.ProcessFileAsync(filePath, tableName, userName);
         }
 
         private static void stopFileProcessor(string[] args)
         {
-            FileProcessor.Dispose();
+            //FileProcessor.Dispose();
         }
 
         private static void startFileProcessor(string[] args)
@@ -94,7 +100,7 @@ namespace EPSCoR.Database
                 dataDirectory = Params[index];
             }
 
-            FileProcessor.Init(dataDirectory);
+            //FileProcessor.Init(dataDirectory);
         }
 
         private static void printUsage()

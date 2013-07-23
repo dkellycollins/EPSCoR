@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,13 +19,22 @@ namespace EPSCoR.Database
     /// <remarks>This needs to be refactored to run as an independent application.</remarks>
     public class FileProcessor
     {
-        private static TimeSpan WAIT_TIME = new TimeSpan(0, 1, 0);
-        private static FileSystemWatcher _fileWatcher;
+        private static TimeSpan WAIT_TIME = new TimeSpan(0, 5, 0);
 
-        public static void Init(string dataDirectory)
+        private FileSystemWatcher _fileWatcher;
+        private FilePoll _filePoll;
+        private Dictionary<string, Task> _currentTasks;
+        private Dictionary<string, CancellationTokenSource> _cancelTokens;
+
+        public ReadOnlyDictionary<string, Task> CurrentTasks { get; private set; }
+        public ReadOnlyDictionary<string, CancellationTokenSource> CancelTokens { get; private set; }
+
+        #region Public Members
+
+        public FileProcessor(string dataDirectory)
         {
-            DirectoryManager.Initialize(dataDirectory);
-            
+            DirectoryManager.SetRootDirectory(dataDirectory);
+
             _fileWatcher = new FileSystemWatcher(DirectoryManager.UploadDir);
             _fileWatcher.Created += _fileWatcher_Created;
             _fileWatcher.Error += _fileWatcher_Error;
@@ -33,26 +43,31 @@ namespace EPSCoR.Database
             _fileWatcher.Filter = "*.*";
             _fileWatcher.EnableRaisingEvents = true;
 
-            FirstTimeScan();
+            _filePoll = new FilePoll(10000, DirectoryManager.RootDir);
+            _filePoll.FileFound += _filePoll_FileFound;
+
+            _currentTasks = new Dictionary<string, Task>();
+            _cancelTokens = new Dictionary<string, CancellationTokenSource>();
+            CurrentTasks = new ReadOnlyDictionary<string, Task>(_currentTasks);
+            CancelTokens = new ReadOnlyDictionary<string, CancellationTokenSource>(_cancelTokens);
         }
 
-        public static void Dispose()
+        public void Dispose()
         {
             _fileWatcher.Dispose();
-        }
-
-        public static void FirstTimeScan()
-        {
-            foreach (string file in Directory.GetFiles(DirectoryManager.UploadDir))
+            foreach (CancellationTokenSource cancelTokenSource in _cancelTokens.Values)
             {
-                string tableName = Path.GetFileNameWithoutExtension(file);
-                string userName = Directory.GetParent(file).Name;
-                Task.Factory.StartNew(() => convertFile(file, tableName, userName));
+                cancelTokenSource.Cancel();
             }
         }
 
-        public static void ProcessFile(string filePath, string tableName = null, string userName = null)
+        public Task ProcessFileAsync(string filePath, string tableName = null, string userName = null)
         {
+            if (_currentTasks.ContainsKey(filePath))
+            {
+                return _currentTasks[filePath];
+            }
+
             if (string.IsNullOrEmpty(tableName))
             {
                 tableName = Path.GetFileNameWithoutExtension(filePath);
@@ -62,89 +77,136 @@ namespace EPSCoR.Database
                 userName = Directory.GetParent(filePath).Name;
             }
 
-            Task.Factory.StartNew(() => convertFile(filePath, tableName, userName));
+            TableIndex tableIndex = new TableIndex()
+            {
+                Name = tableName,
+                Status = "Queued for processing",
+                Type = (tableName.Contains("_US")) ? TableTypes.UPSTREAM : TableTypes.ATTRIBUTE,
+                UploadedByUser = userName
+            };
+
+            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+            CancellationToken cancelToken = cancelTokenSource.Token;
+            Task task = Task.Factory.StartNew(() => convertFile(filePath, tableIndex, userName, cancelToken), cancelToken, TaskCreationOptions.LongRunning, TaskScheduler.Current);
+            task.ContinueWith((t) => cleanUp(t, tableIndex, filePath, userName));
+
+            _currentTasks.Add(filePath, task);
+            _cancelTokens.Add(filePath, cancelTokenSource);
+            return task;
         }
 
-        private static void _fileWatcher_Created(object sender, FileSystemEventArgs e)
+        #endregion Public Members
+
+        private void _fileWatcher_Created(object sender, FileSystemEventArgs e)
         {
             if (File.Exists(e.FullPath)) //This makes sure it was a file that was created.
             {
-                string tableName = Path.GetFileNameWithoutExtension(e.FullPath);
-                string userName = Directory.GetParent(e.FullPath).Name;
-                Task.Factory.StartNew(() => convertFile(e.FullPath, tableName, userName));
+                ProcessFileAsync(e.FullPath);
             }
         }
 
-        private static void _fileWatcher_Error(object sender, ErrorEventArgs e)
+        private void _fileWatcher_Error(object sender, ErrorEventArgs e)
         {
             LoggerFactory.GetLogger().Log("FILE WATCHER FAILED.", e.GetException());
         }
 
-        private static void convertFile(string file, string tableName, string userName)
+        private void _filePoll_FileFound(string filePath)
         {
-            LoggerFactory.GetLogger().Log("File uploaded: " + file);
+            ProcessFileAsync(filePath);
+        }
+
+        private void convertFile(string filePath, TableIndex tableIndex, string userName, CancellationToken cancelToken)
+        {
+            LoggerFactory.GetLogger().Log("File uploaded: " + filePath);
 
             using (DefaultContext defaultContext = new DefaultContext())
             {
-                //Create table entry.
-                TableIndex tableIndex = new TableIndex()
-                {
-                    Name = tableName,
-                    DateCreated = DateTime.Now,
-                    DateUpdated = DateTime.Now,
-                    Status = "Queued for processing",
-                    Type = (tableName.Contains("_US")) ? TableTypes.UPSTREAM : TableTypes.ATTRIBUTE,
-                    UploadedByUser = userName
-                };
+                defaultContext.CreateModel(tableIndex);
 
-                try
-                {
-                    defaultContext.CreateModel(tableIndex);
+                cancelToken.ThrowIfCancellationRequested();
 
-                    //Wait until the file can be opened.
-                    DateTime timeStamp = DateTime.Now;
-                    while (!IsFileReady(file))
+                //Wait until the file can be opened.
+                DateTime timeStamp = DateTime.Now;
+                while (!IsFileReady(filePath))
+                {
+                    if (DateTime.Now - timeStamp > WAIT_TIME) //If we have been trying for too long just stop.
                     {
-                        if (DateTime.Now - timeStamp > WAIT_TIME) //If we have been trying for too long just stop.
-                        {
-                            throw new Exception("Could not open file.");
-                        }
+                        throw new Exception("Could not open file.");
                     }
-
-                    //Convert the file.
-                    updateTableStatus(defaultContext, tableIndex, "Converting uploaded file.");
-                    string conversionPath = FileConverterFactory.GetConverter(file, userName).ConvertToCSV();
-
-                    //Add converted file to the database.
-                    updateTableStatus(defaultContext, tableIndex, "Creating table in database.");
-                    using (UserContext userContext = UserContext.GetContextForUser(userName))
-                    {
-                        userContext.Procedures.AddTableFromFile(conversionPath);
-                        userContext.Procedures.PopulateTableFromFile(conversionPath);
-                    }
-
-                    //Move the original file to the Archive.
-                    updateTableStatus(defaultContext, tableIndex, "Table created.", true);
-                    string archivePath = Path.Combine(DirectoryManager.ArchiveDir, userName, Path.GetFileName(file));
-                    validateDestination(archivePath);
-                    File.Move(file, archivePath);
-
-                    //Log when the file was processed.
-                    LoggerFactory.GetLogger().Log("File processed: " + file);
                 }
-                catch (Exception e)
+
+                cancelToken.ThrowIfCancellationRequested();
+
+                //Convert the file.
+                updateTableStatus(defaultContext, tableIndex, "Converting uploaded file.");
+                string conversionPath = FileConverterFactory.GetConverter(filePath, userName).ConvertToCSV();
+
+                cancelToken.ThrowIfCancellationRequested();
+
+                //Add converted file to the database.
+                updateTableStatus(defaultContext, tableIndex, "Creating table in database.");
+                using (UserContext userContext = UserContext.GetContextForUser(userName))
                 {
-                    updateTableStatus(defaultContext, tableIndex, "An error occured while processing the file.");
-                    LoggerFactory.GetLogger().Log("Exception while processing file: " + file, e);
-                    //Move the invalid file.
-                    string invalidPath = Path.Combine(DirectoryManager.InvalidDir, userName, Path.GetFileName(file));
-                    validateDestination(invalidPath);
-                    File.Move(file, invalidPath);
+                    userContext.Procedures.AddTableFromFile(conversionPath);
+                    userContext.Procedures.PopulateTableFromFile(conversionPath);
                 }
+
+                //Move the original file to the Archive.
+                updateTableStatus(defaultContext, tableIndex, "Table created.", true);
+                string archivePath = Path.Combine(DirectoryManager.ArchiveDir, userName, Path.GetFileName(filePath));
+                validateDestination(archivePath);
+                File.Move(filePath, archivePath);
+
+                //Log when the file was processed.
+                LoggerFactory.GetLogger().Log("File processed: " + filePath);
             }
         }
 
-        public static bool IsFileReady(string fileName)
+        private void cleanUp(Task task, TableIndex tableIndex, string filePath, string userName)
+        {
+            _currentTasks.Remove(filePath);
+            _cancelTokens.Remove(filePath);
+
+            if (task.IsFaulted)
+            {
+                handleError(task, tableIndex, filePath, userName);
+            }
+            else if (task.IsCanceled)
+            {
+                handleCancel(task, tableIndex, filePath, userName);
+            }
+        }
+
+        private void handleError(Task task, TableIndex tableIndex, string filePath, string userName)
+        {
+            using (DefaultContext defaultContext = new DefaultContext())
+            {
+                updateTableStatus(defaultContext, tableIndex, "An error occured while processing the file.");
+            }
+
+            LoggerFactory.GetLogger().Log("Exception while processing file: " + filePath, task.Exception);
+
+            //Move the invalid file.
+            try
+            {
+                string invalidPath = Path.Combine(DirectoryManager.InvalidDir, userName, Path.GetFileName(filePath));
+                validateDestination(invalidPath);
+                File.Move(filePath, invalidPath);
+            }
+            catch { }
+        }
+
+        private void handleCancel(Task task, TableIndex tableIndex, string filePath, string userName)
+        {
+            using (DefaultContext defaultContext = new DefaultContext())
+            {
+                updateTableStatus(defaultContext, tableIndex, "Processing canceled by user.");
+            }
+
+            LoggerFactory.GetLogger().Log("Task canceled while processing: " + filePath);
+        }
+
+        public bool IsFileReady(string fileName)
         {
             try
             {
@@ -163,7 +225,7 @@ namespace EPSCoR.Database
         /// Ensures that File.Move and File.Copy will not throw an exception becuase a directory does not exist or a file of the same name does.
         /// </summary>
         /// <param name="dest">The destination path.</param>
-        private static void validateDestination(string dest)
+        private void validateDestination(string dest)
         {
             string destDir = Directory.GetParent(dest).FullName;
             if (!Directory.Exists(destDir))
@@ -172,7 +234,7 @@ namespace EPSCoR.Database
                 File.Delete(dest);
         }
 
-        private static void updateTableStatus(DefaultContext context, TableIndex index, string status, bool processed = false)
+        private void updateTableStatus(DefaultContext context, TableIndex index, string status, bool processed = false)
         {
             index.Status = status;
             index.Processed = processed;

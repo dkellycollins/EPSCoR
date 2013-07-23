@@ -12,7 +12,7 @@ namespace EPSCoR.Database.Services
         /// Maps the root directory of the server.
         /// </summary>
         /// <param name="server"></param>
-        public static void Initialize(string rootDir)
+        public static void SetRootDirectory(string rootDir)
         {
             if (!Directory.Exists(rootDir))
                 Directory.CreateDirectory(rootDir);

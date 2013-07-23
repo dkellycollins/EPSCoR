@@ -522,6 +522,7 @@
     <Content Include="Views\DataProcessor\_calcForm.cshtml" />
     <Content Include="Views\DataProcessor\_aboutForm.cshtml" />
     <Content Include="Views\DataProcessor\_adminForm.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
