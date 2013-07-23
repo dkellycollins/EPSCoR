@@ -59,21 +59,38 @@ $(function () {
                 //Calc dialog requires special setup.
                 $('#dialog-calc').on('dialogopen', function (event, ui) {
                     var $attSelect = $('#attTable'),
-                        $usSelect = $('#usTable');
+                        $usSelect = $('#usTable'),
+                        $submitBtn = $('#dialog-calc .btn');
 
                     $attSelect.empty();
-                    $.each(EPSCoR.Tables.attributeTables, function (index, tableName) {
-                        $attSelect.append($('<option></option>')
-                            .attr('value', tableName)
-                            .text(tableName));
-                    });
+                    $attSelect.removeAttr('disabled');
+                    if (EPSCoR.Tables.attributeTables.length > 0) {
+                        $.each(EPSCoR.Tables.attributeTables, function (index, tableName) {
+                            $attSelect.append($('<option></option>')
+                                .attr('value', tableName)
+                                .text(tableName));
+                        });
+                    } else {
+                        $attSelect.attr('disabled', '');
+                    }
 
                     $usSelect.empty();
-                    $.each(EPSCoR.Tables.upstreamTables, function (index, tableName) {
-                        $usSelect.append($('<option></option>')
-                            .attr('value', tableName)
-                            .text(tableName));
-                    });
+                    $usSelect.removeAttr('disabled');
+                    if (EPSCoR.Tables.upstreamTables.length > 0) {
+                        $.each(EPSCoR.Tables.upstreamTables, function (index, tableName) {
+                            $usSelect.append($('<option></option>')
+                                .attr('value', tableName)
+                                .text(tableName));
+                        });
+                    } else {
+                        $usSelect.attr('disabled', '');
+                    }
+
+                    $submitBtn.removeAttr('disabled');
+                    if (EPSCoR.Tables.attributeTables.length === 0 || EPSCoR.Tables.upstreamTables.length === 0) {
+                        $submitBtn.attr('disabled', '');
+                    }
+
                 });
             },
             //Opens the dialog with the given id.
