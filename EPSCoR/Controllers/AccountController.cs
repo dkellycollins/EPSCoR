@@ -20,7 +20,7 @@ namespace EPSCoR.Controllers
     /// <summary>
     /// Provides webpages and functions for loging a user in and out.
     /// </summary>
-    [Authorize]
+    [EPSCoR.Filters.Authorize]
     [InitializeSimpleMembership]
     public class AccountController : Controller
     {
