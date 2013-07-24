@@ -22,7 +22,6 @@ namespace EPSCoR.Controllers
     /// Provides functions for uploading and retriving files.
     /// </summary>
     [Authorize]
-    [LogError]
     public class FilesController : Controller
     {
         private IModelRepository<TableIndex> _tableIndexRepo;

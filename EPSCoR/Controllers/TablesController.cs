@@ -21,7 +21,6 @@ namespace EPSCoR.Controllers
     /// Contains views that display and work with uploaded tables.
     /// </summary>
     [Authorize]
-    [LogError]
     public class TablesController : Controller
     {
         private IModelRepository<TableIndex> _tableIndexRepo;
