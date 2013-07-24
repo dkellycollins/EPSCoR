@@ -20,14 +20,12 @@ namespace EPSCoR.Repositories.Basic
 
         #region IFileAccessor Members
 
-        public FileDirectory CurrentDirectory { get; set; }
-
-        public bool SaveFiles(params FileStreamWrapper[] files)
+        public bool SaveFiles(FileDirectory directory, params FileStreamWrapper[] files)
         {
             bool result = true;
             foreach (FileStreamWrapper file in files)
             {
-                if (!saveFile(file, FileMode.Create))
+                if (!saveFile(directory, file, FileMode.Create))
                 {
                     result = false;
                     break;
@@ -37,9 +35,9 @@ namespace EPSCoR.Repositories.Basic
             return result;
         }
 
-        public FileStream OpenFile(string fileName)
+        public FileStream OpenFile(FileDirectory directory, string fileName)
         {
-            string path = Path.Combine(getUserDirectory(), fileName);
+            string path = Path.Combine(getUserDirectory(directory), fileName);
             
             try
             {
@@ -47,35 +45,30 @@ namespace EPSCoR.Repositories.Basic
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.ToString());
                 return null;
             }
         }
 
-        public IEnumerable<string> GetFiles()
+        public IEnumerable<string> GetFiles(FileDirectory directory)
         {
-            return Directory.GetFiles(getUserDirectory());
+            return Directory.GetFiles(getUserDirectory(directory));
         }
 
-        public void DeleteFiles(params string[] fileNames)
+        public void DeleteFiles(FileDirectory directory, params string[] fileNames)
         {
-            //waitForLock();
-
             foreach (string fileName in fileNames)
-                deleteFile(fileName);
-
-            //releaseLock();
+                deleteFile(directory, fileName);
         }
 
-        public bool FileExist(string fileName)
+        public bool FileExist(FileDirectory directory, string fileName)
         {
-            string path = Path.Combine(getUserDirectory(), fileName);
+            string path = Path.Combine(getUserDirectory(directory), fileName);
             return File.Exists(path);
         }
 
-        public FileInfo GetFileInfo(string fileName)
+        public FileInfo GetFileInfo(FileDirectory directory, string fileName)
         {
-            string path = Path.Combine(getUserDirectory(), fileName);
+            string path = Path.Combine(getUserDirectory(directory), fileName);
             return new FileInfo(path);
         }
 
@@ -83,11 +76,11 @@ namespace EPSCoR.Repositories.Basic
 
         #region Private Members
 
-        private bool saveFile(FileStreamWrapper file, FileMode fileMode)
+        private bool saveFile(FileDirectory directory, FileStreamWrapper file, FileMode fileMode)
         {
             bool result = true;
             var fileName = Path.GetFileName(file.FileName);
-            var path = Path.Combine(getUserDirectory(), fileName);
+            var path = Path.Combine(getUserDirectory(directory), fileName);
 
             try
             {
@@ -102,15 +95,14 @@ namespace EPSCoR.Repositories.Basic
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.ToString());
                 result = false;
             }
             return result;
         }
 
-        private void deleteFile(string fileName)
+        private void deleteFile(FileDirectory directory, string fileName)
         {
-            string userDirectory = getUserDirectory();
+            string userDirectory = getUserDirectory(directory);
             if (Path.HasExtension(fileName))
             {
                 string path = Path.Combine(userDirectory, fileName);
@@ -127,10 +119,10 @@ namespace EPSCoR.Repositories.Basic
             }
         }
 
-        private string getUserDirectory()
+        private string getUserDirectory(FileDirectory directory)
         {
             string userDirectory;
-            switch (CurrentDirectory)
+            switch (directory)
             {
                 case FileDirectory.Archive:
                     userDirectory = Path.Combine(DirectoryManager.ArchiveDir, _user);

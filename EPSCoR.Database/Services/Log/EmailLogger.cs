@@ -10,7 +10,7 @@ namespace EPSCoR.Database.Services.Log
     public class EmailLogger : ILogger
     {
         //TODO move this to a config file.
-        private const string[] RECIPIANTS = new string[] 
+        private readonly static string[] RECIPIANTS = new string[] 
         {
             "dkellycolllins@gmail.com"
         };

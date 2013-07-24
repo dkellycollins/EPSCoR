@@ -56,7 +56,12 @@ namespace EPSCoR.Database.Models
         /// <summary>
         /// If true then an error occured while processing the table. An actual table may or may not exist
         /// </summary>
-        //public bool Error { get; set; }
+        public bool Error { get; set; }
+
+        /// <summary>
+        /// The number of rows the table contains.
+        /// </summary>
+        //public int NumRows { get; set; }
     }
 
     /// <summary>

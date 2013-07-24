@@ -138,7 +138,7 @@ $(function () {
             //Displays or hides the table. Assumes the table has a div with the id of the given id plus 'Details'. If the details div contains an img tag then will attempt to load the table.
             toggleTableView: function (divId) {
                 var $context = $('#' + divId),
-                    $details = $('#' + divId + 'Details'),
+                    $details = $('#' + divId + '-details'),
                     $icon = $('.icon', $context);
                 $details.slideToggle();
                 $icon.toggleClass('icon-plus').toggleClass('icon-minus');
@@ -221,6 +221,7 @@ $(function () {
                 }
                 EPSCoR.Tables.toggleButtons(tableIndex.Name, !tableIndex.Processed);
             },
+
             //Enables or disables buttons on the given div.
             toggleButtons: function (divId, enable) {
                 $('#' + divId + ' .btn').toggleAttr('disabled', enable);

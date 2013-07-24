@@ -43,8 +43,8 @@ namespace EPSCoR.Database
             _fileWatcher.Filter = "*.*";
             _fileWatcher.EnableRaisingEvents = true;
 
-            _filePoll = new FilePoll(10000, DirectoryManager.RootDir);
-            _filePoll.FileFound += _filePoll_FileFound;
+            //_filePoll = new FilePoll(10000, DirectoryManager.RootDir);
+            //_filePoll.FileFound += _filePoll_FileFound;
 
             _currentTasks = new Dictionary<string, Task>();
             _cancelTokens = new Dictionary<string, CancellationTokenSource>();
@@ -181,7 +181,7 @@ namespace EPSCoR.Database
         {
             using (DefaultContext defaultContext = new DefaultContext())
             {
-                updateTableStatus(defaultContext, tableIndex, "An error occured while processing the file.");
+                updateTableStatus(defaultContext, tableIndex, "An error occured while processing the file.", false, true);
             }
 
             LoggerFactory.GetLogger().Log("Exception while processing file: " + filePath, task.Exception);
@@ -200,7 +200,7 @@ namespace EPSCoR.Database
         {
             using (DefaultContext defaultContext = new DefaultContext())
             {
-                updateTableStatus(defaultContext, tableIndex, "Processing canceled by user.");
+                updateTableStatus(defaultContext, tableIndex, "Processing canceled by user.", false, true);
             }
 
             LoggerFactory.GetLogger().Log("Task canceled while processing: " + filePath);
@@ -234,10 +234,11 @@ namespace EPSCoR.Database
                 File.Delete(dest);
         }
 
-        private void updateTableStatus(DefaultContext context, TableIndex index, string status, bool processed = false)
+        private void updateTableStatus(DefaultContext context, TableIndex index, string status, bool processed = false, bool error = false)
         {
             index.Status = status;
             index.Processed = processed;
+            index.Error = error;
             context.UpdateModel(index);
         }
     }

@@ -120,6 +120,13 @@ namespace EPSCoR.Database.DbProcedure
             createCalcTable(attTable, usTable, calcTable, "AVG");
         }
 
+        public override void DropTable(string table)
+        {
+            ThrowExceptionIfInvalidSql(table);
+
+            _context.Database.ExecuteSqlCommand("DROP TABLE IF EXISTS " + table);
+        }
+
         private void createCalcTable(string attTable, string usTable, string calcTable, string calc)
         {
             ThrowExceptionIfInvalidSql(attTable, usTable, calcTable);            

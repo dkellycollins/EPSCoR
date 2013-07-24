@@ -62,14 +62,9 @@
             </b>
             <span class="pull-right">
                 <a href="\Files\DownloadCsv\{%=o.Name%}" class="btn btn-success">Download</a>
-                <span class="btn btn-danger" onclick="EPSCoR.Tables.deleteTable('{%=o.Name%}')">
-                    X
-                    <form action="\Tables\Delete" method="post" id="delete-{%=o.Name%}" class="hide">
-                        <input type="hidden" name="id" value="{%=o.Name%}" />
-                    </form>
-                </span>
+                <span id="{%=o.Name%}-delete" class="btn btn-danger" onclick="EPSCoR.Tables.deleteTable('{%=o.Name%}')">X</span>
             </span>
-            <div id="{%=o.Name%}Details" class="hide">
+            <div id="{%=o.Name%}-details" class="hide">
                 <hr />
                  <img class="img-center" class="text-center" src="/Content/images/ajax-loader2.gif" />
             </div>

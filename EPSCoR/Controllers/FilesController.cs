@@ -68,8 +68,7 @@ namespace EPSCoR.Controllers
                 FileSize = file.TotalFileLength
             };
 
-            _fileAccessor.CurrentDirectory = FileDirectory.Temp;
-            bool saveSuccessful = await _fileAccessor.SaveFilesAsync(wrapper);
+            bool saveSuccessful = await _fileAccessor.SaveFilesAsync(FileDirectory.Temp, wrapper);
 
             if(saveSuccessful)
                 return new FileUploadResult(fileName);
@@ -93,10 +92,9 @@ namespace EPSCoR.Controllers
             TableIndex existingTable = tables.Where(t => t.Name == tableName && t.UploadedByUser == userName).FirstOrDefault();
             fileExists = existingTable != null;
 
-            _fileAccessor.CurrentDirectory = FileDirectory.Temp;
-            if (await _fileAccessor.FileExistAsync(id))
+            if (await _fileAccessor.FileExistAsync(FileDirectory.Temp, id))
             {
-                FileInfo info = await _fileAccessor.GetFileInfoAsync(id);
+                FileInfo info = await _fileAccessor.GetFileInfoAsync(FileDirectory.Temp, id);
                 uploadedBytes = (int)info.Length;
             }
 
@@ -116,25 +114,20 @@ namespace EPSCoR.Controllers
         [HttpPost]
         public async Task<ActionResult> CompleteUpload(string id)
         {
-            //TODO convert to async method
-            
-            _fileAccessor.CurrentDirectory = FileDirectory.Temp;
-            if (!(await _fileAccessor.FileExistAsync(id)))
+            if (!(await _fileAccessor.FileExistAsync(FileDirectory.Temp, id)))
                 return new FileUploadResult(id, "File has not been uploaded.");
 
             bool result = false;
-            using(FileStream fileStream = await _fileAccessor.OpenFileAsync(id))
+            using (FileStream fileStream = await _fileAccessor.OpenFileAsync(FileDirectory.Temp, id))
             {
                 FileStreamWrapper wrapper = new FileStreamWrapper()
                 {
                     FileName = id,
                     InputStream = fileStream
                 };
-                _fileAccessor.CurrentDirectory = FileDirectory.Upload;
-                result = await _fileAccessor.SaveFilesAsync(wrapper);
+                result = await _fileAccessor.SaveFilesAsync(FileDirectory.Upload, wrapper);
             }
-            _fileAccessor.CurrentDirectory = FileDirectory.Temp;
-            await _fileAccessor.DeleteFilesAsync(id);
+            await _fileAccessor.DeleteFilesAsync(FileDirectory.Temp, id);
 
             if (result)
                 return new FileUploadResult(id);
@@ -147,11 +140,11 @@ namespace EPSCoR.Controllers
         /// <param name="id">Name of the file to download.</param>
         /// <returns></returns>
         [HttpGet]
+        //[OutputCache(VaryByParam="id", VaryByCustom="user")]
         public async Task<ActionResult> DownloadCsv(string id)
         {
-            _fileAccessor.CurrentDirectory = FileDirectory.Conversion;
             string fileName = id + ".csv";
-            if(!(await _fileAccessor.FileExistAsync(fileName)))
+            if(!(await _fileAccessor.FileExistAsync(FileDirectory.Conversion, fileName)))
             {
                 return new HttpNotFoundResult();
             }
@@ -162,7 +155,7 @@ namespace EPSCoR.Controllers
                 Inline = false
             };
             Response.AppendHeader("Content-Disposition", cd.ToString());
-            return File((await _fileAccessor.OpenFileAsync(fileName)), "text/csv");
+            return File((await _fileAccessor.OpenFileAsync(FileDirectory.Conversion, fileName)), "text/csv");
         }
     }
 }

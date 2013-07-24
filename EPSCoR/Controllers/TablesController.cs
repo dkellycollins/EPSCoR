@@ -61,6 +61,7 @@ namespace EPSCoR.Controllers
         /// <param name="lowerLimit">The lower limit to return.</param>
         /// <param name="upperLimit">The upper limit to return.</param>
         /// <returns></returns>
+        [OutputCache(Duration=0, VaryByParam="id, lowerLimit, upperLimit", VaryByCustom="user")]
         public async Task<ActionResult> Details(string id, int lowerLimit = 0, int upperLimit = 10)
         {
             DataTable table = await _tableRepo.ReadAsync(id, lowerLimit, upperLimit);
@@ -83,6 +84,7 @@ namespace EPSCoR.Controllers
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
+        [OutputCache(Duration=0, VaryByParam="args", VaryByCustom="user")]
         public async Task<ActionResult> DataTableDetails(DataTableParams args)
         {
             DataTable data = await _tableRepo.ReadAsync(args.TableName, args.DisplayStart, args.DisplayLength);
@@ -96,6 +98,7 @@ namespace EPSCoR.Controllers
         /// Gets all table indexes and returns them in Json format.
         /// </summary>
         /// <returns></returns>
+        [OutputCache(Duration=0, VaryByCustom="user")]
         public ActionResult GetAllDetails()
         {
             string userName = WebSecurity.CurrentUserName;

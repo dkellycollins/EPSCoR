@@ -18,23 +18,21 @@ namespace EPSCoR.Repositories.Async
             _user = userName;
         }
 
-        public FileDirectory CurrentDirectory { get; set; }
-
         #region IAsyncFileAccessor Members
 
-        public async Task<bool> SaveFilesAsync(params FileStreamWrapper[] files)
+        public async Task<bool> SaveFilesAsync(FileDirectory directory, params FileStreamWrapper[] files)
         {
             IEnumerable<Task<bool>> tasks = from file in files
-                                            select saveFileTaskAsync(file, FileMode.Create);
+                                            select saveFileTaskAsync(directory, file, FileMode.Create);
 
             bool[] results = await Task.WhenAll(tasks.ToArray());
 
             return results.All(r => r);
         }
 
-        public async Task<FileStream> OpenFileAsync(string fileName)
+        public async Task<FileStream> OpenFileAsync(FileDirectory directory, string fileName)
         {
-            string path = Path.Combine(getUserDirectory(), fileName);
+            string path = Path.Combine(getUserDirectory(directory), fileName);
 
             return await Task.Run(() => 
             {
@@ -49,33 +47,33 @@ namespace EPSCoR.Repositories.Async
             });
         }
 
-        public async Task<IEnumerable<string>> GetFilesAsync()
+        public async Task<IEnumerable<string>> GetFilesAsync(FileDirectory directory)
         {
-            return await Task.Run(() => Directory.GetFiles(getUserDirectory()));
+            return await Task.Run(() => Directory.GetFiles(getUserDirectory(directory)));
         }
 
-        public async Task DeleteFilesAsync(params string[] fileNames)
+        public async Task DeleteFilesAsync(FileDirectory directory, params string[] fileNames)
         {
             IEnumerable<Task> tasks = from fileName in fileNames
-                                      select deleteFileAsync(fileName);
+                                      select deleteFileAsync(directory, fileName);
 
             await Task.WhenAll(tasks);
         }
 
-        public async Task<bool> FileExistAsync(string fileName)
+        public async Task<bool> FileExistAsync(FileDirectory directory, string fileName)
         {
             return await Task.Run(() =>
             {
-                string path = Path.Combine(getUserDirectory(), fileName);
+                string path = Path.Combine(getUserDirectory(directory), fileName);
                 return File.Exists(path);
             });
         }
 
-        public async Task<FileInfo> GetFileInfoAsync(string fileName)
+        public async Task<FileInfo> GetFileInfoAsync(FileDirectory directory, string fileName)
         {
             return await Task.Run(() =>
             {
-                string path = Path.Combine(getUserDirectory(), fileName);
+                string path = Path.Combine(getUserDirectory(directory), fileName);
                 return new FileInfo(path);
             });
         }
@@ -84,11 +82,11 @@ namespace EPSCoR.Repositories.Async
 
         #region Private Members
 
-        private async Task<bool> saveFileTaskAsync(FileStreamWrapper file, FileMode fileMode)
+        private async Task<bool> saveFileTaskAsync(FileDirectory directory, FileStreamWrapper file, FileMode fileMode)
         {
             bool result = true;
             var fileName = Path.GetFileName(file.FileName);
-            var path = Path.Combine(getUserDirectory(), fileName);
+            var path = Path.Combine(getUserDirectory(directory), fileName);
 
             try
             {
@@ -108,9 +106,9 @@ namespace EPSCoR.Repositories.Async
             return result;
         }
 
-        private async Task deleteFileAsync(string fileName)
+        private async Task deleteFileAsync(FileDirectory directory, string fileName)
         {
-            string userDirectory = getUserDirectory();
+            string userDirectory = getUserDirectory(directory);
             if (Path.HasExtension(fileName))
             {
                 await Task.Run(() =>
@@ -133,10 +131,10 @@ namespace EPSCoR.Repositories.Async
             }
         }
 
-        private string getUserDirectory()
+        private string getUserDirectory(FileDirectory directory)
         {
             string dir = string.Empty;
-            switch (CurrentDirectory)
+            switch (directory)
             {
                 case FileDirectory.Archive:
                     dir = Path.Combine(DirectoryManager.ArchiveDir, _user);

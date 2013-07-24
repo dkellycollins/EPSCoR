@@ -78,46 +78,44 @@ namespace EPSCoR.Repositories
     /// </summary>
     public interface IFileAccessor
     {
-        FileDirectory CurrentDirectory { get; set; }
-
         /// <summary>
         /// Saves one or more files to disk.
         /// </summary>
         /// <param name="files">The files to save.</param>
         /// <returns>True if each save was successful.</returns>
-        bool SaveFiles(params FileStreamWrapper[] files);
+        bool SaveFiles(FileDirectory directory, params FileStreamWrapper[] files);
 
         /// <summary>
         /// Deletes one or more files from the disk.
         /// </summary>
         /// <param name="fileNames">Names of the files to delete.</param>
-        void DeleteFiles(params string[] fileNames);
+        void DeleteFiles(FileDirectory directory, params string[] fileNames);
         
         /// <summary>
         /// Returns a read-only file stream for the specified file. If the file does not exist will return null.
         /// </summary>
         /// <param name="fileName">File to open.</param>
         /// <returns></returns>
-        FileStream OpenFile(string fileName);
+        FileStream OpenFile(FileDirectory directory, string fileName);
         
         /// <summary>
         /// Returns a list of all the files in the directory.
         /// </summary>
         /// <returns></returns>
-        IEnumerable<string> GetFiles();
+        IEnumerable<string> GetFiles(FileDirectory directory);
 
         /// <summary>
         /// Returns the file info on the specified file. Will return null if the file does not exist.
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        FileInfo GetFileInfo(string fileName);
+        FileInfo GetFileInfo(FileDirectory directory, string fileName);
         
         /// <summary>
         /// Returns true if the file exisit.
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        bool FileExist(string fileName);
+        bool FileExist(FileDirectory directory, string fileName);
     }
 }

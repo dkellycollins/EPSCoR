@@ -119,11 +119,9 @@ namespace EPSCoR.Hubs
 
             //Delete files.
             IAsyncFileAccessor fileAccessor = RepositoryFactory.GetAsyncFileAccessor(userName);
-            fileAccessor.CurrentDirectory = FileDirectory.Conversion;
-            await fileAccessor.DeleteFilesAsync(tableName);
-
-            fileAccessor.CurrentDirectory = FileDirectory.Archive;
-            await fileAccessor.DeleteFilesAsync(tableName);
+            await fileAccessor.DeleteFilesAsync(FileDirectory.Conversion, tableName);
+            await fileAccessor.DeleteFilesAsync(FileDirectory.Archive, tableName);
+            await fileAccessor.DeleteFilesAsync(FileDirectory.Upload, tableName);
 
             AlertsHub.SendAlertToUser(tableName + " has beeen deleted", userName);
         }
