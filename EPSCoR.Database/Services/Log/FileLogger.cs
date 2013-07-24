@@ -11,10 +11,10 @@ namespace EPSCoR.Database.Services.Log
         private object _lock;
         private string _logFile;
 
-        public FileLogger()
+        public FileLogger(string directory)
         {
             _lock = new object();
-            _logFile = Path.Combine(DirectoryManager.RootDir, "Log.txt");
+            _logFile = Path.Combine(directory, "Log.txt");
             if (!File.Exists(_logFile))
             {
                 FileStream file = File.Create(_logFile);

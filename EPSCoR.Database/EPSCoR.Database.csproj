@@ -67,6 +67,7 @@
     <Compile Include="Extensions\IEnumerableExtentions.cs" />
     <Compile Include="Services\FilePoll.cs" />
     <Compile Include="Services\Log\CompoundLogger.cs" />
+    <Compile Include="Services\Log\EmailLogger.cs" />
     <Compile Include="UserContext.cs" />
     <Compile Include="Services\FileConverter\CSVFileConverter.cs" />
     <Compile Include="DbProcedure\DbProcedures.cs" />
