@@ -1,0 +1,56 @@
+﻿@model IEnumerable<KeyValuePair<string, System.Threading.Tasks.Task>>
+@{
+    ViewBag.Title = "Task";
+}
+
+<div class="container">
+    <h2>Task</h2>
+
+    @if (Model.Count() == 0)
+    {
+        <div>
+            No tasks are currently running.
+        </div>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        File
+                    </th>
+                    <th>
+                        Task Status
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @item.Key
+                        </td>
+                        <td>
+                            @item.Value.Status
+                        </td>
+                        <td>
+                            <span class="btn btn-danger">
+                                X
+                                @using (Html.BeginForm("KillTask", "Admin", FormMethod.Post, new { @class = "hide" }))
+                                {
+                                    <input type="hidden" name="id" value="@item.Value.Id" />
+                                }
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+

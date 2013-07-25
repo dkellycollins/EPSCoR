@@ -179,8 +179,10 @@
     <Compile Include="BootstrapSupport\ControlGroupExtensions.cs" />
     <Compile Include="BootstrapSupport\ViewHelperExtensions.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Controllers\DataProcessorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ModelController.cs" />
     <Compile Include="Filters\AuthorizeAttribute.cs" />
     <Compile Include="Filters\LogErrorAttribute.cs" />
     <Compile Include="Hubs\AlertsHub.cs" />
@@ -227,6 +229,7 @@
     <Content Include="Content\FileUpload\img\progressblue.gif" />
     <Content Include="Content\images\ajax-loader2.gif" />
     <Compile Include="Results\NewtonsoftJsonResult.cs" />
+    <Content Include="Content\images\donotentersign.jpg" />
     <Content Include="Scripts\EPSCoR-1.1.js" />
     <Compile Include="ViewModels\CalcRequest.cs" />
     <Compile Include="ViewModels\DataTableParams.cs" />
@@ -495,7 +498,6 @@
     <Content Include="Scripts\Knockout\knockout-2.1.0.debug.js" />
     <Content Include="Scripts\Knockout\knockout-2.1.0.js" />
     <Content Include="Scripts\Modernizr\modernizr-2.5.3.js" />
-    <Content Include="Views\Errors\Error_500.html" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -509,7 +511,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Errors\Error_404.html" />
     <Content Include="Views\Tables\DetailsPartial.cshtml" />
     <Content Include="Views\Tables\Details.cshtml" />
     <Content Include="Views\Shared\_html5shiv.cshtml" />
@@ -523,6 +524,13 @@
     <Content Include="Views\DataProcessor\_aboutForm.cshtml" />
     <Content Include="Views\DataProcessor\_adminForm.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\Index.cshtml" />
+    <Content Include="Views\Shared\Details.cshtml" />
+    <Content Include="Views\Shared\Create.cshtml" />
+    <Content Include="Views\Shared\NotAuthorized.cshtml" />
+    <Content Include="Views\Shared\CookiesRequired.cshtml" />
+    <Content Include="Views\Task\Index.cshtml" />
+    <Content Include="Views\Shared\_AdminLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

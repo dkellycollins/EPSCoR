@@ -1,26 +1,24 @@
-﻿<div class="navbar-inner">
-    <img src="~/Content/images/header.jpeg" alt="EPSCoR" class="headerImg" height="160"/>
-    <div class="container">
-        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </a>
-        <ul class="nav">
-            <li><a href="javascript:EPSCoR.Dialogs.openDialog('dialog-uploadFiles', {'fillScreen': true})">Upload Files</a></li>
-            <li><a href="javascript:EPSCoR.Dialogs.openDialog('dialog-calc', {'fillScreen': false})">Create Calc Table</a></li>
-            <li><a href="javascript:EPSCoR.Dialogs.openDialog('dialog-about', {'fillScreen': true})">About/Help</a></li>
-            @if (User.IsInRole("Admin"))
-            {
-                <li><a href="javascript:EPSCoR.Dialogs.openDialog('dialog-admin' {'fillScreen': true})">Admin</a></li>
-            }
-            <li>
-                <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
-                @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "hidden" }))
-                {
-                    @Html.AntiForgeryToken()
-                }
-            </li>
-        </ul>
+﻿<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <img src="~/Content/images/header.jpeg" alt="EPSCoR" class="headerImg" height="160"/>
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+            <ul class="nav">
+                <li><a href="javascript:EPSCoR.Dialogs.openDialog('dialog-uploadFiles', {'fillScreen': true})">Upload Files</a></li>
+                <li><a href="javascript:EPSCoR.Dialogs.openDialog('dialog-calc', {'fillScreen': false})">Create Calc Table</a></li>
+                <li><a href="javascript:EPSCoR.Dialogs.openDialog('dialog-about', {'fillScreen': true})">About/Help</a></li>
+                <li>
+                    <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
+                    @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "hidden" }))
+                    {
+                        @Html.AntiForgeryToken()
+                    }
+                </li>
+            </ul>
+        </div>
     </div>
 </div>

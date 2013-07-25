@@ -13,7 +13,7 @@ namespace EPSCoR
 
     public class MvcApplication : System.Web.HttpApplication
     {
-        private FileProcessor _fileProcessor;
+        public static FileProcessor FileProcessor;
 
         protected void Application_Start()
         {
@@ -30,7 +30,7 @@ namespace EPSCoR
             DefaultContext.ModelRemoved += DefaultContext_ModelRemoved;
             DefaultContext.ModelUpdated += DefaultContext_ModelUpdated;
 
-            _fileProcessor = new FileProcessor(Server.MapPath("~/App_Data"));
+            FileProcessor = new FileProcessor(Server.MapPath("~/App_Data"));
         }
 
         void DefaultContext_ModelUpdated(Database.Models.IModel model)

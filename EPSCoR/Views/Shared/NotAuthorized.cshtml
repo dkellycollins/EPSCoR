@@ -1,15 +1,20 @@
-﻿<!DOCTYPE html>
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Error</title>
     <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+    @Styles.Render("~/content/css")
 </head>
 <body>
-    <h2>
-        Sorry, an error occurred while processing your request.
-    </h2>
-    <a href="/Home" class="btn btn-large btn-success">Reload</a>
+    <div class="container">
+        <img src="~/Content/images/donotentersign.jpg" class="img-rounded img-center" />
+        You are not authorized to view this page. If you belive you are seeing this in error, please contact the site administrator.
+    </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
 </body>

@@ -24,10 +24,10 @@ namespace EPSCoR.Database
         private FileSystemWatcher _fileWatcher;
         private FilePoll _filePoll;
         private Dictionary<string, Task> _currentTasks;
-        private Dictionary<string, CancellationTokenSource> _cancelTokens;
+        private Dictionary<int, CancellationTokenSource> _cancelTokens;
 
         public ReadOnlyDictionary<string, Task> CurrentTasks { get; private set; }
-        public ReadOnlyDictionary<string, CancellationTokenSource> CancelTokens { get; private set; }
+        public ReadOnlyDictionary<int, CancellationTokenSource> CancelTokens { get; private set; }
 
         #region Public Members
 
@@ -47,9 +47,9 @@ namespace EPSCoR.Database
             //_filePoll.FileFound += _filePoll_FileFound;
 
             _currentTasks = new Dictionary<string, Task>();
-            _cancelTokens = new Dictionary<string, CancellationTokenSource>();
+            _cancelTokens = new Dictionary<int, CancellationTokenSource>();
             CurrentTasks = new ReadOnlyDictionary<string, Task>(_currentTasks);
-            CancelTokens = new ReadOnlyDictionary<string, CancellationTokenSource>(_cancelTokens);
+            CancelTokens = new ReadOnlyDictionary<int, CancellationTokenSource>(_cancelTokens);
         }
 
         public void Dispose()
@@ -91,7 +91,7 @@ namespace EPSCoR.Database
             task.ContinueWith((t) => cleanUp(t, tableIndex, filePath, userName));
 
             _currentTasks.Add(filePath, task);
-            _cancelTokens.Add(filePath, cancelTokenSource);
+            _cancelTokens.Add(task.Id, cancelTokenSource);
             return task;
         }
 
@@ -165,7 +165,7 @@ namespace EPSCoR.Database
         private void cleanUp(Task task, TableIndex tableIndex, string filePath, string userName)
         {
             _currentTasks.Remove(filePath);
-            _cancelTokens.Remove(filePath);
+            _cancelTokens.Remove(task.Id);
 
             if (task.IsFaulted)
             {
