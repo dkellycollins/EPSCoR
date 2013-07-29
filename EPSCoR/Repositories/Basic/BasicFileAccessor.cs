@@ -72,6 +72,14 @@ namespace EPSCoR.Repositories.Basic
             return new FileInfo(path);
         }
 
+        public void MoveFile(FileDirectory currentDirectory, FileDirectory newDirectory, string fileName)
+        {
+            string currentFilePath = Path.Combine(getUserDirectory(currentDirectory), fileName);
+            string newFilePath = Path.Combine(getUserDirectory(currentDirectory), fileName);
+
+            File.Move(currentFilePath, newFilePath);
+        }
+
         #endregion IFileAccessor Memebers
 
         #region Private Members

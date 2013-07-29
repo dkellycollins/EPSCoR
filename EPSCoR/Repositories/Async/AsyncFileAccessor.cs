@@ -78,6 +78,17 @@ namespace EPSCoR.Repositories.Async
             });
         }
 
+        public async Task MoveFileAsync(FileDirectory currentDirectory, FileDirectory newDirectory, string fileName)
+        {
+            await Task.Run(() =>
+            {
+                string currentFilePath = Path.Combine(getUserDirectory(currentDirectory), fileName);
+                string newFilePath = Path.Combine(getUserDirectory(newDirectory), fileName);
+
+                File.Move(currentFilePath, newFilePath);
+            });
+        }
+
         #endregion IAsyncFileAccessor Members
 
         #region Private Members

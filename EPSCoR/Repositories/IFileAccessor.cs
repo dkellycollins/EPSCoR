@@ -117,5 +117,7 @@ namespace EPSCoR.Repositories
         /// <param name="fileName"></param>
         /// <returns></returns>
         bool FileExist(FileDirectory directory, string fileName);
+
+        void MoveFile(FileDirectory currentDirectory, FileDirectory newDirectory, string fileName);
     }
 }

@@ -64,6 +64,16 @@ namespace EPSCoR.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        public ActionResult NotAuthorized()
+        {
+            return View();
+        }
+
+        public ActionResult CookiesRequired()
+        {
+            return View();
+        }
+
         //Adds a new user to the database.
         private void createProfile()
         {

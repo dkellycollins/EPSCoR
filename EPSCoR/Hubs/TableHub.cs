@@ -160,10 +160,10 @@ namespace EPSCoR.Hubs
                 CalcResult result;
                 switch (calcType)
                 {
-                    case "Sum":
+                    case "SUM":
                         result = await dbCalc.SumTablesAsync(attTable, usTable);
                         break;
-                    case "Avg":
+                    case "AVG":
                         result = await dbCalc.AvgTablesAsync(attTable, usTable);
                         break;
                     default:

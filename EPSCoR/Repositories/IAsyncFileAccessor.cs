@@ -51,5 +51,7 @@ namespace EPSCoR.Repositories
         /// <param name="fileName"></param>
         /// <returns></returns>
         Task<bool> FileExistAsync(FileDirectory directory, string fileName);
+
+        Task MoveFileAsync(FileDirectory currentDirectory, FileDirectory newDirectory, string fileName);
     }
 }

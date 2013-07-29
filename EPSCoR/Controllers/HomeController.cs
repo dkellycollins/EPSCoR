@@ -12,7 +12,7 @@ namespace EPSCoR.Controllers
     /// </summary>
     public class HomeController : Controller
     {
-        [OutputCache(Duration=0)]
+        //[OutputCache(Duration=0)]
         public ActionResult Index()
         {
             return RedirectToAction("Index", "DataProcessor");
