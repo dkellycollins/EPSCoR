@@ -18,9 +18,9 @@ namespace EPSCoR
             bundles.Add(new StyleBundle("~/content/css").Include(
                         "~/Content/Site.css"));
 
-            bundles.Add(new ScriptBundle("~/scripts/EPSCoR.js").Include(
+            bundles.Add(new ScriptBundle("~/scripts/DataProcessor.js").Include(
                         "~/Scripts/jQueryExt.js",
-                        "~/Scripts/EPSCoR-{version}.js"));
+                        "~/Scripts/DataProcessor-{version}.js"));
 
             #endregion Custom bundles
 
@@ -120,6 +120,14 @@ namespace EPSCoR
                 "~/Scripts/SignalR/jquery.signalR-{version}.js"));
 
             #endregion SignalR bundles
+
+            #region Google Analytics bundles
+
+            bundles.Add(new ScriptBundle("~/scripts/googleanalytics.js").Include(
+                "~/Scripts/GoogleAnalytics.js"
+                ));
+
+            #endregion Google Analytics bundles
         }
     }
 }

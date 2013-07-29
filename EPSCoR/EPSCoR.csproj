@@ -202,7 +202,6 @@
     <Compile Include="Controllers\TablesController.cs" />
     <Compile Include="Controllers\FilesController.cs" />
     <Compile Include="Extensions\HttpRequestBaseExtensions.cs" />
-    <Compile Include="Filters\AuthorizeRoleAttribute.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
     <Compile Include="Filters\MultipleResponseFormatsAttribute.cs" />
     <Compile Include="Global.asax.cs">
@@ -230,7 +229,7 @@
     <Content Include="Content\images\ajax-loader2.gif" />
     <Compile Include="Results\NewtonsoftJsonResult.cs" />
     <Content Include="Content\images\donotentersign.jpg" />
-    <Content Include="Scripts\EPSCoR-1.1.js" />
+    <Content Include="Scripts\DataProcessor-1.2.js" />
     <Compile Include="ViewModels\CalcRequest.cs" />
     <Compile Include="ViewModels\DataTableParams.cs" />
     <Compile Include="ViewModels\FileUpload.cs" />
@@ -458,6 +457,7 @@
     <Content Include="Scripts\FileUpload\jqueryui\jquery.ui.widget.js" />
     <Content Include="Scripts\FileUpload\load-image.debug.js" />
     <Content Include="Scripts\FileUpload\tmpl.debug.js" />
+    <Content Include="Scripts\GoogleAnalytics.js" />
     <Content Include="Scripts\jQueryExt.js" />
     <Content Include="Scripts\JavaScriptTemplates\compile.js" />
     <Content Include="Scripts\JavaScriptTemplates\runtime.js" />
