@@ -197,7 +197,7 @@ $(function () {
                     EPSCoR.Tables.calcTables = EPSCoR.Tables.calcTables.concat([tableIndex.Name]);
                 }
 
-                $('#tables').append(tmpl('tableIndexTmpl', tableIndex));
+                $('#tables').prepend(tmpl('tableIndexTmpl', tableIndex));
                 EPSCoR.Tables.toggleButtons(tableIndex.Name, !tableIndex.Processed);
 
                 window.setTimeout(function () {
