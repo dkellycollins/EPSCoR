@@ -5,10 +5,10 @@
 }
 
 /* Override for bootstrap .navbar-fixed-top */
-.navbar-fixed-top
+/*.navbar-fixed-top
 {
     position: inherit;
-}
+}*/
 
 .navbar .headerImg 
 {
@@ -16,10 +16,10 @@
 }
 
 /* Override for all css that tries to pad the top of the page.*/
-body
+/*body
 {
     padding-top: 0px;
-}
+}*/
 
 .footer
 {
