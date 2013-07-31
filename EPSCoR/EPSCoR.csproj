@@ -179,6 +179,7 @@
     <Compile Include="BootstrapSupport\ControlGroupExtensions.cs" />
     <Compile Include="BootstrapSupport\ViewHelperExtensions.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\GISController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Controllers\DataProcessorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -526,10 +527,14 @@
     <Content Include="Views\Shared\Index.cshtml" />
     <Content Include="Views\Shared\Details.cshtml" />
     <Content Include="Views\Shared\Create.cshtml" />
-    <Content Include="Views\Shared\NotAuthorized.cshtml" />
-    <Content Include="Views\Shared\CookiesRequired.cshtml" />
+    <Content Include="Views\Account\NotAuthorized.cshtml" />
+    <Content Include="Views\Account\CookiesRequired.cshtml" />
     <Content Include="Views\Task\Index.cshtml" />
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
+    <Content Include="Views\GIS\Index.cshtml" />
+    <Content Include="Views\GIS\_navbar.cshtml" />
+    <Content Include="Views\Shared\_NavBarLayout.cshtml" />
+    <Content Include="Views\Shared\_adminNavBar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

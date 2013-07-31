@@ -2,7 +2,11 @@
     ViewBag.Title = "EPSCoR Data Processing Tool";
 }
 
-@Html.Partial("_navbar")
+@section Navigation {
+    <li><a href="javascript:EPSCoR.Dialogs.openDialog('dialog-uploadFiles', {'fillScreen': true})">Upload Files</a></li>
+    <li><a href="javascript:EPSCoR.Dialogs.openDialog('dialog-calc', {'fillScreen': false})">Create Calc Table</a></li>
+    <li><a href="javascript:EPSCoR.Dialogs.openDialog('dialog-about', {'fillScreen': true})">About/Help</a></li>
+}
 
 <div id="alerts" class="container" style="margin-top: 10px; margin-bottom: 10px;">
     <noscript class="alert alert-error">

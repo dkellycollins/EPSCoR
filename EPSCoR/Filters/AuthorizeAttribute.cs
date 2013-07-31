@@ -9,10 +9,13 @@ using WebMatrix.WebData;
 
 namespace EPSCoR.Filters
 {
+    /*
     public class AuthorizeAttribute : System.Web.Mvc.AuthorizeAttribute
     {
         public override void OnAuthorization(System.Web.Mvc.AuthorizationContext filterContext)
         {
+            base.OnAuthorization(filterContext);
+
             //This is where we should check to see if the user has an account.
             using (IModelRepository<UserProfile> repo = RepositoryFactory.GetModelRepository<UserProfile>())
             {
@@ -27,8 +30,7 @@ namespace EPSCoR.Filters
                     repo.Create(profile);
                 }
             }
-
-            base.OnAuthorization(filterContext);
         }
     }
+    */
 }

@@ -6,13 +6,11 @@ using System.Web.Mvc;
 
 namespace EPSCoR.Controllers
 {
-    /// <summary>
-    /// Returns views for the data processor app.
-    /// </summary>
-    [Authorize]
-    public class DataProcessorController : Controller
+    public class GISController : Controller
     {
-        //[OutputCache(Duration=0)]
+        //
+        // GET: /GIS/
+
         public ActionResult Index()
         {
             return View();

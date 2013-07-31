@@ -15,7 +15,10 @@ namespace EPSCoR.Controllers
         //[OutputCache(Duration=0)]
         public ActionResult Index()
         {
-            return RedirectToAction("Index", "DataProcessor");
+            if (User.Identity.IsAuthenticated)
+                return RedirectToAction("Index", "DataProcessor");
+            else
+                return RedirectToAction("Login", "Account");
         }
     }
 }

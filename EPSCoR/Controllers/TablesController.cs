@@ -20,7 +20,7 @@ namespace EPSCoR.Controllers
     /// <summary>
     /// Contains views that display and work with uploaded tables.
     /// </summary>
-    [EPSCoR.Filters.Authorize]
+    [Authorize]
     public class TablesController : Controller
     {
         private IModelRepository<TableIndex> _tableIndexRepo;
