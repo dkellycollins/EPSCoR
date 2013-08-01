@@ -168,7 +168,9 @@ $(function () {
             deleteTable: function (tableName) {
                 EPSCoR.Dialogs.yesNoDialog('Confirm delete', 'Are you sure you want to delete ' + tableName + '?', function (result) {
                     if (result) {
-                        tableHub.server.removeTable(tableName);
+                        tableHub.server.removeTable(tableName).fail(function(error) {
+                            EPSCoR.Alerts.addAlert("Failed to remove table " + tableName + ": " + error, "", "error");
+                        });
 
                         var index = -1;
                         if ((index = EPSCoR.Tables.attributeTables.indexOf(tableName)) >= 0) {
@@ -229,7 +231,9 @@ $(function () {
 
             submitCalcTable: function(attTable, usTable, calcType)
             {
-                tableHub.server.submitCalcTable(attTable, usTable, calcType);
+                tableHub.server.submitCalcTable(attTable, usTable, calcType).fail(function (error) {
+                    EPSCoR.Alerts.addAlert("Failed to create calc table: " + error, "", "error");
+                });
             }
         }
     };
@@ -246,7 +250,7 @@ $(function () {
 
     alertHub.client.newAlert = EPSCoR.Alerts.addAlert;
 
-    $.connection.hub.start();
+    $.connection.hub.start({ transport: ['foreverFrame', 'serverSentEvents', 'longPolling'] });
 
     //Setup dialogs.
     EPSCoR.Dialogs.init();

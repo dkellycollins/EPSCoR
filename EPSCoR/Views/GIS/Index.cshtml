@@ -4,14 +4,56 @@
 
 <h2>GIS</h2>
 
+<div class="container">
+    <div id="mapDiv"></div>
+    <div id="legendDiv"></div>
+</div>
+
 @section Navigation {
 
 }
 
 @section Styles {
-
+    <link rel="stylesheet" type="text/css" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/js/esri/css/esri.css">
+    <style>
+    html,body,#mapDiv,.map.container{
+        padding:0;
+        margin:0;
+        height:100%;
+    }
+    #legendDiv{
+        background-color: #fff;
+        position: !important;
+        z-index: 99;
+        top:10px;
+        right:20px;
+    }
+    </style>
 }
 
 @section Scripts {
+    <script>var dojoConfig = { parseOnLoad: true };</script>
+    <script src="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5compact/"></script>
+    <script>
+        dojo.require("esri.map");
+        dojo.require("esri.arcgis.utils");
+        dojo.require("esri.dijit.Legend");
 
+        var map;
+
+        function init() {
+            var webmapid = "1a40fa5cc1ab4569b79f45444d728067";
+            esri.arcgis.utils.createMap(webmapid, "mapDiv").then(function (response) {
+                map = response.map;
+
+                var legend = new esri.dijit.Legend({
+                    map: map,
+                    layerInfos: (esri.arcgis.utils.getLegendLayers(response))
+                }, "legendDiv");
+                legend.startup();
+            });
+        }
+
+        dojo.ready(init);
+    </script>
 }

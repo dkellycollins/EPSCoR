@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using EPSCoR.Database.Models;
 using EPSCoR.Repositories;
 using EPSCoR.Repositories.Factory;
@@ -33,4 +34,24 @@ namespace EPSCoR.Filters
         }
     }
     */
+
+    [AttributeUsage(AttributeTargets.All)]
+    public class CasAuthorizeAttribute : ActionFilterAttribute
+    {
+        public CasAuthorizeAttribute()
+            : base()
+        { }
+
+        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            if (!filterContext.HttpContext.User.Identity.IsAuthenticated)
+            {
+                filterContext.Result = new RedirectResult("/Account/Login");
+            }
+            else
+            {
+                base.OnActionExecuting(filterContext);
+            }
+        }
+    }
 }

@@ -24,10 +24,9 @@
         function submitCalcTable() {
             var attTable = $('#attTable').val(),
                 usTable = $('#usTable').val(),
-                calcType = $('#calc').val(),
-                tableHub = $.connection.tableHub;
+                calcType = $('#calc').val();
 
-            tableHub.server.submitCalcTable(attTable, usTable, calcType);
+            EPSCoR.Tables.submitCalcTable(attTable, usTable, calcType);
 
             $('#dialog-calc').dialog('close');
         }

@@ -62,22 +62,6 @@ namespace EPSCoR
 
             #endregion jQuery ui bundles
 
-            #region Bootstrap bundles
-
-            bundles.Add(new ScriptBundle("~/scripts/bootstrap/bootstrap-js").Include(
-                "~/Scripts/Bootstrap/bootstrap.js",
-                "~/Scripts/jQuery/jquery.validate.unobtrusive-custom-for-bootstrap.js"
-                ));
-
-            bundles.Add(new StyleBundle("~/content/bootstrap/bootstrap-css").Include(
-                "~/Content/Bootstrap/bootstrap.css",
-                "~/Content/Bootstrap/body.css",
-                "~/Content/Bootstrap/bootstrap-responsive.css",
-                "~/Content/Bootstrap/bootstrap-mvc-validation.css"
-                ));
-
-            #endregion Bootstrap bundles
-
             #region jQueryFileUpload bundles
 
             bundles.Add(new ScriptBundle("~/scripts/fileupload/fileUpload.js").Include(

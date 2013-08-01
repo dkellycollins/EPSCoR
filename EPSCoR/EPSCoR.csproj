@@ -184,7 +184,7 @@
     <Compile Include="Controllers\DataProcessorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ModelController.cs" />
-    <Compile Include="Filters\AuthorizeAttribute.cs" />
+    <Compile Include="Filters\CasAuthorizeAttribute.cs" />
     <Compile Include="Filters\LogErrorAttribute.cs" />
     <Compile Include="Hubs\AlertsHub.cs" />
     <Compile Include="Hubs\TableHub.cs" />
@@ -236,12 +236,6 @@
     <Compile Include="ViewModels\FileUpload.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\Bootstrap\body.css" />
-    <Content Include="Content\Bootstrap\bootstrap-mvc-validation.css" />
-    <Content Include="Content\Bootstrap\bootstrap-responsive.css" />
-    <Content Include="Content\Bootstrap\bootstrap-responsive.min.css" />
-    <Content Include="Content\Bootstrap\bootstrap.css" />
-    <Content Include="Content\Bootstrap\bootstrap.min.css" />
     <Content Include="Content\DataTables-1.9.4\docs\media\css\doc.css" />
     <Content Include="Content\DataTables-1.9.4\docs\media\css\shCore.css" />
     <Content Include="Content\DataTables-1.9.4\docs\media\css\shThemeDataTables.css" />
@@ -323,8 +317,6 @@
     <Content Include="Content\DataTables-1.9.4\media\images\sort_desc_disabled.png" />
     <Content Include="Content\images\ajax-loader.gif" />
     <Content Include="Content\images\footer.jpeg" />
-    <Content Include="Content\Bootstrap\images\glyphicons-halflings-white.png" />
-    <Content Include="Content\Bootstrap\images\glyphicons-halflings.png" />
     <Content Include="Content\images\header.jpeg" />
     <Content Include="Content\images\howto\step1.jpg" />
     <Content Include="Content\images\howto\step2.jpg" />
@@ -389,9 +381,6 @@
     <Content Include="Content\jQueryUI\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\jQueryUI\minified\jquery.ui.theme.min.css" />
     <Content Include="Global.asax" />
-    <Content Include="Scripts\Bootstrap\bootstrap.js" />
-    <Content Include="Scripts\Bootstrap\bootstrap.min.js" />
-    <Content Include="Scripts\Bootstrap\html5shiv.js" />
     <Content Include="Scripts\DataTables-1.9.4\docs\media\js\doc.js" />
     <Content Include="Scripts\DataTables-1.9.4\docs\media\js\jquery.js" />
     <Content Include="Scripts\DataTables-1.9.4\docs\media\js\shBrushJScript.js" />
@@ -532,9 +521,9 @@
     <Content Include="Views\Task\Index.cshtml" />
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
     <Content Include="Views\GIS\Index.cshtml" />
-    <Content Include="Views\GIS\_navbar.cshtml" />
     <Content Include="Views\Shared\_NavBarLayout.cshtml" />
     <Content Include="Views\Shared\_adminNavBar.cshtml" />
+    <Content Include="Views\DataProcessor\_errorDialog.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
