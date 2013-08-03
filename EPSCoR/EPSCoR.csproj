@@ -179,6 +179,7 @@
     <Compile Include="BootstrapSupport\ControlGroupExtensions.cs" />
     <Compile Include="BootstrapSupport\ViewHelperExtensions.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\GISController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Controllers\DataProcessorController.cs" />
@@ -227,6 +228,7 @@
     <Content Include="Content\FileUpload\img\loading.gif" />
     <Content Include="Content\FileUpload\img\progressbar.gif" />
     <Content Include="Content\FileUpload\img\progressblue.gif" />
+    <Content Include="Content\GisViewer.css" />
     <Content Include="Content\images\ajax-loader2.gif" />
     <Compile Include="Results\NewtonsoftJsonResult.cs" />
     <Content Include="Content\images\donotentersign.jpg" />
@@ -422,7 +424,6 @@
     <Content Include="Scripts\DataTables-1.9.4\media\js\jquery.dataTables.js" />
     <Content Include="Scripts\DataTables-1.9.4\media\js\jquery.dataTables.min.js" />
     <Content Include="Scripts\DataTables-1.9.4\media\js\jquery.js" />
-    <Content Include="Scripts\ErrorHandling.js" />
     <Content Include="Scripts\FileUpload\angularjs\angular.debug.js" />
     <Content Include="Scripts\FileUpload\bootstrap\bootstrap-image-gallery.debug.js" />
     <Content Include="Scripts\FileUpload\bootstrap\bootstrap.debug.js" />
@@ -447,6 +448,7 @@
     <Content Include="Scripts\FileUpload\jqueryui\jquery.ui.widget.js" />
     <Content Include="Scripts\FileUpload\load-image.debug.js" />
     <Content Include="Scripts\FileUpload\tmpl.debug.js" />
+    <Content Include="Scripts\GisViewer.js" />
     <Content Include="Scripts\GoogleAnalytics.js" />
     <Content Include="Scripts\jQueryExt.js" />
     <Content Include="Scripts\JavaScriptTemplates\compile.js" />
@@ -524,6 +526,8 @@
     <Content Include="Views\Shared\_NavBarLayout.cshtml" />
     <Content Include="Views\Shared\_adminNavBar.cshtml" />
     <Content Include="Views\DataProcessor\_errorDialog.cshtml" />
+    <Content Include="Views\GIS\_GISLayout.cshtml" />
+    <Content Include="Views\Shared\_appNavbar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

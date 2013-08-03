@@ -13,6 +13,7 @@
 .navbar .headerImg 
 {
     width: 100%;
+    height: 120px;
 }
 
 /* Override for all css that tries to pad the top of the page.*/

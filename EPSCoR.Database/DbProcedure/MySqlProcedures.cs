@@ -44,33 +44,25 @@ namespace EPSCoR.Database.DbProcedure
             ThrowFileExceptionIfInvalidSql(file, tableName);
 
             //Get all the fields from the file.
-            List<string> fields = new List<string>();
-            List<string> samples = new List<string>();
-            GetFieldsAndSamplesFromFile(file, fields, samples);
-            if (fields.Count == 0 || samples.Count == 0)
+            List<string> fields = GetFieldsFromFile(file);
+            if (fields.Count == 0)
                 throw new InvalidFileException(file, "No data to process.");
             ThrowFileExceptionIfInvalidSql(file, fields.ToArray());
 
             //Build the column paramaters for the Sql query.
-            StringBuilder columnsBuilder = new StringBuilder();
-            foreach(string field in fields)
-            {
-                columnsBuilder.Append(field + " double, ");
-            }
+            string columns = fields.ToCommaSeparatedString("{0} double");
             //Make the first field the primary key.
-            columnsBuilder.Append("PRIMARY KEY(" + fields[0] + ")");
+            columns += ", PRIMARY KEY(" + fields[0] + ")";
 
             //Execute the command.
             string cmd = "CREATE TABLE IF NOT EXISTS " + tableName
-                + " ( " + columnsBuilder.ToString() + " ) "
+                + " ( " + columns + " ) "
                 + "ENGINE = InnoDB "
                 + "DEFAULT CHARSET=latin1";
             _context.Database.ExecuteSqlCommand(cmd);
             _context.SaveChanges();
             LoggerFactory.GetLogger().Log("Table " + tableName + " added to " + DatabaseName);
         }
-
-        private const int MAX_CMD_LENGTH = 1048576 / sizeof(char); //1mb divided by the size of a character.
 
         /// <summary>
         /// Populates the table with same name as the file with the data in the file.

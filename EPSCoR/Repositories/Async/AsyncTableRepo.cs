@@ -88,21 +88,22 @@ namespace EPSCoR.Repositories.Async
 
         private async Task<CalcResult> createCalcTableTaskAsync(string attTable, string usTable, string calc)
         {
-            string calcTable = string.Format("{0}_{1}_{2}", attTable, usTable, calc);
-            TableIndex index = new TableIndex()
+            TableIndex index = null;
+            Task calcTask = Task.Run(() =>
             {
-                Name = calcTable,
-                DateCreated = DateTime.Now,
-                DateUpdated = DateTime.Now,
-                Status = "Generating table.",
-                Type = TableTypes.CALC,
-                UploadedByUser = currentUser,
-                Processed = false
-            };
-            _defaultContext.CreateModel(index);
+                string calcTable = string.Format("{0}_{1}_{2}", attTable, usTable, calc);
+                index = new TableIndex()
+                {
+                    Name = calcTable,
+                    DateCreated = DateTime.Now,
+                    DateUpdated = DateTime.Now,
+                    Status = "Generating table.",
+                    Type = TableTypes.CALC,
+                    UploadedByUser = currentUser,
+                    Processed = false
+                };
+                _defaultContext.CreateModel(index);
 
-            return await Task.Run(() =>
-            {
                 switch (calc)
                 {
                     case CalcType.Sum:
@@ -116,28 +117,34 @@ namespace EPSCoR.Repositories.Async
                 }
 
                 index.Status = "Saving table.";
-                index.Processed = true;
                 _defaultContext.UpdateModel(index);
 
                 _userContext.SaveTableToFile(calcTable);
-            }).ContinueWith((task) =>
+            });
+            Task<CalcResult> cleanupTask = calcTask.ContinueWith((task) =>
             {
                 CalcResult result;
                 if (task.IsFaulted)
                 {
                     index.Status = "The server encountered an error while processing your request.";
+                    index.Processed = false;
+                    index.Error = true;
                     result = CalcResult.Error;
                 }
                 else
                 {
                     index.Status = "Table created.";
                     index.Processed = true;
+                    index.Error = false;
                     result = CalcResult.Success;
                 }
 
                 _defaultContext.UpdateModel(index);
                 return result;
             });
+
+            await calcTask;
+            return await cleanupTask;
         }
     }
 }

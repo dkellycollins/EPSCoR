@@ -1,53 +1,57 @@
-﻿@using System.Web.Optimization
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=7, IE=9, IE=10">
+    <!--The viewport meta tag is used to improve the presentation and behavior of the samples
+    on iOS devices-->
+    <meta name="viewport" content="initial-scale=1">
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>@ViewBag.Title</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        @RenderSection("Styles", required: false)
-        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
-        <!--<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/css/bootstrap.min.css" rel="stylesheet">-->
-        @Styles.Render("~/content/css")
-        @Html.Partial("_html5shiv")
-    </head>
-    <body>
-        <div class="navbar navbar-inverse navbar-static-top">
-            <div class="navbar-inner">
-                <img src="~/Content/images/header.jpeg" alt="EPSCoR" class="headerImg" height="160"/>
-                <div class="container">
-                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </a>
-                    <ul class="nav nav-collapse collapse">
-                        @RenderSection("Navigation", required: false)
-                        @if(User.IsInRole("Admin")) 
+    <title>@ViewBag.Title</title>
+
+    @RenderSection("Styles", false)
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+    <!--<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/css/bootstrap.min.css" rel="stylesheet">-->
+    @Styles.Render("~/content/css")
+    @Html.Partial("_html5shiv")
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-static-top">
+        <div class="navbar-inner">
+            <img src="~/Content/images/header.jpeg" alt="EPSCoR" class="headerImg" height="160"/>
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <ul class="nav nav-collapse collapse">
+                    @Html.Partial("_appNavbar")
+                    @if(User.IsInRole("Admin")) 
+                    {
+                        @Html.Partial("_adminNavBar")
+                    }
+                    @RenderSection("Navigation", required: false)
+                    <li>
+                        <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
+                        @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "hidden" }))
                         {
-                            @Html.Partial("_adminNavBar")
+                            @Html.AntiForgeryToken()
                         }
-                        <li>
-                            <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
-                            @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "hidden" }))
-                            {
-                                @Html.AntiForgeryToken()
-                            }
-                        </li>
-                    </ul>
-                </div>
+                    </li>
+                </ul>
             </div>
         </div>
+    </div>
 
-        @RenderBody()
+    @RenderBody()
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-        <!--<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>-->
-        @Scripts.Render("~/scripts/googleanalytics.js")
-        @RenderSection("Scripts", required: false)
-    </body>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <!--<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>-->
+    @Scripts.Render("~/scripts/googleanalytics.js")
+    @RenderSection("Scripts", false)
+</body>
 </html>
 
 

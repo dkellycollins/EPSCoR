@@ -49,7 +49,9 @@ namespace EPSCoR.Controllers
             UserProfile profile = _userProfileRepo.GetAll().Where((x) => x.UserName == WebSecurity.CurrentUserName).FirstOrDefault();
 
             if (profile == null)
+            {
                 createProfile();
+            }
             return redirectToLocal(returnUrl);
         }
 

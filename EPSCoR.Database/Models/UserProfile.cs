@@ -14,6 +14,7 @@ namespace EPSCoR.Database.Models
         /// Primary key.
         /// </summary>
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
         /// <summary>

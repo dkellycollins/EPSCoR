@@ -18,9 +18,35 @@ namespace EPSCoR
             bundles.Add(new StyleBundle("~/content/css").Include(
                         "~/Content/Site.css"));
 
+            bundles.Add(new ScriptBundle("~/scripts/main.js").Include(
+                        "~/Scripts/GoogleAnalytics.js"));
+
+            bundles.Add(new StyleBundle("~/content/DataProcessor-Full.css").Include(
+                        "~/Content/FileUpload/css/jquery.fileupload-ui.css",
+                        "~/Content/DataTables-1.9.4/media/css/jquery.dataTables.css"));
+
+            bundles.Add(new ScriptBundle("~/scripts/DataProcessor-Full.js").Include(
+                        "~/Scripts/FileUpload/jquery.iframe-transport.js",
+                        "~/Scripts/FileUpload/jquery.fileupload.js",
+                        "~/Scripts/FileUpload/jquery.fileupload-process.js",
+                        "~/Scripts/FileUpload/jquery.fileupload-validate.js",
+                        "~/Scripts/FileUpload/jquery.fileupload-ui.js",
+                        "~/Scripts/DataTables-1.9.4/media/js/jquery.dataTables.js",
+                        "~/Scripts/jQueryFileUploadSetup.js",
+                        "~/Scripts/JavaScriptTemplates/tmpl.js",
+                        "~/Scripts/SignalR/jquery.signalR-{version}.js",
+                        "~/Scripts/jQueryExt.js",
+                        "~/Scripts/DataProcessor-{version}.js"));
+
             bundles.Add(new ScriptBundle("~/scripts/DataProcessor.js").Include(
                         "~/Scripts/jQueryExt.js",
                         "~/Scripts/DataProcessor-{version}.js"));
+
+            bundles.Add(new StyleBundle("~/content/GisViewer.css").Include(
+                        "~/Content/GisViewer.css"));
+
+            bundles.Add(new ScriptBundle("~/scripts/GisViewer.js").Include(
+                        "~/Scripts/GisViewer.js"));
 
             #endregion Custom bundles
 
@@ -70,7 +96,8 @@ namespace EPSCoR
                 "~/Scripts/FileUpload/jquery.fileupload-process.js",
                 "~/Scripts/FileUpload/jquery.fileupload-validate.js",
                 "~/Scripts/FileUpload/jquery.fileupload-ui.js",
-                "~/Scripts/jQueryFileUploadSetup.js"
+                "~/Scripts/jQueryFileUploadSetup.js",
+                "~/Scripts/DataTables-1.9.4/media/js/jquery.dataTables.js"
                 ));
 
             bundles.Add(new StyleBundle("~/content/fileupload/fileUpload.css").Include(

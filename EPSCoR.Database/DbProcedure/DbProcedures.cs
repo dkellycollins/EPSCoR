@@ -145,18 +145,18 @@ namespace EPSCoR.Database.DbProcedure
             }
         }
 
-        protected static string[] GetFieldsFromFile(string file)
+        protected static List<string> GetFieldsFromFile(string file)
         {
             List<string> fields = new List<string>();
             GetFieldsAndSamplesFromFile(file, fields, null);
-            return fields.ToArray();
+            return fields;
         }
 
-        protected static string[] GetSampleFromFile(string file)
+        protected static List<string> GetSampleFromFile(string file)
         {
             List<string> samples = new List<string>();
             GetFieldsAndSamplesFromFile(file, null, samples);
-            return samples.ToArray();
+            return samples;
         }
 
         protected static void GetFieldsAndSamplesFromFile(string file, List<string> fields, List<string> samples)

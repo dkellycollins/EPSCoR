@@ -1,0 +1,10 @@
+﻿<li class="dropdown">
+    <a href="#" class="brand dropdown-toggle" data-toggle="dropdown">
+        @((string.IsNullOrEmpty(ViewBag.AppName)) ? "Home" : ViewBag.AppName)
+        <b class="caret"></b>
+    </a>
+    <ul class="dropdown-menu">
+        <li>@Html.ActionLink("Data Processor", "Index", "DataProcessor", null, null)</li>
+        <li>@Html.ActionLink("GIS", "Index", "GIS", null, null)</li>
+    </ul>
+</li>

@@ -1,5 +1,6 @@
 ﻿@{
     ViewBag.Title = "EPSCoR Data Processing Tool";
+    ViewBag.AppName = "Data Processor";
 }
 
 @section Navigation {
@@ -29,18 +30,13 @@
 
 @section Styles {
     <link href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" rel="stylesheet">
-    @Styles.Render("~/content/fileupload/fileUpload.css")
-    @Styles.Render("~/content/DataTables/datatables.css")
+    @Styles.Render("~/content/DataProcessor-Full.css")
 }
 
 @section Scripts {
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-    @Scripts.Render("~/scripts/fileupload/fileUpload.js")
-    @Scripts.Render("~/scripts/DataTables/datatables.js")
-    @Scripts.Render("~/scripts/JavaScriptTemplates/javascripttemplates.js")
-    @Scripts.Render("~/scripts/SignalR/signalr.js")
+    @Scripts.Render("~/scripts/DataProcessor-Full.js")
     <script src="~/signalr/hubs"></script>
-    @Scripts.Render("~/scripts/DataProcessor.js")
 
     <script type="text/x-tmpl" id="alertTmpl">
         <div class="alert alert-{%=o.type%} fade">
