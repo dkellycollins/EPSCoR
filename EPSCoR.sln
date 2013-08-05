@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPSCoR", "EPSCoR\EPSCoR.csproj", "{9D3EF42C-1E00-4A31-9BEE-B8E8514D1650}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPSCoR.Database", "EPSCoR.Database\EPSCoR.Database.csproj", "{CABE2C57-7BB7-40DE-8F38-2B18BFFBEE38}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPSCoR.Tests", "EPSCoR.Tests\EPSCoR.Tests.csproj", "{162C5C70-4A14-4E6D-A835-DEDB6DCBCC1C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +15,10 @@ Global
 		{9D3EF42C-1E00-4A31-9BEE-B8E8514D1650}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D3EF42C-1E00-4A31-9BEE-B8E8514D1650}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D3EF42C-1E00-4A31-9BEE-B8E8514D1650}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CABE2C57-7BB7-40DE-8F38-2B18BFFBEE38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CABE2C57-7BB7-40DE-8F38-2B18BFFBEE38}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CABE2C57-7BB7-40DE-8F38-2B18BFFBEE38}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CABE2C57-7BB7-40DE-8F38-2B18BFFBEE38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{162C5C70-4A14-4E6D-A835-DEDB6DCBCC1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{162C5C70-4A14-4E6D-A835-DEDB6DCBCC1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{162C5C70-4A14-4E6D-A835-DEDB6DCBCC1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{162C5C70-4A14-4E6D-A835-DEDB6DCBCC1C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

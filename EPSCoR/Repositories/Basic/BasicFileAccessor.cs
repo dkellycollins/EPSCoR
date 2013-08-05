@@ -12,10 +12,12 @@ namespace EPSCoR.Repositories.Basic
     public class BasicFileAccessor : IFileAccessor
     {
         private string _user;
+        private IDirectoryResolver _directoryResolver;
 
-        public BasicFileAccessor(string userName)
+        public BasicFileAccessor(string userName, IDirectoryResolver directoryResolver)
         {   
             _user = userName;
+            _directoryResolver = directoryResolver;
         }
 
         #region IFileAccessor Members
@@ -37,7 +39,7 @@ namespace EPSCoR.Repositories.Basic
 
         public FileStream OpenFile(FileDirectory directory, string fileName)
         {
-            string path = Path.Combine(getUserDirectory(directory), fileName);
+            string path = Path.Combine(_directoryResolver.GetUserDirectory(directory, _user), fileName);
             
             try
             {
@@ -51,7 +53,7 @@ namespace EPSCoR.Repositories.Basic
 
         public IEnumerable<string> GetFiles(FileDirectory directory)
         {
-            return Directory.GetFiles(getUserDirectory(directory));
+            return Directory.GetFiles(_directoryResolver.GetUserDirectory(directory, _user));
         }
 
         public void DeleteFiles(FileDirectory directory, params string[] fileNames)
@@ -62,20 +64,20 @@ namespace EPSCoR.Repositories.Basic
 
         public bool FileExist(FileDirectory directory, string fileName)
         {
-            string path = Path.Combine(getUserDirectory(directory), fileName);
+            string path = Path.Combine(_directoryResolver.GetUserDirectory(directory, _user), fileName);
             return File.Exists(path);
         }
 
         public FileInfo GetFileInfo(FileDirectory directory, string fileName)
         {
-            string path = Path.Combine(getUserDirectory(directory), fileName);
+            string path = Path.Combine(_directoryResolver.GetUserDirectory(directory, _user), fileName);
             return new FileInfo(path);
         }
 
         public void MoveFile(FileDirectory currentDirectory, FileDirectory newDirectory, string fileName)
         {
-            string currentFilePath = Path.Combine(getUserDirectory(currentDirectory), fileName);
-            string newFilePath = Path.Combine(getUserDirectory(currentDirectory), fileName);
+            string currentFilePath = Path.Combine(_directoryResolver.GetUserDirectory(currentDirectory, _user), fileName);
+            string newFilePath = Path.Combine(_directoryResolver.GetUserDirectory(newDirectory, _user), fileName);
 
             File.Move(currentFilePath, newFilePath);
         }
@@ -88,7 +90,7 @@ namespace EPSCoR.Repositories.Basic
         {
             bool result = true;
             var fileName = Path.GetFileName(file.FileName);
-            var path = Path.Combine(getUserDirectory(directory), fileName);
+            var path = Path.Combine(_directoryResolver.GetUserDirectory(directory, _user), fileName);
 
             try
             {
@@ -110,7 +112,7 @@ namespace EPSCoR.Repositories.Basic
 
         private void deleteFile(FileDirectory directory, string fileName)
         {
-            string userDirectory = getUserDirectory(directory);
+            string userDirectory = _directoryResolver.GetUserDirectory(directory, _user);
             if (Path.HasExtension(fileName))
             {
                 string path = Path.Combine(userDirectory, fileName);
@@ -125,36 +127,6 @@ namespace EPSCoR.Repositories.Basic
                     File.Delete(fn);
                 }
             }
-        }
-
-        private string getUserDirectory(FileDirectory directory)
-        {
-            string userDirectory;
-            switch (directory)
-            {
-                case FileDirectory.Archive:
-                    userDirectory = Path.Combine(DirectoryManager.ArchiveDir, _user);
-                    break;
-                case FileDirectory.Conversion:
-                    userDirectory = Path.Combine(DirectoryManager.ConversionDir, _user);
-                    break;
-                case FileDirectory.Invalid:
-                    userDirectory = Path.Combine(DirectoryManager.InvalidDir, _user);
-                    break;
-                case FileDirectory.Temp:
-                    userDirectory = Path.Combine(DirectoryManager.TempDir, _user);
-                    break;
-                case FileDirectory.Upload:
-                    userDirectory = Path.Combine(DirectoryManager.UploadDir, _user);
-                    break;
-                default:
-                    throw new Exception("Unknown Directory");
-            }
-
-            if (!Directory.Exists(userDirectory))
-                Directory.CreateDirectory(userDirectory);
-
-            return userDirectory;
         }
 
         #endregion Private Members

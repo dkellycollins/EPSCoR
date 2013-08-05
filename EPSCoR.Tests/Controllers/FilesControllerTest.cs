@@ -1,4 +1,5 @@
 ﻿using System;
+using EPSCoR.Controllers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EPSCoR.Tests.Controllers
@@ -6,44 +7,64 @@ namespace EPSCoR.Tests.Controllers
     [TestClass]
     public class FilesControllerTest
     {
+        private FilesController _controller;
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            _controller = new FilesController(null, null, null);
+        }
+
         [TestMethod]
-        public void UploadGetTest()
+        public void UploadFileChunk()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void UploadPostTest()
+        public void UploadFile()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void UploadFilesTest()
+        public void CheckFileThatHasNotBeenUploaded()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void CompleteUploadTest()
+        public void CheckFileThatHasBeenPartiallyUploaded()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void DownloadTest()
+        public void CheckFileThatHasBeenUploaded()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void DownloadCsvTest()
+        public void CompleteUploadOnExistingFile()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void CreateFileDownloadVMTest()
+        public void CompleteUploadOnNonExistingFile()
+        {
+            Assert.Inconclusive();
+        }
+
+        [TestMethod]
+        public void DownloadExistingFile()
+        {
+            Assert.Inconclusive();
+        }
+
+        [TestMethod]
+        public void DownloadNonExistingFile()
         {
             Assert.Inconclusive();
         }

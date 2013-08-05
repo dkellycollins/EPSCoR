@@ -13,25 +13,42 @@ namespace EPSCoR.Tests.Repositories.Basic
         }
 
         [TestMethod]
-        public void CreateTest()
+        public void ReadExistingTableTest()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void ReadTest()
+        public void ReadNonExistingTableTest()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void UpdateTest()
+        public void ReadPartialTableTest()
         {
             Assert.Inconclusive();
         }
 
         [TestMethod]
-        public void DropTest()
+        public void CountExistingTableTest()
+        {
+            Assert.Inconclusive();
+        }
+
+        public void CountNonExistingTableTest()
+        {
+            Assert.Inconclusive();
+        }
+
+        [TestMethod]
+        public void DropExistingTableTest()
+        {
+            Assert.Inconclusive();
+        }
+
+        [TestMethod]
+        public void DropNonExistingTableTest()
         {
             Assert.Inconclusive();
         }

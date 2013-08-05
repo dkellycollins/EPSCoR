@@ -11,14 +11,14 @@ namespace EPSCoR.Repositories.Async
 {
     public class AsyncTableRepo : IAsyncTableRepository, IAsyncDatabaseCalc
     {
-        private DefaultContext _defaultContext;
+        private ModelDbContext _defaultContext;
         
         UserContext _userContext;
         string currentUser;
 
         public AsyncTableRepo(string userName)
         {
-            _defaultContext = new DefaultContext();
+            _defaultContext = new ModelDbContext();
             _userContext = UserContext.GetContextForUser(userName);
             currentUser = userName;
         }

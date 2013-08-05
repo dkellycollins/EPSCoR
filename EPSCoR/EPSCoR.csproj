@@ -80,6 +80,7 @@
       <HintPath>..\packages\Mvc4Futures.4.0.20710.0\lib\net40\Microsoft.Web.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.WebPages.OAuth, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="MySql.Data, Version=6.6.5.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
     <Reference Include="MySql.Web, Version=6.6.5.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -185,6 +186,28 @@
     <Compile Include="Controllers\DataProcessorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ModelController.cs" />
+    <Compile Include="Database\DbProcedure\DbProcedures.cs" />
+    <Compile Include="Database\DbProcedure\MySqlProcedures.cs" />
+    <Compile Include="Database\DbProcedure\SqlServerProcedures.cs" />
+    <Compile Include="Database\FileProcessor.cs" />
+    <Compile Include="Database\ModelDbContext.cs" />
+    <Compile Include="Database\Models\IModel.cs" />
+    <Compile Include="Database\Models\TableIndex.cs" />
+    <Compile Include="Database\Models\UserProfile.cs" />
+    <Compile Include="Database\Services\DirectoryManager.cs" />
+    <Compile Include="Database\Services\FileConverter\CSVFileConverter.cs" />
+    <Compile Include="Database\Services\FileConverter\FileConverterFactory.cs" />
+    <Compile Include="Database\Services\FileConverter\IFileConverter.cs" />
+    <Compile Include="Database\Services\FilePoll.cs" />
+    <Compile Include="Database\Services\Log\CompoundLogger.cs" />
+    <Compile Include="Database\Services\Log\ConsoleLogger.cs" />
+    <Compile Include="Database\Services\Log\EmailLogger.cs" />
+    <Compile Include="Database\Services\Log\FileLogger.cs" />
+    <Compile Include="Database\Services\Log\ILogger.cs" />
+    <Compile Include="Database\Services\Log\LoggerFactory.cs" />
+    <Compile Include="Database\UserContext.cs" />
+    <Compile Include="Exceptions\InvalidFileException.cs" />
+    <Compile Include="Extensions\IEnumerableExtentions.cs" />
     <Compile Include="Filters\CasAuthorizeAttribute.cs" />
     <Compile Include="Filters\LogErrorAttribute.cs" />
     <Compile Include="Hubs\AlertsHub.cs" />
@@ -534,12 +557,6 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\EPSCoR.Database\EPSCoR.Database.csproj">
-      <Project>{cabe2c57-7bb7-40de-8f38-2b18bffbee38}</Project>
-      <Name>EPSCoR.Database</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>

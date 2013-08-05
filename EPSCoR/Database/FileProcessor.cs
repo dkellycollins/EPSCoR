@@ -119,7 +119,7 @@ namespace EPSCoR.Database
         {
             LoggerFactory.GetLogger().Log("File uploaded: " + filePath);
 
-            using (DefaultContext defaultContext = new DefaultContext())
+            using (ModelDbContext defaultContext = new ModelDbContext())
             {
                 defaultContext.CreateModel(tableIndex);
 
@@ -179,7 +179,7 @@ namespace EPSCoR.Database
 
         private void handleError(Task task, TableIndex tableIndex, string filePath, string userName)
         {
-            using (DefaultContext defaultContext = new DefaultContext())
+            using (ModelDbContext defaultContext = new ModelDbContext())
             {
                 updateTableStatus(defaultContext, tableIndex, "An error occured while processing the file.", false, true);
             }
@@ -198,7 +198,7 @@ namespace EPSCoR.Database
 
         private void handleCancel(Task task, TableIndex tableIndex, string filePath, string userName)
         {
-            using (DefaultContext defaultContext = new DefaultContext())
+            using (ModelDbContext defaultContext = new ModelDbContext())
             {
                 updateTableStatus(defaultContext, tableIndex, "Processing canceled by user.", false, true);
             }
@@ -234,7 +234,7 @@ namespace EPSCoR.Database
                 File.Delete(dest);
         }
 
-        private void updateTableStatus(DefaultContext context, TableIndex index, string status, bool processed = false, bool error = false)
+        private void updateTableStatus(ModelDbContext context, TableIndex index, string status, bool processed = false, bool error = false)
         {
             index.Status = status;
             index.Processed = processed;

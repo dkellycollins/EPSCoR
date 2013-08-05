@@ -45,13 +45,6 @@ namespace EPSCoR.Controllers
             _asyncFileAccessor = asyncFileAccessor;
         }
 
-        protected override void OnActionExecuted(ActionExecutedContext filterContext)
-        {
-            _tableIndexRepo.Dispose();
-
-            base.OnActionExecuted(filterContext);
-        }
-
         /// <summary>
         /// Handles saveing the posted file to the temp directory.
         /// </summary>

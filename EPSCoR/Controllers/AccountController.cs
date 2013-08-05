@@ -31,11 +31,9 @@ namespace EPSCoR.Controllers
             _userProfileRepo = RepositoryFactory.GetModelRepository<UserProfile>();
         }
 
-        protected override void OnActionExecuted(ActionExecutedContext filterContext)
+        public AccountController(IModelRepository<UserProfile> userProfileRepo)
         {
-            _userProfileRepo.Dispose();
-
-            base.OnActionExecuted(filterContext);
+            _userProfileRepo = userProfileRepo;
         }
 
         /// <summary>

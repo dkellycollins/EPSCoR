@@ -26,9 +26,9 @@ namespace EPSCoR
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-            DefaultContext.ModelCreated += DefaultContext_ModelCreated;
-            DefaultContext.ModelRemoved += DefaultContext_ModelRemoved;
-            DefaultContext.ModelUpdated += DefaultContext_ModelUpdated;
+            ModelDbContext.ModelCreated += DefaultContext_ModelCreated;
+            ModelDbContext.ModelRemoved += DefaultContext_ModelRemoved;
+            ModelDbContext.ModelUpdated += DefaultContext_ModelUpdated;
 
             FileProcessor = new FileProcessor(Server.MapPath("~/App_Data"));
         }

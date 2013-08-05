@@ -14,6 +14,18 @@ namespace EPSCoR.Controllers
     public class ModelController<T> : Controller
         where T : class, IModel
     {
+        protected IModelRepository<T> ModelRepo;
+
+        protected ModelController()
+        {
+            ModelRepo = RepositoryFactory.GetModelRepository<T>();
+        }
+
+        protected ModelController(IModelRepository<T> modelRepo)
+        {
+            ModelRepo = modelRepo;
+        }
+
         /// <summary>
         /// Gets all models of type T and displays the index view.
         /// </summary>
@@ -21,11 +33,7 @@ namespace EPSCoR.Controllers
         [HttpGet]
         public virtual ActionResult Index()
         {
-            IEnumerable<T> models;
-            using (IModelRepository<T> repo = RepositoryFactory.GetModelRepository<T>())
-            {
-                models = repo.GetAll().ToList();
-            }
+            IEnumerable<T> models = ModelRepo.GetAll().ToList();
 
             if (Request.IsAjaxRequest())
                 return PartialView(models);
@@ -40,11 +48,7 @@ namespace EPSCoR.Controllers
         [HttpGet]
         public virtual ActionResult Details(int id = 0)
         {
-            T model;
-            using (IModelRepository<T> repo = RepositoryFactory.GetModelRepository<T>())
-            {
-                model = repo.Get(id);
-            }
+            T model = ModelRepo.Get(id);
 
             if (model == null)
             {
@@ -76,10 +80,7 @@ namespace EPSCoR.Controllers
         {
             if (ModelState.IsValid)
             {
-                using (IModelRepository<T> repo = RepositoryFactory.GetModelRepository<T>())
-                {
-                    repo.Create(model);
-                }
+                ModelRepo.Create(model);
                 return RedirectToAction("Index");
             }
 
@@ -91,11 +92,7 @@ namespace EPSCoR.Controllers
         [HttpGet]
         public virtual ActionResult Edit(int id = 0)
         {
-            T model;
-            using (IModelRepository<T> repo = RepositoryFactory.GetModelRepository<T>())
-            {
-                model = repo.Get(id);
-            }
+            T model = ModelRepo.Get(id);
 
             if (model == null)
             {
@@ -112,10 +109,7 @@ namespace EPSCoR.Controllers
         {
             if (ModelState.IsValid)
             {
-                using (IModelRepository<T> repo = RepositoryFactory.GetModelRepository<T>())
-                {
-                    repo.Update(model);
-                }
+                ModelRepo.Update(model);
                 return RedirectToAction("Index");
             }
 
@@ -126,10 +120,7 @@ namespace EPSCoR.Controllers
 
         public virtual ActionResult Delete(int id)
         {
-            using (IModelRepository<T> repo = RepositoryFactory.GetModelRepository<T>())
-            {
-                repo.Remove(id);
-            }
+            ModelRepo.Remove(id);
 
             return RedirectToAction("Index");
         }
@@ -138,6 +129,16 @@ namespace EPSCoR.Controllers
     [Authorize(Roles="Admin")]
     public class TableIndexController : ModelController<TableIndex>
     {
+        private ITableRepository _tableRepo;
+
+        public TableIndexController()
+            : base()
+        { }
+
+        public TableIndexController(IModelRepository<TableIndex> repo)
+            : base(repo)
+        { }
+
         [HttpGet]
         public override ActionResult Create()
         {
@@ -154,19 +155,16 @@ namespace EPSCoR.Controllers
             string userName;
 
             //Remove index.
-            using (IModelRepository<TableIndex> tableIndexRepo = RepositoryFactory.GetModelRepository<TableIndex>())
+            TableIndex index = ModelRepo.Get(id);
+
+            if (index == null)
             {
-                TableIndex index = tableIndexRepo.Get(id);
-
-                if (index == null)
-                {
-                    return HttpNotFound();
-                }
-
-                tableName = index.Name;
-                userName = index.UploadedByUser;
-                tableIndexRepo.Remove(index.ID);
+                return HttpNotFound();
             }
+
+            tableName = index.Name;
+            userName = index.UploadedByUser;
+            ModelRepo.Remove(index.ID);
 
             //Drop table.
             using (ITableRepository tableRepo = RepositoryFactory.GetTableRepository(userName))
@@ -187,6 +185,20 @@ namespace EPSCoR.Controllers
     [Authorize(Roles = "Admin")]
     public class UserProfileController : ModelController<UserProfile>
     {
+        private IModelRepository<TableIndex> _tableIndexRepo;
+
+        public UserProfileController()
+            : base()
+        {
+            _tableIndexRepo = RepositoryFactory.GetModelRepository<TableIndex>();
+        }
+
+        public UserProfileController(IModelRepository<UserProfile> userProfileRepo, IModelRepository<TableIndex> tableIndexRepo)
+            : base(userProfileRepo)
+        {
+            _tableIndexRepo = tableIndexRepo;
+        }
+
         [HttpGet]
         public override ActionResult Create()
         {
@@ -199,49 +211,32 @@ namespace EPSCoR.Controllers
 
         public override ActionResult Delete(int id)
         {
-            UserProfile userProfile;
-            using (IModelRepository<UserProfile> repo = RepositoryFactory.GetModelRepository<UserProfile>())
+            UserProfile userProfile = ModelRepo.Get(id);
+            if (userProfile == null)
             {
-                userProfile = repo.Get(id);
-
-                if (userProfile == null)
-                {
-                    return HttpNotFound();
-                }
-
-                repo.Remove(userProfile.ID);
+                return HttpNotFound();
             }
 
-            using (IModelRepository<TableIndex> repo = RepositoryFactory.GetModelRepository<TableIndex>())
+            ModelRepo.Remove(userProfile.ID);
+
+            IEnumerable<TableIndex> userTables = _tableIndexRepo.GetAll().Where((t) => t.UploadedByUser == userProfile.UserName).ToList();
+
+            foreach (TableIndex table in userTables)
             {
-                IEnumerable<TableIndex> userTables = repo.GetAll().Where((t) => t.UploadedByUser == userProfile.UserName).ToList();
+                //Remove index.
+                _tableIndexRepo.Remove(table.ID);
 
-                foreach (TableIndex table in userTables)
+                //Drop table.
+                using (ITableRepository tableRepo = RepositoryFactory.GetTableRepository(userProfile.UserName))
                 {
-                    //Remove index.
-                    using (IModelRepository<TableIndex> tableIndexRepo = RepositoryFactory.GetModelRepository<TableIndex>())
-                    {
-                        TableIndex index = tableIndexRepo.Get(id);
-
-                        if (index == null)
-                        {
-                            continue;
-                        }
-                        tableIndexRepo.Remove(index.ID);
-                    }
-
-                    //Drop table.
-                    using (ITableRepository tableRepo = RepositoryFactory.GetTableRepository(userProfile.UserName))
-                    {
-                        tableRepo.Drop(table.Name);
-                    }
-
-                    //Delete files.
-                    IFileAccessor fileAccessor = RepositoryFactory.GetFileAccessor(userProfile.UserName);
-                    fileAccessor.DeleteFiles(FileDirectory.Conversion, table.Name);
-                    fileAccessor.DeleteFiles(FileDirectory.Archive, table.Name);
-                    fileAccessor.DeleteFiles(FileDirectory.Upload, table.Name);
+                    tableRepo.Drop(table.Name);
                 }
+
+                //Delete files.
+                IFileAccessor fileAccessor = RepositoryFactory.GetFileAccessor(userProfile.UserName);
+                fileAccessor.DeleteFiles(FileDirectory.Conversion, table.Name);
+                fileAccessor.DeleteFiles(FileDirectory.Archive, table.Name);
+                fileAccessor.DeleteFiles(FileDirectory.Upload, table.Name);
             }
 
             return RedirectToAction("Index");

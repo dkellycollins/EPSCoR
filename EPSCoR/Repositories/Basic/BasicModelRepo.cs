@@ -15,11 +15,11 @@ namespace EPSCoR.Repositories.Basic
     public class BasicModelRepo<T> : IModelRepository<T>
         where T : class, IModel
     {
-        private DefaultContext _context;
+        private ModelDbContext _context;
 
         public BasicModelRepo()
         {
-            _context = new DefaultContext();
+            _context = new ModelDbContext();
         }
 
         public T Get(int entityID)

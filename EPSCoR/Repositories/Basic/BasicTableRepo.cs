@@ -11,13 +11,13 @@ namespace EPSCoR.Repositories.Basic
 {
     public class BasicTableRepo : ITableRepository, IDatabaseCalc
     {
-        DefaultContext _defaultContext;
+        ModelDbContext _defaultContext;
         UserContext _userContext;
         string currentUser;
 
         public BasicTableRepo(string userName)
         {
-            _defaultContext = new DefaultContext();
+            _defaultContext = new ModelDbContext();
             _userContext = UserContext.GetContextForUser(userName);
             currentUser = userName;
         }

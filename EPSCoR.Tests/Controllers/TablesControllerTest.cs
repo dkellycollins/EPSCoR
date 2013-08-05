@@ -14,7 +14,7 @@ using Moq;
 
 namespace EPSCoR.Tests.Controllers
 {
-    [TestClass]
+    /*[TestClass]
     public class TablesControllerTest
     {
         private List<TableIndex> MockTableIndexes = new List<TableIndex>()
@@ -230,5 +230,5 @@ namespace EPSCoR.Tests.Controllers
         {
             Assert.Inconclusive();
         }
-    }
+    }*/
 }

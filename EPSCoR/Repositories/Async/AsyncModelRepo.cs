@@ -16,11 +16,11 @@ namespace EPSCoR.Repositories.Async
     public class AsyncModelRepo<T> : IAsyncModelRepository<T>
         where T : class, IModel
     {
-        private DefaultContext _context;
+        private ModelDbContext _context;
 
         public AsyncModelRepo()
         {
-            _context = new DefaultContext();
+            _context = new ModelDbContext();
         }
 
         #region IAsyncModelRepository Members

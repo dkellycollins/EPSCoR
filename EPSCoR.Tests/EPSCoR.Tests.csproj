@@ -106,34 +106,39 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\AboutControllerTest.cs" />
     <Compile Include="Controllers\FilesControllerTest.cs" />
     <Compile Include="Controllers\HomeControllerTest.cs" />
     <Compile Include="Controllers\TablesControllerTest.cs" />
-    <Compile Include="Controllers\BootstrapBaseControllerTest.cs" />
+    <Compile Include="Controllers\AccountControllerTest.cs" />
+    <Compile Include="Controllers\DataProcessorControllerTest.cs" />
+    <Compile Include="Controllers\ModelControllerTest.cs" />
+    <Compile Include="Controllers\TaskControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\Basic\BasicModelRepoTests.cs" />
     <Compile Include="Repositories\Basic\BasicFileAccessorTest.cs" />
-    <Compile Include="Repositories\Basic\BasicRootRepoTests.cs" />
     <Compile Include="Repositories\Basic\BasicTableRepoTests.cs" />
+    <Compile Include="ServerSetup.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="TestingFiles\MDC_B_ATT.csv" />
+    <None Include="TestingFiles\MDC_B_US.csv" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EPSCoR.Database\EPSCoR.Database.csproj">
-      <Project>{cabe2c57-7bb7-40de-8f38-2b18bffbee38}</Project>
-      <Name>EPSCoR.Database</Name>
-    </ProjectReference>
     <ProjectReference Include="..\EPSCoR\EPSCoR.csproj">
       <Project>{9D3EF42C-1E00-4A31-9BEE-B8E8514D1650}</Project>
       <Name>EPSCoR</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Extentions\" />
+    <Folder Include="Hubs\" />
+    <Folder Include="Repositories\Async\" />
+    <Folder Include="Scripts\" />
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

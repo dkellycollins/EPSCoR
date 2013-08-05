@@ -9,7 +9,7 @@ namespace EPSCoR.Database
     /// <summary>
     /// Provides access the default database.
     /// </summary>
-    public class DefaultContext : DbContext
+    public class ModelDbContext : DbContext
     {
         public delegate void ModelEventHandler(IModel model);
 
@@ -46,13 +46,13 @@ namespace EPSCoR.Database
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbProcedures Procedures { get; private set; }
 
-        public DefaultContext()
+        public ModelDbContext()
             : base("MySqlConnection")
         {
             Procedures = new MySqlProcedures(this);
         }
 
-        public void CreateModel(IModel model)
+        public virtual void CreateModel(IModel model)
         {
             model.DateCreated = DateTime.Now;
             model.DateUpdated = DateTime.Now;
@@ -74,7 +74,7 @@ namespace EPSCoR.Database
             ModelCreated(model);
         }
 
-        public void UpdateModel(IModel model)
+        public virtual void UpdateModel(IModel model)
         {
             model.DateUpdated = DateTime.Now;
 
@@ -95,7 +95,7 @@ namespace EPSCoR.Database
             ModelUpdated(model);
         }
 
-        public void RemoveModel(IModel model)
+        public virtual void RemoveModel(IModel model)
         {
             if (model is TableIndex)
             {

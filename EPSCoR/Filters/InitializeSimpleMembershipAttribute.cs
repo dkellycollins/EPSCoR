@@ -27,9 +27,9 @@ namespace EPSCoR.Filters
         {
             public SimpleMembershipInitializer()
             {
-                System.Data.Entity.Database.SetInitializer<DefaultContext>(null);
+                System.Data.Entity.Database.SetInitializer<ModelDbContext>(null);
 
-                var context = new DefaultContext();
+                var context = new ModelDbContext();
                 try
                 {
                     if (!context.Database.Exists())
