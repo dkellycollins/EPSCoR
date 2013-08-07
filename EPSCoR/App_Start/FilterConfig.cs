@@ -1,5 +1,5 @@
-﻿using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
+using EPSCoR.Filters;
 
 namespace EPSCoR
 {
@@ -8,6 +8,7 @@ namespace EPSCoR
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
+            filters.Add(new RequireRemoteHttpsAttribute());
         }
     }
 }

@@ -8,19 +8,23 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using EPSCoR.Database.Exceptions;
 
-namespace EPSCoR.Database.DbProcedure
+namespace EPSCoR.Database.Context
 {
     /// <summary>
     /// This is the base class for all DbCmd classes. This class will mostly define helper functions for the sub classes to use.
     /// </summary>
-    public abstract class DbProcedures
+    public abstract class TableDbContext : DbContext
     {
-        protected DbContext _context;
+        public TableDbContext()
+        { }
 
-        public DbProcedures(DbContext context) 
-        {
-            _context = context;
-        }
+        public TableDbContext(string connectionString)
+            : base(connectionString)
+        { }
+
+        public TableDbContext(DbConnection connection)
+            : base(connection, false)
+        { }
 
         /// <summary>
         /// Adds an empty table using the given file.
@@ -79,7 +83,7 @@ namespace EPSCoR.Database.DbProcedure
             string rowsQuery = "SELECT FOUND_ROWS()";
             
             DataTable result = CommonSelect(mainQuery);
-            totalRows = _context.Database.ExecuteSqlCommand(rowsQuery);
+            totalRows = Database.ExecuteSqlCommand(rowsQuery);
             
             return result;
         }
@@ -89,16 +93,16 @@ namespace EPSCoR.Database.DbProcedure
             ThrowExceptionIfInvalidSql(table);
 
             string query = "SELECT COUNT(*) FROM " + table;
-            return _context.Database.SqlQuery<int>(query).FirstOrDefault();
+            return Database.SqlQuery<int>(query).FirstOrDefault();
         }
 
         protected virtual DataTable CommonSelect(string query)
         {
-            DbProviderFactory dbFactory = DbProviderFactories.GetFactory(_context.Database.Connection);
+            DbProviderFactory dbFactory = DbProviderFactories.GetFactory(Database.Connection);
 
             DbCommand cmd = dbFactory.CreateCommand();
             cmd.CommandText = query;
-            cmd.Connection = _context.Database.Connection;
+            cmd.Connection = Database.Connection;
 
             DbDataAdapter dataAdapter = dbFactory.CreateDataAdapter();
             dataAdapter.SelectCommand = cmd;
@@ -113,7 +117,7 @@ namespace EPSCoR.Database.DbProcedure
         {
             ThrowExceptionIfInvalidSql(table);
 
-            _context.Database.ExecuteSqlCommand("DROP TABLE " + table);
+            Database.ExecuteSqlCommand("DROP TABLE " + table);
         }
 
         #region Helper Methods

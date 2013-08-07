@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Transactions;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Mvc;
-using System.Web.Security;
-using DotNetOpenAuth.AspNet;
-using Microsoft.Web.WebPages.OAuth;
-using WebMatrix.WebData;
+using DotNetCasClient;
 using EPSCoR.Database.Models;
 using EPSCoR.Filters;
 using EPSCoR.Repositories;
-using DotNetCasClient;
-using EPSCoR.Repositories.Basic;
 using EPSCoR.Repositories.Factory;
+using WebMatrix.WebData;
 
 namespace EPSCoR.Controllers
 {

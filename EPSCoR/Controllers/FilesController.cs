@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Net.Mime;
-using System.Web;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using EPSCoR.Database.Models;
 using EPSCoR.Repositories;
-using WebMatrix.WebData;
-using System.Web.Script.Serialization;
-using EPSCoR.Repositories.Basic;
+using EPSCoR.Repositories.Factory;
 using EPSCoR.Results;
 using EPSCoR.ViewModels;
-using EPSCoR.Repositories.Factory;
-using System.Threading.Tasks;
-using EPSCoR.Filters;
+using WebMatrix.WebData;
 
 namespace EPSCoR.Controllers
 {
@@ -94,12 +88,7 @@ namespace EPSCoR.Controllers
                 uploadedBytes = (int)info.Length;
             }
 
-            return new NewtonsoftJsonResult(new 
-            { 
-                fileName = id, 
-                uploadedBytes = uploadedBytes, 
-                fileExists = fileExists 
-            });
+            return new CheckFileResult(id, uploadedBytes, fileExists);
         }
 
         /// <summary>
@@ -113,21 +102,9 @@ namespace EPSCoR.Controllers
             if (!(await _asyncFileAccessor.FileExistAsync(FileDirectory.Temp, id)))
                 return new FileUploadResult(id, "File has not been uploaded.");
 
-            bool result = false;
-            using (FileStream fileStream = await _asyncFileAccessor.OpenFileAsync(FileDirectory.Temp, id))
-            {
-                FileStreamWrapper wrapper = new FileStreamWrapper()
-                {
-                    FileName = id,
-                    InputStream = fileStream
-                };
-                result = await _asyncFileAccessor.SaveFilesAsync(FileDirectory.Upload, wrapper);
-            }
-            await _asyncFileAccessor.DeleteFilesAsync(FileDirectory.Temp, id);
+            await _asyncFileAccessor.MoveFileAsync(FileDirectory.Temp, FileDirectory.Upload, id);
 
-            if (result)
-                return new FileUploadResult(id);
-            return new FileUploadResult(id, "Could not complete file upload.");
+            return new FileUploadResult(id);
         }
 
         /// <summary>

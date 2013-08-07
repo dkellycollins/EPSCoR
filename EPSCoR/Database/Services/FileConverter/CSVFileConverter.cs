@@ -1,7 +1,7 @@
-﻿
-using System;
+﻿using System;
 using System.IO;
 using EPSCoR.Database.Services.Log;
+
 namespace EPSCoR.Database.Services.FileConverter
 {
     /// <summary>

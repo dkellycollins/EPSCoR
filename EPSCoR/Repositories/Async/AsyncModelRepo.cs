@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Web;
-using EPSCoR.Database.Models;
-using EPSCoR.Database;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using EPSCoR.Database;
+using EPSCoR.Database.Context;
+using EPSCoR.Database.Models;
 
 namespace EPSCoR.Repositories.Async
 {
@@ -20,7 +17,12 @@ namespace EPSCoR.Repositories.Async
 
         public AsyncModelRepo()
         {
-            _context = new ModelDbContext();
+            _context = DbContextFactory.GetModelDbContext();
+        }
+
+        public AsyncModelRepo(ModelDbContext context)
+        {
+            _context = context;
         }
 
         #region IAsyncModelRepository Members

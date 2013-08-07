@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Threading;
 using System.Web.Mvc;
-using WebMatrix.WebData;
-using EPSCoR.Database.Models;
 using EPSCoR.Database;
+using EPSCoR.Database.Context;
+using WebMatrix.WebData;
 
 namespace EPSCoR.Filters
 {
@@ -29,7 +28,7 @@ namespace EPSCoR.Filters
             {
                 System.Data.Entity.Database.SetInitializer<ModelDbContext>(null);
 
-                var context = new ModelDbContext();
+                var context = DbContextFactory.GetModelDbContext();
                 try
                 {
                     if (!context.Database.Exists())

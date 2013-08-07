@@ -165,26 +165,29 @@ $(function () {
                 });
             },
             //Removes the table from the page.
-            deleteTable: function (tableName) {
+            confirmDeleteTable: function (tableName) {
                 EPSCoR.Dialogs.yesNoDialog('Confirm delete', 'Are you sure you want to delete ' + tableName + '?', function (result) {
                     if (result) {
-                        tableHub.server.removeTable(tableName).fail(function(error) {
-                            EPSCoR.Alerts.addAlert("Failed to remove table " + tableName + ": " + error, "", "error");
-                        });
-
-                        var index = -1;
-                        if ((index = EPSCoR.Tables.attributeTables.indexOf(tableName)) >= 0) {
-                            EPSCoR.Tables.attributeTables.splice(index, 1);
-                        } else if ((index = EPSCoR.Tables.upstreamTables.indexOf(tableName)) >= 0) {
-                            EPSCoR.Tables.upstreamTables.splice(index, 1);
-                        } else if ((index = EPSCoR.Tables.calcTables.indexOf(tableName)) >= 0) {
-                            EPSCoR.Tables.calcTables.splice(index, 1);
-                        }
-
-                        $('#' + tableName).slideUp(500, function () {
-                            $('#' + tableName).remove();
-                        });
+                        EPSCoR.Tables.deleteTable(tableName);
                     }
+                });
+            },
+            deleteTable: function(tableName) {
+                tableHub.server.removeTable(tableName).fail(function (error) {
+                    EPSCoR.Alerts.addAlert("Failed to remove table " + tableName + ": " + error, "", "error");
+                });
+
+                var index = -1;
+                if ((index = EPSCoR.Tables.attributeTables.indexOf(tableName)) >= 0) {
+                    EPSCoR.Tables.attributeTables.splice(index, 1);
+                } else if ((index = EPSCoR.Tables.upstreamTables.indexOf(tableName)) >= 0) {
+                    EPSCoR.Tables.upstreamTables.splice(index, 1);
+                } else if ((index = EPSCoR.Tables.calcTables.indexOf(tableName)) >= 0) {
+                    EPSCoR.Tables.calcTables.splice(index, 1);
+                }
+
+                $('#' + tableName).slideUp(500, function () {
+                    $('#' + tableName).remove();
                 });
             },
             //Adds a new table to the page.

@@ -5,6 +5,7 @@ namespace EPSCoR.Database.Exceptions
     /// <summary>
     /// Should be thrown when there is an error processing a file.
     /// </summary>
+    [Serializable]
     public class InvalidFileException : Exception
     {
         public string InvalidFile { get; set; }

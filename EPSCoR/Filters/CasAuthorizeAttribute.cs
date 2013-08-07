@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using EPSCoR.Database.Models;
-using EPSCoR.Repositories;
-using EPSCoR.Repositories.Factory;
-using WebMatrix.WebData;
 
 namespace EPSCoR.Filters
 {

@@ -1,36 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Text;
 using EPSCoR.Database.Exceptions;
-using EPSCoR.Database.Services;
 using EPSCoR.Database.Services.Log;
+using EPSCoR.Extentions;
 using MySql.Data.MySqlClient;
-using EPSCoR.Database.Extentions;
 
-namespace EPSCoR.Database.DbProcedure
+namespace EPSCoR.Database.Context
 {
     /// <summary>
     /// Performs database action using MySql commands
     /// </summary>
-    internal class MySqlProcedures : DbProcedures
+    internal class MySqlTableDbContext : TableDbContext
     {
-        private string DatabaseName
-        {
-            get
-            {
-                return _context.Database.Connection.Database;
-            }
-        }
+        public MySqlTableDbContext()
+            : base("MySqlConnection")
+        { }
 
-        public MySqlProcedures(DbContext context) 
-            : base(context) 
-        {
-            if (!(context.Database.Connection is MySql.Data.MySqlClient.MySqlConnection))
-                throw new Exception("Database connection is not a MySqlConnection");
-        }
+        public MySqlTableDbContext(MySqlConnection connection)
+            : base(connection)
+        { }
 
         /// <summary>
         /// Creates a new table based on the file provided.
@@ -59,9 +50,9 @@ namespace EPSCoR.Database.DbProcedure
                 + " ( " + columns + " ) "
                 + "ENGINE = InnoDB "
                 + "DEFAULT CHARSET=latin1";
-            _context.Database.ExecuteSqlCommand(cmd);
-            _context.SaveChanges();
-            LoggerFactory.GetLogger().Log("Table " + tableName + " added to " + DatabaseName);
+            Database.ExecuteSqlCommand(cmd);
+            SaveChanges();
+            LoggerFactory.GetLogger().Log("Table " + tableName + " added to " + Database.Connection.Database);
         }
 
         /// <summary>
@@ -80,8 +71,8 @@ namespace EPSCoR.Database.DbProcedure
                     + "OPTIONALLY ENCLOSED BY '\"'"
                     + "LINES TERMINATED BY '\n'"
                     + "IGNORE 1 LINES";
-            int rowsUpdated = _context.Database.ExecuteSqlCommand(cmd);
-            LoggerFactory.GetLogger().Log(rowsUpdated + " rows updated in table " + table + ", " + DatabaseName);
+            int rowsUpdated = Database.ExecuteSqlCommand(cmd);
+            LoggerFactory.GetLogger().Log(rowsUpdated + " rows updated in table " + table + ", " + Database.Connection.Database);
         }
 
         internal override void SaveTableToFile(string table, string filePath)
@@ -93,8 +84,8 @@ namespace EPSCoR.Database.DbProcedure
                 + "FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' "
                 + "LINES TERMINATED BY '\n' "
                 + "FROM " + table;
-            _context.Database.ExecuteSqlCommand(cmd);
-            LoggerFactory.GetLogger().Log("Table, " + table + ", from database, " + DatabaseName + ", saved to " + filePath);
+            Database.ExecuteSqlCommand(cmd);
+            LoggerFactory.GetLogger().Log("Table, " + table + ", from database, " + Database.Connection.Database + ", saved to " + filePath);
         }
 
         /// <summary>
@@ -116,7 +107,7 @@ namespace EPSCoR.Database.DbProcedure
         {
             ThrowExceptionIfInvalidSql(table);
 
-            _context.Database.ExecuteSqlCommand("DROP TABLE IF EXISTS " + table);
+            Database.ExecuteSqlCommand("DROP TABLE IF EXISTS " + table);
         }
 
         private void createCalcTable(string attTable, string usTable, string calcTable, string calc)
@@ -147,18 +138,18 @@ namespace EPSCoR.Database.DbProcedure
                     + "WHERE ARCID = US_POLYID"
                 + ") as Prod "
                 + "GROUP BY Prod.POLYLINEID ";
-            _context.Database.ExecuteSqlCommand(cmd);
-            _context.SaveChanges();
-            LoggerFactory.GetLogger().Log(calc + " table " + calcTable + "created in " + DatabaseName);
+            Database.ExecuteSqlCommand(cmd);
+            SaveChanges();
+            LoggerFactory.GetLogger().Log(calc + " table " + calcTable + "created in " + Database.Connection.Database);
         }
 
         private IEnumerable<string> getColumnsForTable(string table)
         {
             string showColumns = "SELECT column_name"
                                + " FROM information_schema.columns"
-                               + " WHERE table_schema = '" + DatabaseName + "'"
+                               + " WHERE table_schema = '" + Database.Connection.Database + "'"
                                + " AND table_name = '" + table + "'";
-            IEnumerable<string> columns = _context.Database.SqlQuery<string>(showColumns);
+            IEnumerable<string> columns = Database.SqlQuery<string>(showColumns);
             if (columns == null || columns.Count() == 0)
             {
                 throw new Exception("Query to show fields from table failed");

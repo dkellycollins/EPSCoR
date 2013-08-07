@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using EPSCoR.Database;
+using EPSCoR.Database.Context;
 using EPSCoR.Database.Models;
 
 namespace EPSCoR.Repositories.Basic
@@ -19,17 +16,22 @@ namespace EPSCoR.Repositories.Basic
 
         public BasicModelRepo()
         {
-            _context = new ModelDbContext();
+            _context = DbContextFactory.GetModelDbContext();
+        }
+
+        public BasicModelRepo(ModelDbContext context)
+        {
+            _context = context;
         }
 
         public T Get(int entityID)
         {
-            return _context.Set<T>().Find(entityID);
+            return _context.GetModel<T>(entityID);
         }
 
         public IQueryable<T> GetAll()
         {
-            return _context.Set<T>().AsQueryable();
+            return _context.GetAllModels<T>();
         }
 
         public void Create(T itemToCreate)

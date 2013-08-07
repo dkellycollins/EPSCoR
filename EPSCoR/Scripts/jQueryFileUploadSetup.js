@@ -46,6 +46,14 @@ $(function () {
                     $(this).remove();
                 }
             }),
+        deleteBtn = $('<button class="btn btn-danger">Delete</button>')
+            .on('click', function () {
+                var $this = $(this),
+                    data = $this.data(),
+                    $context = data.context;
+                EPSCoR.Tables.deleteTable(data.file.name);
+                $context.remove();
+            }),
         closeButton = $('<button type="button" class="close hidden" data-dismiss="alert">x</button>'),
         progressBar = $('<div class="progress progress-success"><div class="bar"></div></div>');
 
@@ -54,8 +62,6 @@ $(function () {
         dataType: 'json',
         autoUpload: false,
         acceptFileTypes: /(\.|\/)(csv)$/i,
-        //sequentialUploads: true,
-        //multipart: false, //This is required for chunking to work in firefox.
         maxChunkSize: 1000000 // 3 MB
     })
     //This is called when files are added.
@@ -80,6 +86,7 @@ $(function () {
         $.getJSON(checkUrl + data.files[data.index].name, function (fileInfo) {
             if (fileInfo.fileExists) {
                 setErrorStatus("Table already exists. Delete current table before uploading new one.", data.context);
+                $(".btns", data.context).append(deleteBtn.clone(true).data(data));
             } else {
                 data.uploadedBytes = fileInfo.uploadedBytes;
                 data.context.queueIndex = filesToUpload.push(data) - 1;

@@ -4,8 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
-using EPSCoR.Database.Exceptions;
+using EPSCoR.Database.Context;
 using EPSCoR.Database.Models;
 using EPSCoR.Database.Services;
 using EPSCoR.Database.Services.FileConverter;
@@ -119,7 +118,7 @@ namespace EPSCoR.Database
         {
             LoggerFactory.GetLogger().Log("File uploaded: " + filePath);
 
-            using (ModelDbContext defaultContext = new ModelDbContext())
+            using (ModelDbContext defaultContext = DbContextFactory.GetModelDbContext())
             {
                 defaultContext.CreateModel(tableIndex);
 
@@ -145,10 +144,10 @@ namespace EPSCoR.Database
 
                 //Add converted file to the database.
                 updateTableStatus(defaultContext, tableIndex, "Creating table in database.");
-                using (UserContext userContext = UserContext.GetContextForUser(userName))
+                using (TableDbContext tableContext = DbContextFactory.GetTableDbContextForUser(userName))
                 {
-                    userContext.Procedures.AddTableFromFile(conversionPath);
-                    userContext.Procedures.PopulateTableFromFile(conversionPath);
+                    tableContext.AddTableFromFile(conversionPath);
+                    tableContext.PopulateTableFromFile(conversionPath);
                 }
 
                 //Move the original file to the Archive.
@@ -179,7 +178,7 @@ namespace EPSCoR.Database
 
         private void handleError(Task task, TableIndex tableIndex, string filePath, string userName)
         {
-            using (ModelDbContext defaultContext = new ModelDbContext())
+            using (ModelDbContext defaultContext = new MySqlModelDbContext())
             {
                 updateTableStatus(defaultContext, tableIndex, "An error occured while processing the file.", false, true);
             }
@@ -198,7 +197,7 @@ namespace EPSCoR.Database
 
         private void handleCancel(Task task, TableIndex tableIndex, string filePath, string userName)
         {
-            using (ModelDbContext defaultContext = new ModelDbContext())
+            using (ModelDbContext defaultContext = new MySqlModelDbContext())
             {
                 updateTableStatus(defaultContext, tableIndex, "Processing canceled by user.", false, true);
             }

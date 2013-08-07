@@ -42,6 +42,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.QualityTools.WebTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
@@ -53,6 +57,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Web.Extensions" />
@@ -106,14 +111,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\FilesControllerTest.cs" />
-    <Compile Include="Controllers\HomeControllerTest.cs" />
-    <Compile Include="Controllers\TablesControllerTest.cs" />
-    <Compile Include="Controllers\AccountControllerTest.cs" />
-    <Compile Include="Controllers\DataProcessorControllerTest.cs" />
-    <Compile Include="Controllers\ModelControllerTest.cs" />
-    <Compile Include="Controllers\TaskControllerTest.cs" />
+    <Compile Include="Controllers\DataProcessorTest.cs" />
+    <Compile Include="Database\Context\MySqlModelDbContextTest.cs" />
+    <Compile Include="Database\Context\MySqlTableDbContextTest.cs" />
+    <Compile Include="Database\Services\FileConverter\CSVFileConverterTest.cs" />
+    <Compile Include="Database\Services\Log\FileLoggerTest.cs" />
+    <Compile Include="Extentions\IEnumerableExtentionsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\Async\AsyncModelRepoTest.cs" />
     <Compile Include="Repositories\Basic\BasicModelRepoTests.cs" />
     <Compile Include="Repositories\Basic\BasicFileAccessorTest.cs" />
     <Compile Include="Repositories\Basic\BasicTableRepoTests.cs" />
@@ -134,9 +139,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Extentions\" />
     <Folder Include="Hubs\" />
-    <Folder Include="Repositories\Async\" />
     <Folder Include="Scripts\" />
   </ItemGroup>
   <Choose>

@@ -1,25 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
 using EPSCoR.Database;
+using EPSCoR.Database.Context;
 using EPSCoR.Database.Models;
+using EPSCoR.Database.Services;
 
 namespace EPSCoR.Repositories.Basic
 {
     public class BasicTableRepo : ITableRepository, IDatabaseCalc
     {
-        ModelDbContext _defaultContext;
-        UserContext _userContext;
-        string currentUser;
+        ModelDbContext _modelContext;
+        TableDbContext _tableContext;
+        string _currentUser;
 
         public BasicTableRepo(string userName)
         {
-            _defaultContext = new ModelDbContext();
-            _userContext = UserContext.GetContextForUser(userName);
-            currentUser = userName;
+            _modelContext = DbContextFactory.GetModelDbContext();
+            _tableContext = DbContextFactory.GetTableDbContextForUser(userName);
+            _currentUser = userName;
         }
 
         #region IRawRepository Members
@@ -33,7 +33,7 @@ namespace EPSCoR.Repositories.Basic
         {
             try
             {
-                return _userContext.Procedures.SelectAllFrom(tableName);
+                return _tableContext.SelectAllFrom(tableName);
             }
             catch
             {
@@ -46,7 +46,7 @@ namespace EPSCoR.Repositories.Basic
             try
             {
                 int totalRows = 0;
-                return _userContext.Procedures.SelectAllFrom(tableName, lowerLimit, upperLimit, out totalRows);
+                return _tableContext.SelectAllFrom(tableName, lowerLimit, upperLimit, out totalRows);
             }
             catch
             {
@@ -56,7 +56,7 @@ namespace EPSCoR.Repositories.Basic
 
         public int Count(string tableName)
         {
-            return _userContext.Procedures.Count(tableName);
+            return _tableContext.Count(tableName);
         }
 
         public void Update(DataTable table)
@@ -66,19 +66,19 @@ namespace EPSCoR.Repositories.Basic
 
         public void Drop(string tableName)
         {
-            _userContext.Procedures.DropTable(tableName);
+            _tableContext.DropTable(tableName);
 
-            TableIndex tableIndex = _defaultContext.Tables.Where((t) => t.Name == tableName).FirstOrDefault();
+            TableIndex tableIndex = _modelContext.GetAllModels<TableIndex>().Where((t) => t.Name == tableName).FirstOrDefault();
             if (tableIndex != null)
             {
-                _defaultContext.RemoveModel(tableIndex);
+                _modelContext.RemoveModel(tableIndex);
             }
         }
 
         public void Dispose()
         {
-            _defaultContext.Dispose();
-            _userContext.Dispose();
+            _modelContext.Dispose();
+            _tableContext.Dispose();
         }
 
         #endregion IRawRepository Members
@@ -105,7 +105,7 @@ namespace EPSCoR.Repositories.Basic
         private CalcResult createCalcTable(string attTable, string usTable, string calc)
         {
             string calcTable = string.Format("{0}_{1}_{2}", attTable, usTable, calc.ToString());
-            TableIndex exisitingTable = _defaultContext.GetTableIndex(calcTable, currentUser);
+            TableIndex exisitingTable = _modelContext.GetAllModels<TableIndex>().Where(index => index.Name == calcTable && index.UploadedByUser == _currentUser).FirstOrDefault();
             if (exisitingTable != null)
                 return CalcResult.TableAlreadyExists;
 
@@ -116,18 +116,18 @@ namespace EPSCoR.Repositories.Basic
                     Name = calcTable,
                     Status = "Generating table.",
                     Type = TableTypes.CALC,
-                    UploadedByUser = currentUser,
+                    UploadedByUser = _currentUser,
                     Processed = false
                 };
-                _defaultContext.CreateModel(index);
+                _modelContext.CreateModel(index);
 
                 switch (calc)
                 {
                     case CalcType.Sum:
-                        _userContext.Procedures.SumTables(attTable, usTable, calcTable);
+                        _tableContext.SumTables(attTable, usTable, calcTable);
                         break;
                     case CalcType.Avg:
-                        _userContext.Procedures.AvgTables(attTable, usTable, calcTable);
+                        _tableContext.AvgTables(attTable, usTable, calcTable);
                         break;
                     default:
                         throw new Exception("Unknown calctype");
@@ -135,12 +135,13 @@ namespace EPSCoR.Repositories.Basic
 
                 index.Status = "Saving table.";
                 index.Processed = true;
-                _defaultContext.UpdateModel(index);
+                _modelContext.UpdateModel(index);
 
-                _userContext.SaveTableToFile(calcTable);
+                string calcTablePath = Path.Combine(DirectoryManager.ConversionDir, _currentUser, calcTable + ".csv");
+                _tableContext.SaveTableToFile(calcTable, calcTablePath);
 
                 index.Status = "Table Created.";
-                _defaultContext.UpdateModel(index);
+                _modelContext.UpdateModel(index);
 
                 return CalcResult.Success;
             }
