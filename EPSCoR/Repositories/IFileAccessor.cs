@@ -119,47 +119,12 @@ namespace EPSCoR.Repositories
         /// <returns></returns>
         bool FileExist(FileDirectory directory, string fileName);
 
+        /// <summary>
+        /// Moves the file from the current directory to the new directory.
+        /// </summary>
+        /// <param name="currentDirectory">The directory that the file is currently in.</param>
+        /// <param name="newDirectory">The directory to move the file too.</param>
+        /// <param name="fileName">Name of the file to move.</param>
         void MoveFile(FileDirectory currentDirectory, FileDirectory newDirectory, string fileName);
-    }
-
-    public interface IDirectoryResolver
-    {
-        string GetUserDirectory(FileDirectory directory, string user);
-    }
-
-    public class DirectoryResolver : IDirectoryResolver
-    {
-        public DirectoryResolver()
-        { }
-
-        public string GetUserDirectory(FileDirectory directory, string user)
-        {
-            string userDirectory;
-            switch (directory)
-            {
-                case FileDirectory.Archive:
-                    userDirectory = Path.Combine(DirectoryManager.ArchiveDir, user);
-                    break;
-                case FileDirectory.Conversion:
-                    userDirectory = Path.Combine(DirectoryManager.ConversionDir, user);
-                    break;
-                case FileDirectory.Invalid:
-                    userDirectory = Path.Combine(DirectoryManager.InvalidDir, user);
-                    break;
-                case FileDirectory.Temp:
-                    userDirectory = Path.Combine(DirectoryManager.TempDir, user);
-                    break;
-                case FileDirectory.Upload:
-                    userDirectory = Path.Combine(DirectoryManager.UploadDir, user);
-                    break;
-                default:
-                    throw new Exception("Unknown Directory");
-            }
-
-            if (!Directory.Exists(userDirectory))
-                Directory.CreateDirectory(userDirectory);
-
-            return userDirectory;
-        }
     }
 }

@@ -8,7 +8,6 @@ namespace EPSCoR.Controllers
     [Authorize]
     public class DataProcessorController : Controller
     {
-        //[OutputCache(Duration=0)]
         public ActionResult Index()
         {
             return View();

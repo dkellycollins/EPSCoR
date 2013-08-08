@@ -78,12 +78,12 @@ namespace EPSCoR.Database.Context
         internal override void SaveTableToFile(string table, string filePath)
         {
             IEnumerable<string> columns = getColumnsForTable(table);
-            string strColumns = columns.ToCommaSeparatedString("'{0}'");
 
-            string cmd = "SELECT " + strColumns + " INTO OUTFILE '" + filePath.Replace('\\', '/') + "'"
+            string cmd = "SELECT" + columns.ToCommaSeparatedString("'{0}'") + "UNION ALL" 
+                + "(SELECT " + columns.ToCommaSeparatedString() + " INTO OUTFILE '" + filePath.Replace('\\', '/') + "'"
                 + "FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' "
                 + "LINES TERMINATED BY '\n' "
-                + "FROM " + table;
+                + "FROM " + table + ")";
             Database.ExecuteSqlCommand(cmd);
             LoggerFactory.GetLogger().Log("Table, " + table + ", from database, " + Database.Connection.Database + ", saved to " + filePath);
         }

@@ -13,7 +13,7 @@ namespace EPSCoR.Repositories.Factory
 
         public static IAsyncFileAccessor GetAsyncFileAccessor(string userName)
         {
-            return new AsyncFileAccessor(userName);
+            return new AsyncFileAccessor(userName, new DirectoryResolver());
         }
 
         public static IModelRepository<T> GetModelRepository<T>()

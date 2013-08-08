@@ -10,10 +10,12 @@ namespace EPSCoR.Repositories.Async
     public class AsyncFileAccessor : IAsyncFileAccessor
     {
         private string _user;
+        private IDirectoryResolver _directoryResolver;
 
-        public AsyncFileAccessor(string userName)
+        public AsyncFileAccessor(string userName, IDirectoryResolver directoryResolver)
         {
             _user = userName;
+            _directoryResolver = directoryResolver;
         }
 
         #region IAsyncFileAccessor Members
@@ -30,7 +32,7 @@ namespace EPSCoR.Repositories.Async
 
         public async Task<FileStream> OpenFileAsync(FileDirectory directory, string fileName)
         {
-            string path = Path.Combine(getUserDirectory(directory), fileName);
+            string path = Path.Combine(_directoryResolver.GetUserDirectory(directory, _user), fileName);
 
             return await Task.Run(() => 
             {
@@ -47,7 +49,7 @@ namespace EPSCoR.Repositories.Async
 
         public async Task<IEnumerable<string>> GetFilesAsync(FileDirectory directory)
         {
-            return await Task.Run(() => Directory.GetFiles(getUserDirectory(directory)));
+            return await Task.Run(() => Directory.GetFiles(_directoryResolver.GetUserDirectory(directory, _user)));
         }
 
         public async Task DeleteFilesAsync(FileDirectory directory, params string[] fileNames)
@@ -62,7 +64,7 @@ namespace EPSCoR.Repositories.Async
         {
             return await Task.Run(() =>
             {
-                string path = Path.Combine(getUserDirectory(directory), fileName);
+                string path = Path.Combine(_directoryResolver.GetUserDirectory(directory, _user), fileName);
                 return File.Exists(path);
             });
         }
@@ -71,7 +73,7 @@ namespace EPSCoR.Repositories.Async
         {
             return await Task.Run(() =>
             {
-                string path = Path.Combine(getUserDirectory(directory), fileName);
+                string path = Path.Combine(_directoryResolver.GetUserDirectory(directory, _user), fileName);
                 return new FileInfo(path);
             });
         }
@@ -80,8 +82,8 @@ namespace EPSCoR.Repositories.Async
         {
             await Task.Run(() =>
             {
-                string currentFilePath = Path.Combine(getUserDirectory(currentDirectory), fileName);
-                string newFilePath = Path.Combine(getUserDirectory(newDirectory), fileName);
+                string currentFilePath = Path.Combine(_directoryResolver.GetUserDirectory(currentDirectory, _user), fileName);
+                string newFilePath = Path.Combine(_directoryResolver.GetUserDirectory(newDirectory, _user), fileName);
 
                 File.Move(currentFilePath, newFilePath);
             });
@@ -95,7 +97,7 @@ namespace EPSCoR.Repositories.Async
         {
             bool result = true;
             var fileName = Path.GetFileName(file.FileName);
-            var path = Path.Combine(getUserDirectory(directory), fileName);
+            var path = Path.Combine(_directoryResolver.GetUserDirectory(directory, _user), fileName);
 
             try
             {
@@ -117,7 +119,7 @@ namespace EPSCoR.Repositories.Async
 
         private async Task deleteFileAsync(FileDirectory directory, string fileName)
         {
-            string userDirectory = getUserDirectory(directory);
+            string userDirectory = _directoryResolver.GetUserDirectory(directory, _user);
             if (Path.HasExtension(fileName))
             {
                 await Task.Run(() =>
@@ -138,36 +140,6 @@ namespace EPSCoR.Repositories.Async
                     }
                 });
             }
-        }
-
-        private string getUserDirectory(FileDirectory directory)
-        {
-            string dir = string.Empty;
-            switch (directory)
-            {
-                case FileDirectory.Archive:
-                    dir = Path.Combine(DirectoryManager.ArchiveDir, _user);
-                    break;
-                case FileDirectory.Conversion:
-                    dir = Path.Combine(DirectoryManager.ConversionDir, _user);
-                    break;
-                case FileDirectory.Invalid:
-                    dir = Path.Combine(DirectoryManager.InvalidDir, _user);
-                    break;
-                case FileDirectory.Temp:
-                    dir = Path.Combine(DirectoryManager.TempDir, _user);
-                    break;
-                case FileDirectory.Upload:
-                    dir = Path.Combine(DirectoryManager.UploadDir, _user);
-                    break;
-                default:
-                    throw new Exception("Unknown Directory");
-            }
-
-            if (!Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
-
-            return dir;
         }
 
         #endregion Private Members

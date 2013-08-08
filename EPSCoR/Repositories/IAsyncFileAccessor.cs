@@ -48,7 +48,13 @@ namespace EPSCoR.Repositories
         /// <param name="fileName"></param>
         /// <returns></returns>
         Task<bool> FileExistAsync(FileDirectory directory, string fileName);
-
+        
+        /// <summary>
+        /// Moves the file from the current directory to the new directory.
+        /// </summary>
+        /// <param name="currentDirectory">The directory that the file is currently in.</param>
+        /// <param name="newDirectory">The directory to move the file too.</param>
+        /// <param name="fileName">Name of the file to move.</param>
         Task MoveFileAsync(FileDirectory currentDirectory, FileDirectory newDirectory, string fileName);
     }
 }

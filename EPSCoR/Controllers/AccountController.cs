@@ -66,7 +66,9 @@ namespace EPSCoR.Controllers
             return View();
         }
 
-        //Adds a new user to the database.
+        /// <summary>
+        /// Adds a new user to the database.
+        /// </summary>
         private void createProfile()
         {
             UserProfile profile = new UserProfile()
@@ -76,7 +78,11 @@ namespace EPSCoR.Controllers
             _userProfileRepo.Create(profile);
         }
 
-        //If the url is a local url redirect to that. Otherwise redirect to the homepage.
+        /// <summary>
+        /// If the url is a local url redirect to that. Otherwise redirect to the homepage.
+        /// </summary>
+        /// <param name="returnUrl"></param>
+        /// <returns></returns>
         private ActionResult redirectToLocal(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))

@@ -224,6 +224,7 @@
     <Compile Include="Repositories\IAsyncTableRepository.cs" />
     <Compile Include="Repositories\IDatabaseCalc.cs" />
     <Compile Include="Repositories\Factory\RepositoryFactory.cs" />
+    <Compile Include="Repositories\IDirectoryResolver.cs" />
     <Compile Include="Results\CheckFileResult.cs" />
     <Compile Include="Results\DataTableResult.cs" />
     <Compile Include="Results\FileUploadResult.cs" />

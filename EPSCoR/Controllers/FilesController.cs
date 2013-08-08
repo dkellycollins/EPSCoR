@@ -113,7 +113,6 @@ namespace EPSCoR.Controllers
         /// <param name="id">Name of the file to download.</param>
         /// <returns></returns>
         [HttpGet]
-        //[OutputCache(VaryByParam="id", VaryByCustom="user")]
         public async Task<ActionResult> DownloadCsv(string id)
         {
             string fileName = id + ".csv";
