@@ -10,7 +10,7 @@ namespace EPSCoR.Results
         /// <summary>
         /// The name of the file.
         /// </summary>
-        public string FileName { get; set; }
+        public string TableName { get; set; }
 
         /// <summary>
         /// The size of the file that has already been uploaded.
@@ -25,9 +25,9 @@ namespace EPSCoR.Results
         public CheckFileResult()
         { }
 
-        public CheckFileResult(string fileName, int uploadedBytes, bool fileExists)
+        public CheckFileResult(string tableName, int uploadedBytes, bool fileExists)
         {
-            FileName = fileName;
+            TableName = tableName;
             UploadedBytes = uploadedBytes;
             FileExists = fileExists;
         }
@@ -36,7 +36,7 @@ namespace EPSCoR.Results
         {
             Data = new
             {
-                fileName = FileName,
+                tableName = TableName,
                 uploadedBytes = UploadedBytes,
                 fileExists = FileExists
             };

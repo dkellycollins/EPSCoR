@@ -47,7 +47,7 @@
 
     <script type="text/x-tmpl" id="tableIndexTmpl">
         <div id="{%=o.Name%}" class="well fade">
-            <span class="btn" onclick="EPSCoR.Tables.toggleTableView('{%=o.Name%}')"><i class="icon icon-plus icon-black"></i></span>
+            <button class="btn" onclick="EPSCoR.Tables.toggleTableView('{%=o.Name%}')"><i class="icon icon-plus icon-black"></i></button>
             <b>
                 {%=o.Name%}
                 {% if(!o.Processed) { %}
@@ -55,8 +55,8 @@
                 {% } %}
             </b>
             <span class="pull-right">
-                <a href="\Files\DownloadCsv\{%=o.Name%}" class="btn btn-success">Download</a>
-                <span id="{%=o.Name%}-delete" class="btn btn-danger" onclick="EPSCoR.Tables.confirmDeleteTable('{%=o.Name%}')">X</span>
+                <button class="btn btn-success" onclick="window.location='/Files/DownloadCsv/{%=o.Name%}'">Download</button>
+                <button id="{%=o.Name%}-delete" class="btn btn-danger" onclick="EPSCoR.Tables.confirmDeleteTable('{%=o.Name%}')">X</button>
             </span>
             <div id="{%=o.Name%}-details" class="hide">
                 <hr />

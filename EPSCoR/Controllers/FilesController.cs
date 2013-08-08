@@ -88,7 +88,7 @@ namespace EPSCoR.Controllers
                 uploadedBytes = (int)info.Length;
             }
 
-            return new CheckFileResult(id, uploadedBytes, fileExists);
+            return new CheckFileResult(tableName, uploadedBytes, fileExists);
         }
 
         /// <summary>

@@ -20,7 +20,7 @@ $(function () {
                 .removeClass('alert-info')
                 .addClass('alert-error');
             $('.close', $context).removeClass('hidden');
-            $('.btns', $context).remove();
+            $('.btns', $context).empty();
             setStatus(status, $context);
         },
         setSuccessStatus = function (status, $context) {
@@ -28,7 +28,7 @@ $(function () {
                 .removeClass('alert-info')
                 .addClass('alert-success');
             $('.close', $context).removeClass('hidden');
-            $('.btns', $context).remove();
+            $('.btns', $context).empty();
             setStatus(status, $context);
         },
         cancelButton = $('<button class="btn btn-warning">Cancel</button>')
@@ -51,7 +51,7 @@ $(function () {
                 var $this = $(this),
                     data = $this.data(),
                     $context = data.context;
-                EPSCoR.Tables.deleteTable(data.file.name);
+                EPSCoR.Tables.deleteTable(data.tableName);
                 $context.remove();
             }),
         closeButton = $('<button type="button" class="close hidden" data-dismiss="alert">x</button>'),
@@ -86,7 +86,8 @@ $(function () {
         $.getJSON(checkUrl + data.files[data.index].name, function (fileInfo) {
             if (fileInfo.fileExists) {
                 setErrorStatus("Table already exists. Delete current table before uploading new one.", data.context);
-                $(".btns", data.context).append(deleteBtn.clone(true).data(data));
+                fileInfo.context = data.context;
+                $(".btns", data.context).append(deleteBtn.clone(true).data(fileInfo));
             } else {
                 data.uploadedBytes = fileInfo.uploadedBytes;
                 data.context.queueIndex = filesToUpload.push(data) - 1;
