@@ -27,6 +27,9 @@ namespace EPSCoR
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Add(new RazorViewEngine());
+
             ModelDbContext.ModelCreated += DefaultContext_ModelCreated;
             ModelDbContext.ModelRemoved += DefaultContext_ModelRemoved;
             ModelDbContext.ModelUpdated += DefaultContext_ModelUpdated;

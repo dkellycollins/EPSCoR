@@ -8,7 +8,7 @@ namespace EPSCoR
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
-            filters.Add(new RequireRemoteHttpsAttribute());
+            //filters.Add(new RequireRemoteHttpsAttribute());
         }
     }
 }

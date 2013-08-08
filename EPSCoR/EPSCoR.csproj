@@ -553,7 +553,6 @@
     <Content Include="Views\Shared\_NavBarLayout.cshtml" />
     <Content Include="Views\Shared\_adminNavBar.cshtml" />
     <Content Include="Views\DataProcessor\_errorDialog.cshtml" />
-    <Content Include="Views\GIS\_GISLayout.cshtml" />
     <Content Include="Views\Shared\_appNavbar.cshtml" />
   </ItemGroup>
   <ItemGroup>
