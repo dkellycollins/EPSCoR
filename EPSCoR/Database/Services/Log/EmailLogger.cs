@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Mail;
 
 namespace EPSCoR.Database.Services.Log
@@ -8,9 +9,9 @@ namespace EPSCoR.Database.Services.Log
         //TODO move this to a config file.
         private readonly static string[] RECIPIANTS = new string[] 
         {
-            "dkellycolllins@gmail.com"
+            "dkellycollins@gmail.com"
         };
-        private const string SMTP_HOST = "idk";
+        private const string SMTP_HOST = "smtp.ksu.edu";
 
         public void Log(string message)
         {
@@ -27,12 +28,19 @@ namespace EPSCoR.Database.Services.Log
                 }
 
                 mMessage.Subject = "An error has occured with the server.";
-                mMessage.From = new MailAddress("server@daedulus.beocat.cis.ksu.edu");
+                mMessage.From = new MailAddress("server@daedulus.cis.ksu.edu");
                 mMessage.Body = message + "\n" + e.Message + "\n" + e.StackTrace;
 
                 using (SmtpClient smtp = new SmtpClient(SMTP_HOST))
                 {
-                    smtp.Send(mMessage);
+                    smtp.EnableSsl = true;
+                    smtp.Credentials = new NetworkCredential("devinkc@ksu.edu", "TutTut1991", "");
+                    try
+                    {
+                        smtp.Send(mMessage);
+                    }
+                    catch (Exception ex)
+                    { }
                 }
             }
         }
