@@ -12,7 +12,7 @@ namespace EPSCoR.Controllers
     /// <summary>
     /// Provides webpages and functions for loging a user in and out.
     /// </summary>
-    [Authorize]
+    [AddUserWhenAuthorized]
     [InitializeSimpleMembership]
     public class AccountController : Controller
     {
@@ -45,15 +45,22 @@ namespace EPSCoR.Controllers
             return redirectToLocal(returnUrl);
         }
 
+        [HttpGet]
+        public ActionResult LogOff()
+        {
+            return RedirectToAction("Index", "Home");
+        }
+
         /// <summary>
         /// Logs the user out of Cas. Then redirect the user to the main page of the app.
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult LogOff()
+        [ValidateAntiForgeryToken]
+        public ActionResult LogOff(string returnUrl)
         {
             CasAuthentication.SingleSignOut();
-            return RedirectToAction("Index", "Home");
+            return redirectToLocal(returnUrl);
         }
 
         public ActionResult NotAuthorized()

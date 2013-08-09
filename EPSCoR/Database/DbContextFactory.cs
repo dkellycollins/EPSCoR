@@ -12,7 +12,7 @@ namespace EPSCoR.Database
 #if DEBUG
             + "password=root;"
 #else
-            + "password=KsUwI1dC4tS!"
+            + "password=KsUwI1dC4tS!;"
 #endif
             + "DefaultCommandTimeout=0;";
 

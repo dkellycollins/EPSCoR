@@ -4,6 +4,7 @@ using System.Net.Mime;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using EPSCoR.Database.Models;
+using EPSCoR.Filters;
 using EPSCoR.Repositories;
 using EPSCoR.Repositories.Factory;
 using EPSCoR.Results;
@@ -15,7 +16,7 @@ namespace EPSCoR.Controllers
     /// <summary>
     /// Provides functions for uploading and retriving files.
     /// </summary>
-    [Authorize]
+    [AddUserWhenAuthorized]
     public class FilesController : Controller
     {
         private IModelRepository<TableIndex> _tableIndexRepo;

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Mvc;
 using EPSCoR.Database.Models;
+using EPSCoR.Filters;
 using EPSCoR.Repositories;
 using EPSCoR.Repositories.Factory;
 
@@ -122,7 +123,7 @@ namespace EPSCoR.Controllers
         }
     }
 
-    [Authorize(Roles="Admin")]
+    [AddUserWhenAuthorized(Roles = "Admin")]
     public class TableIndexController : ModelController<TableIndex>
     {
         private ITableRepository _tableRepo;
@@ -178,7 +179,7 @@ namespace EPSCoR.Controllers
         }
     }
 
-    [Authorize(Roles = "Admin")]
+    [AddUserWhenAuthorized(Roles = "Admin")]
     public class UserProfileController : ModelController<UserProfile>
     {
         private IModelRepository<TableIndex> _tableIndexRepo;

@@ -1,9 +1,10 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
+using EPSCoR.Filters;
 
 namespace EPSCoR.Controllers
 {
-    [Authorize(Roles="Admin")]
+    [AddUserWhenAuthorized(Roles = "Admin")]
     public class TaskController : Controller
     {
         public ActionResult Index()

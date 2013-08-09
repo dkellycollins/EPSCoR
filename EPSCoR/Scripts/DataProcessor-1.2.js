@@ -149,19 +149,24 @@ $(function () {
             },
             //Loads the given table into the given context. Uses Datatables to initalize the table.
             loadTableDetails: function ($context, tableName) {
-                $context.load('/tables/details/' + tableName, function () {
-                    $('.table', $context).dataTable({
-                        "bFilter": false,
-                        "bSort": false,
-                        "sPaginationType": "full_numbers",
-                        "bServerSide": true,
-                        "fnServerParams": function (aoData) {
-                            aoData.push({ "name": "tableName", "value": tableName });
-                        },
-                        "sAjaxSource": "/Tables/DataTableDetails",
-                        "sDom": '<"top"flp>rt<"bottom"i><"clear">'
-                    });
-                    $context.prepend('<hr />');
+                $context.load('/tables/details/' + tableName, function (respsonse, status, xhr) {
+                    if (status == "error") {
+                        EPSCoR.Alerts.addAlert("Failed to load " + tableName, "", "error");
+                        EPSCoR.Tables.toggleTableView(tableName);
+                    } else {
+                        $('.table', $context).dataTable({
+                            "bFilter": false,
+                            "bSort": false,
+                            "sPaginationType": "full_numbers",
+                            "bServerSide": true,
+                            "fnServerParams": function (aoData) {
+                                aoData.push({ "name": "tableName", "value": tableName });
+                            },
+                            "sAjaxSource": "/Tables/DataTableDetails",
+                            "sDom": '<"top"flp>rt<"bottom"i><"clear">'
+                        });
+                        $context.prepend('<hr />');
+                    }
                 });
             },
             //Removes the table from the page.

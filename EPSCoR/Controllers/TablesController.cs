@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using EPSCoR.Database.Models;
 using EPSCoR.Extensions;
+using EPSCoR.Filters;
 using EPSCoR.Repositories;
 using EPSCoR.Repositories.Factory;
 using EPSCoR.Results;
@@ -17,7 +18,7 @@ namespace EPSCoR.Controllers
     /// <summary>
     /// Contains views that display and work with uploaded tables.
     /// </summary>
-    [Authorize]
+    [AddUserWhenAuthorized]
     public class TablesController : Controller
     {
         private IModelRepository<TableIndex> _tableIndexRepo;

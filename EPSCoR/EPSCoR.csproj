@@ -209,7 +209,7 @@
     <Compile Include="Exceptions\InvalidFileException.cs" />
     <Compile Include="Exceptions\InvalidSqlException.cs" />
     <Compile Include="Extensions\IEnumerableExtentions.cs" />
-    <Compile Include="Filters\CasAuthorizeAttribute.cs" />
+    <Compile Include="Filters\AddUserWhenAuthorizedAttribute.cs" />
     <Compile Include="Filters\LogErrorAttribute.cs" />
     <Compile Include="Filters\RequireRemoteHttpsAttribute.cs" />
     <Compile Include="Hubs\AlertsHub.cs" />
