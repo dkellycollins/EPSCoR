@@ -26,20 +26,11 @@ namespace EPSCoR.Hubs
         /// <param name="tableIndex"></param>
         public static void NotifyNewTable(TableIndex tableIndex)
         {
-            User user;
-            Users.TryGetValue(tableIndex.UploadedByUser, out user);
-            if (user != null)
+            IEnumerable<UserConnection> connections = GetConnectionsForUser(tableIndex.UploadedByUser);
+            foreach (UserConnection connection in connections)
             {
-                IEnumerable<string> connectionIds;
-                lock (user.ConnectionIds)
-                {
-                    connectionIds = user.ConnectionIds.ToList();
-                }
-                foreach (string connectionId in connectionIds)
-                {
-                    var client = _context.Clients.Client(connectionId);
-                    client.addTable(tableIndex);
-                }
+                var client = _context.Clients.Client(connection.ConnectionId);
+                client.addTable(tableIndex);
             }
         }
 
@@ -49,19 +40,10 @@ namespace EPSCoR.Hubs
         /// <param name="tableIndex"></param>
         public static void NotifyTableUpdated(TableIndex tableIndex)
         {
-            User user;
-            Users.TryGetValue(tableIndex.UploadedByUser, out user);
-            if (user != null)
+            IEnumerable<UserConnection> connections = GetConnectionsForUser(tableIndex.UploadedByUser);
+            foreach (UserConnection connection in connections)
             {
-                IEnumerable<string> connectionIds;
-                lock (user.ConnectionIds)
-                {
-                    connectionIds = user.ConnectionIds.ToList();
-                }
-                foreach (string connectionId in connectionIds)
-                {
-                    _context.Clients.Client(connectionId).updateTable(tableIndex);
-                }
+                _context.Clients.Client(connection.ConnectionId).updateTable(tableIndex);
             }
         }
 
@@ -71,19 +53,10 @@ namespace EPSCoR.Hubs
         /// <param name="tableIndex"></param>
         public static void NotifyTableRemoved(TableIndex tableIndex)
         {
-            User user;
-            Users.TryGetValue(tableIndex.UploadedByUser, out user);
-            if (user != null)
+            IEnumerable<UserConnection> connections = GetConnectionsForUser(tableIndex.UploadedByUser);
+            foreach (UserConnection connection in connections)
             {
-                IEnumerable<string> connectionIds;
-                lock (user.ConnectionIds)
-                {
-                    connectionIds = user.ConnectionIds.ToList();
-                }
-                foreach (string connectionId in connectionIds)
-                {
-                    _context.Clients.Client(connectionId).removeTable(tableIndex);
-                }
+                _context.Clients.Client(connection.ConnectionId).removeTable(tableIndex);
             }
         }
 

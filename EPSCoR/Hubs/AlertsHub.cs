@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BootstrapSupport;
+using EPSCoR.Database.Models;
 using Microsoft.AspNet.SignalR;
 
 namespace EPSCoR.Hubs
@@ -29,18 +30,13 @@ namespace EPSCoR.Hubs
         /// <param name="alertType">The type of alert. This should be one of the alerts in BootstrapSupport.Alerts</param>
         public static void SendAlertToUser(string message, string userName, string header = "", string alertType = Alerts.INFORMATION)
         {
-            User user;
-            Users.TryGetValue(userName, out user);
+            UserProfile user = GetUserByUserName(userName);
             if (user != null)
             {
-                IEnumerable<string> connectionIds;
-                lock (user.ConnectionIds)
+                IEnumerable<UserConnection> connections = GetConnectionsForUser(userName);
+                foreach (UserConnection connection in connections)
                 {
-                    connectionIds = user.ConnectionIds.ToList();
-                }
-                foreach (string connectionId in connectionIds)
-                {
-                    _context.Clients.Client(connectionId).newAlert(message, header, alertType);
+                    _context.Clients.Client(connection.ConnectionId).newAlert(message, header, alertType);
                 }
             }
         }

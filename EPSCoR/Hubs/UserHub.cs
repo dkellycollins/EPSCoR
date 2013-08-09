@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EPSCoR.Database.Models;
+using EPSCoR.Repositories;
+using EPSCoR.Repositories.Factory;
 using Microsoft.AspNet.SignalR;
 
 namespace EPSCoR.Hubs
@@ -11,15 +14,6 @@ namespace EPSCoR.Hubs
     /// </summary>
     public class UserHub : Hub
     {
-        public class User
-        {
-            public string Name { get; set; }
-            public HashSet<string> ConnectionIds { get; set; }
-        }
-
-        //Note that this should be moved to persistant storage.
-        protected static readonly ConcurrentDictionary<string, User> Users = new ConcurrentDictionary<string, User>();
-
         /// <summary>
         /// Adds connectionId to user.
         /// </summary>
@@ -29,15 +23,21 @@ namespace EPSCoR.Hubs
             string userName = Context.User.Identity.Name;
             string connectionId = Context.ConnectionId;
 
-            var user = Users.GetOrAdd(userName, _ => new User
+            using (IModelRepository<UserConnection> connectionRepo = RepositoryFactory.GetModelRepository<UserConnection>())
             {
-                Name = userName,
-                ConnectionIds = new HashSet<string>()
-            });
-
-            lock (user.ConnectionIds)
-            {
-                user.ConnectionIds.Add(connectionId);
+                UserConnection connection = connectionRepo.GetAll().Where((cid) => cid.ConnectionId == connectionId).FirstOrDefault();
+                if (connection == null)
+                {
+                    connectionRepo.Create(new UserConnection()
+                    {
+                        User = userName,
+                        ConnectionId = connectionId
+                    });
+                }
+                else
+                {
+                    connectionRepo.Update(connection);
+                }
             }
 
             return base.OnConnected();
@@ -52,24 +52,32 @@ namespace EPSCoR.Hubs
             string userName = Context.User.Identity.Name;
             string connectionId = Context.ConnectionId;
 
-            User user;
-            Users.TryGetValue(userName, out user);
-
-            if (user != null)
+            using (IModelRepository<UserConnection> connectionRepo = RepositoryFactory.GetModelRepository<UserConnection>())
             {
-                lock (user.ConnectionIds)
+                UserConnection connection = connectionRepo.GetAll().Where((cid) => cid.User == userName && cid.ConnectionId == connectionId).FirstOrDefault();
+                if (connection != null)
                 {
-                    user.ConnectionIds.RemoveWhere(cid => cid.Equals(connectionId));
-
-                    if (!user.ConnectionIds.Any())
-                    {
-                        User removedUser;
-                        Users.TryRemove(userName, out removedUser);
-                    }
+                    connectionRepo.Remove(connection.ID);
                 }
             }
 
             return base.OnDisconnected();
+        }
+
+        protected static UserProfile GetUserByUserName(string userName)
+        {
+            using (IModelRepository<UserProfile> userRepo = RepositoryFactory.GetModelRepository<UserProfile>())
+            {
+                return userRepo.GetAll().Where((u) => u.UserName == userName).FirstOrDefault();
+            }
+        }
+
+        protected static IEnumerable<UserConnection> GetConnectionsForUser(string userName)
+        {
+            using (IModelRepository<UserConnection> connectionRepo = RepositoryFactory.GetModelRepository<UserConnection>())
+            {
+                return connectionRepo.GetAll().Where((cid) => cid.User == userName);
+            }
         }
     }
 }

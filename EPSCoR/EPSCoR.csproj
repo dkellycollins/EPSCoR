@@ -194,6 +194,7 @@
     <Compile Include="Database\Context\ModelDbContext.cs" />
     <Compile Include="Database\Models\IModel.cs" />
     <Compile Include="Database\Models\TableIndex.cs" />
+    <Compile Include="Database\Models\UserConnection.cs" />
     <Compile Include="Database\Models\UserProfile.cs" />
     <Compile Include="Database\Services\DirectoryManager.cs" />
     <Compile Include="Database\Services\FileConverter\CSVFileConverter.cs" />
