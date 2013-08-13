@@ -13,6 +13,7 @@ namespace EPSCoR.Database.Context
         private DbSet<TableIndex> Tables { get; set; }
         private DbSet<UserProfile> UserProfiles { get; set; }
         private DbSet<UserConnection> UserConnections { get; set; }
+        private DbSet<LogEntry> LogEntries { get; set; }
 
         public MySqlModelDbContext()
             : base("MySqlConnection")

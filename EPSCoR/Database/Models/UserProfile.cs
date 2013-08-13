@@ -31,11 +31,14 @@ namespace EPSCoR.Database.Models
         /// <summary>
         /// The username.
         /// </summary>
+        [MaxLength(25)]
+        [Required]
         public string UserName { get; set; }
 
         /// <summary>
         /// The user's role on this site.
         /// </summary>
+        [MaxLength(25)]
         public string Role { get; set; }
     }
 }

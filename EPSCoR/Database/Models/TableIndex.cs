@@ -31,21 +31,25 @@ namespace EPSCoR.Database.Models
         /// <summary>
         /// The name of the table.
         /// </summary>
+        [MaxLength(25)]
         public string Name { get; set; }
 
         /// <summary>
         /// Who uploaded this table.
         /// </summary>
+        [MaxLength(25)]
         public string UploadedByUser { get; set; }
 
         /// <summary>
         /// The type of table this table is. Should be one if the values in tabletypes.
         /// </summary>
+        [MaxLength(10)]
         public string Type { get; set; }
 
         /// <summary>
         /// The current status of the table.
         /// </summary>
+        [MaxLength(50)]
         public string Status { get; set; }
 
         /// <summary>
@@ -62,6 +66,11 @@ namespace EPSCoR.Database.Models
         /// The number of rows the table contains.
         /// </summary>
         //public int NumRows { get; set; }
+
+        /// <summary>
+        /// If true then this table can be accessed by all users.
+        /// </summary>
+        //public bool Shared { get; set; }
     }
 
     /// <summary>

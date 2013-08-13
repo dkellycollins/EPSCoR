@@ -76,7 +76,7 @@ namespace EPSCoR.Hubs
         {
             using (IModelRepository<UserConnection> connectionRepo = RepositoryFactory.GetModelRepository<UserConnection>())
             {
-                return connectionRepo.GetAll().Where((cid) => cid.User == userName);
+                return connectionRepo.GetAll().Where((cid) => cid.User == userName).ToList();
             }
         }
     }

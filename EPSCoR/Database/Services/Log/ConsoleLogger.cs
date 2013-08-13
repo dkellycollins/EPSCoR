@@ -7,10 +7,6 @@ namespace EPSCoR.Database.Services.Log
     /// </summary>
     public class ConsoleLogger : ILogger
     {
-        public ConsoleLogger()
-        {
-        }
-
         public void Log(string message)
         {
             Console.Out.WriteLine(message);

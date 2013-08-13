@@ -81,7 +81,6 @@ namespace EPSCoR.Controllers
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
-        //[OutputCache(Duration=0, VaryByParam="args", VaryByCustom="user")]
         public async Task<ActionResult> DataTableDetails(DataTableParams args)
         {
             DataTable data = await _tableRepo.ReadAsync(args.TableName, args.DisplayStart, args.DisplayLength);
@@ -95,7 +94,6 @@ namespace EPSCoR.Controllers
         /// Gets all table indexes and returns them in Json format.
         /// </summary>
         /// <returns></returns>
-        //[OutputCache(Duration=0, VaryByCustom="user")]
         public ActionResult GetAllDetails()
         {
             string userName = WebSecurity.CurrentUserName;

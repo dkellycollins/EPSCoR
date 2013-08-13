@@ -239,4 +239,41 @@ namespace EPSCoR.Controllers
             return RedirectToAction("Index");
         }
     }
+
+    public class LogController : ModelController<LogEntry>
+    {
+        private IModelRepository<LogEntry> _logRepo;
+
+        public LogController()
+        {
+            _logRepo = RepositoryFactory.GetModelRepository<LogEntry>();
+        }
+
+        public override ActionResult Create()
+        {
+            return View("NotAuthorized");
+        }
+
+        public override ActionResult Create(LogEntry model)
+        {
+            return View("NotAuthorized");
+        }
+
+        public override ActionResult Delete(int id)
+        {
+            return View("NotAuthorized");
+        }
+
+        public override ActionResult Edit(LogEntry model)
+        {
+            return View("NotAuthorized");
+        }
+
+        public override ActionResult Edit(int id = 0)
+        {
+            return View("NotAuthorized");
+        }
+
+
+    }
 }

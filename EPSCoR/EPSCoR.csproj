@@ -193,6 +193,7 @@
     <Compile Include="Database\FileProcessor.cs" />
     <Compile Include="Database\Context\ModelDbContext.cs" />
     <Compile Include="Database\Models\IModel.cs" />
+    <Compile Include="Database\Models\LogEntry.cs" />
     <Compile Include="Database\Models\TableIndex.cs" />
     <Compile Include="Database\Models\UserConnection.cs" />
     <Compile Include="Database\Models\UserProfile.cs" />
@@ -203,6 +204,7 @@
     <Compile Include="Database\Services\FilePoll.cs" />
     <Compile Include="Database\Services\Log\CompoundLogger.cs" />
     <Compile Include="Database\Services\Log\ConsoleLogger.cs" />
+    <Compile Include="Database\Services\Log\DbLogger.cs" />
     <Compile Include="Database\Services\Log\EmailLogger.cs" />
     <Compile Include="Database\Services\Log\FileLogger.cs" />
     <Compile Include="Database\Services\Log\ILogger.cs" />

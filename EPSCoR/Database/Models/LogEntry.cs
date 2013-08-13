@@ -7,7 +7,8 @@ using System.Web;
 
 namespace EPSCoR.Database.Models
 {
-    public class UserConnection : IModel
+    [Table("Log")]
+    public class LogEntry : IModel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -17,10 +18,10 @@ namespace EPSCoR.Database.Models
 
         public DateTime DateUpdated { get; set; }
 
-        [MaxLength(45)]
-        public string User { get; set; }
+        [MaxLength(100)]
+        public string Message { get; set; }
 
-        [MaxLength(45)]
-        public string ConnectionId { get; set; }
+        [MaxLength(100)]
+        public string Error { get; set; }
     }
 }
