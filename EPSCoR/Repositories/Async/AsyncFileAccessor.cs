@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using EPSCoR.Database.Services;
 
@@ -87,6 +89,41 @@ namespace EPSCoR.Repositories.Async
 
                 File.Move(currentFilePath, newFilePath);
             });
+        }
+
+        public async Task<string> GenerateFileKeyAsync(FileDirectory directory, string fileName)
+        {
+            /*using (FileStream fileStream = await OpenFileAsync(directory, fileName))
+            {
+                return await Task.Run(() =>
+                {
+                    MD5 hasher = MD5.Create();
+                    byte[] hash = hasher.ComputeHash(fileStream);
+                    return Encoding.Default.GetString(hash);
+                });
+            }*/
+            using (BufferedStream fileStream = new BufferedStream(await OpenFileAsync(directory, fileName)))
+            {
+                return await Task.Run(() =>
+                {
+                    MD5 hasher = MD5.Create();
+                    byte[] hash = hasher.ComputeHash(fileStream);
+                    return Encoding.Default.GetString(hash);
+                });
+            }
+            /*return Task.Run(() =>
+            {
+                Process p = new Process();
+                p.StartInfo.FileName = "md5sum.exe";
+                p.StartInfo.Arguments = Path.Combine(_directoryResolver.GetUserDirectory(directory, _user), fileName);
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.RedirectStandardOutput = true;
+                p.Start();
+                p.WaitForExit();
+                string output = p.StandardOutput.ReadToEnd();
+                return output.Split(' ')[0].Substring(1).ToUpper();
+             });
+             */
         }
 
         #endregion IAsyncFileAccessor Members

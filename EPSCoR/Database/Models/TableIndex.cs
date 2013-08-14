@@ -71,6 +71,10 @@ namespace EPSCoR.Database.Models
         /// If true then this table can be accessed by all users.
         /// </summary>
         //public bool Shared { get; set; }
+
+        [MaxLength(32)]
+        [JsonIgnore]
+        public string FileKey { get; set; }
     }
 
     /// <summary>

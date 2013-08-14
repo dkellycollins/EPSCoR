@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+using EPSCoR.Util;
 
 namespace EPSCoR.Repositories.Basic
 {
@@ -75,6 +79,11 @@ namespace EPSCoR.Repositories.Basic
             string newFilePath = Path.Combine(_directoryResolver.GetUserDirectory(newDirectory, _user), fileName);
 
             File.Move(currentFilePath, newFilePath);
+        }
+
+        public string GenerateFileKey(FileDirectory directory, string fileName)
+        {
+            return FileKeyGenerator.GenerateKey(Path.Combine(_directoryResolver.GetUserDirectory(directory, _user), fileName));
         }
 
         #endregion IFileAccessor Memebers

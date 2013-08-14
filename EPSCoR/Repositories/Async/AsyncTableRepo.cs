@@ -6,6 +6,7 @@ using EPSCoR.Database;
 using EPSCoR.Database.Context;
 using EPSCoR.Database.Models;
 using EPSCoR.Database.Services;
+using EPSCoR.Util;
 
 namespace EPSCoR.Repositories.Async
 {
@@ -120,6 +121,7 @@ namespace EPSCoR.Repositories.Async
 
                 string calcTablePath = Path.Combine(DirectoryManager.ConversionDir, _currentUser, calcTable + ".csv");
                 _tableContext.SaveTableToFile(calcTable, calcTablePath);
+                index.FileKey = FileKeyGenerator.GenerateKey(calcTablePath);
             });
             Task<CalcResult> cleanupTask = calcTask.ContinueWith((task) =>
             {

@@ -56,5 +56,7 @@ namespace EPSCoR.Repositories
         /// <param name="newDirectory">The directory to move the file too.</param>
         /// <param name="fileName">Name of the file to move.</param>
         Task MoveFileAsync(FileDirectory currentDirectory, FileDirectory newDirectory, string fileName);
+
+        Task<string> GenerateFileKeyAsync(FileDirectory directory, string fileName);
     }
 }

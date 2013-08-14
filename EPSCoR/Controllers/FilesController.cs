@@ -103,8 +103,43 @@ namespace EPSCoR.Controllers
             if (!(await _asyncFileAccessor.FileExistAsync(FileDirectory.Temp, id)))
                 return new FileUploadResult(id, "File has not been uploaded.");
 
+            TableIndex index = new TableIndex()
+            {
+                Name = Path.GetFileNameWithoutExtension(id),
+                UploadedByUser = WebSecurity.CurrentUserName,
+                Type = (id.Contains("_US")) ? TableTypes.UPSTREAM : TableTypes.ATTRIBUTE,
+                Status = "Queued for processing",
+                FileKey = await _asyncFileAccessor.GenerateFileKeyAsync(FileDirectory.Temp, id)
+            };
+            _tableIndexRepo.Create(index);
+
             await _asyncFileAccessor.MoveFileAsync(FileDirectory.Temp, FileDirectory.Upload, id);
 
+            return new FileUploadResult(id);
+        }
+
+        [HttpPost]
+        [AddUserWhenAuthorized(Roles="Admin")]
+        public async Task<ActionResult> CompleteUploadAdmin(string id, string tableName, string userName, string type)
+        {
+            if(!(await _asyncFileAccessor.FileExistAsync(FileDirectory.Temp, id)))
+                return new FileUploadResult(id, "File has not been uploaded.");
+
+            TableIndex existingTable = _tableIndexRepo.GetAll().Where((i) => i.Name == tableName && i.UploadedByUser == userName).FirstOrDefault();
+            if(existingTable != null)
+                return new FileUploadResult(id, "Table already exists");
+
+            existingTable = new TableIndex()
+            {
+                Name = tableName,
+                UploadedByUser = userName,
+                Type = type,
+                Status = "Queued for processing",
+                FileKey = await _asyncFileAccessor.GenerateFileKeyAsync(FileDirectory.Temp, id)
+            };
+            _tableIndexRepo.Create(existingTable);
+
+            await _asyncFileAccessor.MoveFileAsync(FileDirectory.Temp, FileDirectory.Upload, id);
             return new FileUploadResult(id);
         }
 

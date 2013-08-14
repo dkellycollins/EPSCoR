@@ -126,5 +126,7 @@ namespace EPSCoR.Repositories
         /// <param name="newDirectory">The directory to move the file too.</param>
         /// <param name="fileName">Name of the file to move.</param>
         void MoveFile(FileDirectory currentDirectory, FileDirectory newDirectory, string fileName);
+
+        string GenerateFileKey(FileDirectory directory, string fileName);
     }
 }

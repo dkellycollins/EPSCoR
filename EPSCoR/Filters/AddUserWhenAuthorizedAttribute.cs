@@ -16,16 +16,19 @@ namespace EPSCoR.Filters
         {
             base.OnAuthorization(filterContext);
 
-            using (IModelRepository<UserProfile> repo = RepositoryFactory.GetModelRepository<UserProfile>())
+            if (!string.IsNullOrEmpty(WebSecurity.CurrentUserName))
             {
-                UserProfile user = repo.GetAll().Where((u) => u.UserName == WebSecurity.CurrentUserName).FirstOrDefault();
-
-                if (user == null)
+                using (IModelRepository<UserProfile> repo = RepositoryFactory.GetModelRepository<UserProfile>())
                 {
-                    repo.Create(new UserProfile()
+                    UserProfile user = repo.GetAll().Where((u) => u.UserName == WebSecurity.CurrentUserName).FirstOrDefault();
+
+                    if (user == null)
                     {
-                        UserName = WebSecurity.CurrentUserName
-                    });
+                        repo.Create(new UserProfile()
+                        {
+                            UserName = WebSecurity.CurrentUserName
+                        });
+                    }
                 }
             }
         }

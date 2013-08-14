@@ -263,6 +263,7 @@
     <Compile Include="Results\NewtonsoftJsonResult.cs" />
     <Content Include="Content\images\donotentersign.jpg" />
     <Content Include="Scripts\DataProcessor-1.2.js" />
+    <Compile Include="Util\FileKeyGenerator.cs" />
     <Compile Include="ViewModels\CalcRequest.cs" />
     <Compile Include="ViewModels\DataTableParams.cs" />
     <Compile Include="ViewModels\FileUpload.cs" />

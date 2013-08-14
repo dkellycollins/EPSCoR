@@ -6,6 +6,7 @@ using EPSCoR.Database;
 using EPSCoR.Database.Context;
 using EPSCoR.Database.Models;
 using EPSCoR.Database.Services;
+using EPSCoR.Util;
 
 namespace EPSCoR.Repositories.Basic
 {
@@ -141,6 +142,7 @@ namespace EPSCoR.Repositories.Basic
                 _tableContext.SaveTableToFile(calcTable, calcTablePath);
 
                 index.Status = "Table Created.";
+                index.FileKey = FileKeyGenerator.GenerateKey(calcTablePath);
                 _modelContext.UpdateModel(index);
 
                 return CalcResult.Success;
