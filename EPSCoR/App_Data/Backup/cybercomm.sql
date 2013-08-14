@@ -16,6 +16,40 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Current Database: `cybercomm`
+--
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `cybercomm` /*!40100 DEFAULT CHARACTER SET utf8 */;
+
+USE `cybercomm`;
+
+--
+-- Table structure for table `log`
+--
+
+DROP TABLE IF EXISTS `log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `log` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `DateCreated` datetime DEFAULT NULL,
+  `DateUpdated` datetime DEFAULT NULL,
+  `Message` varchar(100) DEFAULT NULL,
+  `Error` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `log`
+--
+
+LOCK TABLES `log` WRITE;
+/*!40000 ALTER TABLE `log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `my_aspnet_applications`
 --
 
@@ -36,7 +70,7 @@ CREATE TABLE `my_aspnet_applications` (
 
 LOCK TABLES `my_aspnet_applications` WRITE;
 /*!40000 ALTER TABLE `my_aspnet_applications` DISABLE KEYS */;
-INSERT INTO `my_aspnet_applications` (`id`, `name`, `description`) VALUES (1,'/','MySQL Role provider');
+INSERT INTO `my_aspnet_applications` VALUES (1,'/','MySQL Role provider');
 /*!40000 ALTER TABLE `my_aspnet_applications` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -77,7 +111,7 @@ CREATE TABLE `my_aspnet_membership` (
 
 LOCK TABLES `my_aspnet_membership` WRITE;
 /*!40000 ALTER TABLE `my_aspnet_membership` DISABLE KEYS */;
-INSERT INTO `my_aspnet_membership` (`userId`, `Email`, `Comment`, `Password`, `PasswordKey`, `PasswordFormat`, `PasswordQuestion`, `PasswordAnswer`, `IsApproved`, `LastActivityDate`, `LastLoginDate`, `LastPasswordChangedDate`, `CreationDate`, `IsLockedOut`, `LastLockedOutDate`, `FailedPasswordAttemptCount`, `FailedPasswordAttemptWindowStart`, `FailedPasswordAnswerAttemptCount`, `FailedPasswordAnswerAttemptWindowStart`) VALUES (1,'dummy@dummy.com','','WsVz/6YAhJrdEbFnSp4qlsZYtGnEwN8Pr+5W7hxP0/s=','m6yMQT+rg1j+u/EOcwa6xg==',1,NULL,NULL,1,'2013-05-22 16:58:15','2013-05-22 16:58:15','2013-05-22 16:58:15','2013-05-22 16:58:15',0,'2013-05-22 16:58:15',0,'2013-05-22 16:58:15',0,'2013-05-22 16:58:15');
+INSERT INTO `my_aspnet_membership` VALUES (1,'dummy@dummy.com','','WsVz/6YAhJrdEbFnSp4qlsZYtGnEwN8Pr+5W7hxP0/s=','m6yMQT+rg1j+u/EOcwa6xg==',1,NULL,NULL,1,'2013-05-22 16:58:15','2013-05-22 16:58:15','2013-05-22 16:58:15','2013-05-22 16:58:15',0,'2013-05-22 16:58:15',0,'2013-05-22 16:58:15',0,'2013-05-22 16:58:15');
 /*!40000 ALTER TABLE `my_aspnet_membership` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -128,7 +162,7 @@ CREATE TABLE `my_aspnet_roles` (
 
 LOCK TABLES `my_aspnet_roles` WRITE;
 /*!40000 ALTER TABLE `my_aspnet_roles` DISABLE KEYS */;
-INSERT INTO `my_aspnet_roles` (`id`, `applicationId`, `name`) VALUES (1,1,'admin');
+INSERT INTO `my_aspnet_roles` VALUES (1,1,'admin');
 /*!40000 ALTER TABLE `my_aspnet_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -150,7 +184,7 @@ CREATE TABLE `my_aspnet_schemaversion` (
 
 LOCK TABLES `my_aspnet_schemaversion` WRITE;
 /*!40000 ALTER TABLE `my_aspnet_schemaversion` DISABLE KEYS */;
-INSERT INTO `my_aspnet_schemaversion` (`version`) VALUES (8);
+INSERT INTO `my_aspnet_schemaversion` VALUES (8);
 /*!40000 ALTER TABLE `my_aspnet_schemaversion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -232,7 +266,7 @@ CREATE TABLE `my_aspnet_users` (
 
 LOCK TABLES `my_aspnet_users` WRITE;
 /*!40000 ALTER TABLE `my_aspnet_users` DISABLE KEYS */;
-INSERT INTO `my_aspnet_users` (`id`, `applicationId`, `name`, `isAnonymous`, `lastActivityDate`) VALUES (1,1,'ram',0,'2013-05-22 16:58:15');
+INSERT INTO `my_aspnet_users` VALUES (1,1,'ram',0,'2013-05-22 16:58:15');
 /*!40000 ALTER TABLE `my_aspnet_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -256,7 +290,7 @@ CREATE TABLE `my_aspnet_usersinroles` (
 
 LOCK TABLES `my_aspnet_usersinroles` WRITE;
 /*!40000 ALTER TABLE `my_aspnet_usersinroles` DISABLE KEYS */;
-INSERT INTO `my_aspnet_usersinroles` (`userId`, `roleId`) VALUES (1,1);
+INSERT INTO `my_aspnet_usersinroles` VALUES (1,1);
 /*!40000 ALTER TABLE `my_aspnet_usersinroles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -277,8 +311,9 @@ CREATE TABLE `tableindexes` (
   `Status` varchar(50) DEFAULT NULL,
   `Processed` tinyint(1) DEFAULT NULL,
   `Error` tinyint(1) DEFAULT NULL,
+  `FileKey` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=98 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -288,6 +323,32 @@ CREATE TABLE `tableindexes` (
 LOCK TABLES `tableindexes` WRITE;
 /*!40000 ALTER TABLE `tableindexes` DISABLE KEYS */;
 /*!40000 ALTER TABLE `tableindexes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `userconnections`
+--
+
+DROP TABLE IF EXISTS `userconnections`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `userconnections` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `DateCreated` datetime DEFAULT NULL,
+  `DateUpdated` datetime DEFAULT NULL,
+  `User` varchar(45) DEFAULT NULL,
+  `ConnectionId` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `userconnections`
+--
+
+LOCK TABLES `userconnections` WRITE;
+/*!40000 ALTER TABLE `userconnections` DISABLE KEYS */;
+/*!40000 ALTER TABLE `userconnections` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -304,7 +365,7 @@ CREATE TABLE `userprofile` (
   `DateCreated` datetime DEFAULT NULL,
   `DateUpdated` datetime DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -313,6 +374,7 @@ CREATE TABLE `userprofile` (
 
 LOCK TABLES `userprofile` WRITE;
 /*!40000 ALTER TABLE `userprofile` DISABLE KEYS */;
+INSERT INTO `userprofile` VALUES (1,'ram','Admin',NULL,NULL);
 /*!40000 ALTER TABLE `userprofile` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -325,4 +387,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-07-24 14:55:32
+-- Dump completed on 2013-08-14 14:27:36
