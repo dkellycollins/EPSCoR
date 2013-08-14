@@ -1,25 +1,25 @@
 ﻿using System.Web.Mvc;
+using EPSCoR.Results;
 
 namespace EPSCoR.Filters
 {
-    public enum ResponseFormats
+    public enum ResponseFormat
     {
         None = 0x0,
         Json = 0x1,
-        Xml = 0x2,
-        Csv = 0x4,
-        All =  Json | Xml | Csv
+        Ajax = 0x2,
+        All =  Json | Ajax
     }
 
     public class MultipleResponseFormatsAttribute : ActionFilterAttribute
     {
-        private ResponseFormats _supportedFormates;
+        private ResponseFormat _supportedFormates;
 
         public MultipleResponseFormatsAttribute()
-            : this(ResponseFormats.All)
+            : this(ResponseFormat.All)
         { }
 
-        public MultipleResponseFormatsAttribute(ResponseFormats supportedFormats)
+        public MultipleResponseFormatsAttribute(ResponseFormat supportedFormats)
         {
             _supportedFormates = supportedFormats;
         }
@@ -32,7 +32,13 @@ namespace EPSCoR.Filters
             if (viewResult == null)
                 return;
 
-            if (request.IsAjaxRequest())
+            //Json
+            if (request["format"] == "json" && isFormatAllowed(ResponseFormat.Json))
+            {
+                filterContext.Result = new NewtonsoftJsonResult(viewResult.Model);
+            }
+            //Ajax
+            else if (request.IsAjaxRequest() && isFormatAllowed(ResponseFormat.Ajax))
             {
                 filterContext.Result = new PartialViewResult
                 {
@@ -40,14 +46,12 @@ namespace EPSCoR.Filters
                     ViewData = viewResult.ViewData,
                     ViewName = viewResult.ViewName
                 };
-            }
-            else if (request["format"] == "json")
-            {
-                filterContext.Result = new JsonResult
-                {
-                    Data = viewResult.Model
-                };
-            }
+            }        
+        }
+
+        private bool isFormatAllowed(ResponseFormat format)
+        {
+            return (_supportedFormates & format) > 0;
         }
     }
 }

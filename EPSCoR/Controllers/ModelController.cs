@@ -28,12 +28,11 @@ namespace EPSCoR.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [MultipleResponseFormats]
         public virtual ActionResult Index()
         {
             IEnumerable<T> models = ModelRepo.GetAll().ToList();
 
-            if (Request.IsAjaxRequest())
-                return PartialView(models);
             return View(models);
         }
 
@@ -43,6 +42,7 @@ namespace EPSCoR.Controllers
         /// <param name="id">Id of the model</param>
         /// <returns></returns>
         [HttpGet]
+        [MultipleResponseFormats]
         public virtual ActionResult Details(int id = 0)
         {
             T model = ModelRepo.Get(id);
@@ -51,9 +51,6 @@ namespace EPSCoR.Controllers
             {
                 return HttpNotFound();
             }
-
-            if (Request.IsAjaxRequest())
-                return PartialView(model);
             return View(model);
         }
 
@@ -63,16 +60,16 @@ namespace EPSCoR.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [MultipleResponseFormats(ResponseFormat.Ajax)]
         public virtual ActionResult Create()
         {
             T model = default(T);
 
-            if (Request.IsAjaxRequest())
-                return PartialView(model);
             return View(model);
         }
 
         [HttpPost]
+        [MultipleResponseFormats(ResponseFormat.Ajax)]
         public virtual ActionResult Create(T model)
         {
             if (ModelState.IsValid)
@@ -81,12 +78,11 @@ namespace EPSCoR.Controllers
                 return RedirectToAction("Index");
             }
 
-            if (Request.IsAjaxRequest())
-                return PartialView(model);
             return View(model);
         }
 
         [HttpGet]
+        [MultipleResponseFormats(ResponseFormat.Ajax)]
         public virtual ActionResult Edit(int id = 0)
         {
             T model = ModelRepo.Get(id);
@@ -96,12 +92,11 @@ namespace EPSCoR.Controllers
                 return HttpNotFound();
             }
 
-            if (Request.IsAjaxRequest())
-                return PartialView("Create", model);
             return View("Create", model);
         }
 
         [HttpPost]
+        [MultipleResponseFormats(ResponseFormat.Ajax)]
         public virtual ActionResult Edit(T model)
         {
             if (ModelState.IsValid)
@@ -110,11 +105,10 @@ namespace EPSCoR.Controllers
                 return RedirectToAction("Index");
             }
 
-            if (Request.IsAjaxRequest())
-                return PartialView("Create", model);
             return View("Create", model);
         }
 
+        [HttpGet]
         public virtual ActionResult Delete(int id)
         {
             ModelRepo.Remove(id);
@@ -137,12 +131,11 @@ namespace EPSCoR.Controllers
         { }
 
         [HttpGet]
+        [MultipleResponseFormats]
         public override ActionResult Create()
         {
             TableIndex tableIndex = new TableIndex();
 
-            if (Request.IsAjaxRequest())
-                return PartialView(tableIndex);
             return View(tableIndex);
         }
 
