@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPSCoR.Web.FileProcessor", "EPSCoR.Web.FileProcessor.csproj", "{1433EC43-CDF9-4041-A03E-322BE9EFB9A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPSCoR.Web.Database", "..\Database\EPSCoR.Web.Database.csproj", "{6EBD825F-14B3-46F0-8486-394B113B2C3A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPSCoR.Common", "..\..\Common\EPSCoR.Common.csproj", "{83BAA7E1-624C-42BA-81A8-C6569D6B2569}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1433EC43-CDF9-4041-A03E-322BE9EFB9A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1433EC43-CDF9-4041-A03E-322BE9EFB9A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1433EC43-CDF9-4041-A03E-322BE9EFB9A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1433EC43-CDF9-4041-A03E-322BE9EFB9A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EBD825F-14B3-46F0-8486-394B113B2C3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EBD825F-14B3-46F0-8486-394B113B2C3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EBD825F-14B3-46F0-8486-394B113B2C3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EBD825F-14B3-46F0-8486-394B113B2C3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83BAA7E1-624C-42BA-81A8-C6569D6B2569}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83BAA7E1-624C-42BA-81A8-C6569D6B2569}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83BAA7E1-624C-42BA-81A8-C6569D6B2569}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83BAA7E1-624C-42BA-81A8-C6569D6B2569}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
