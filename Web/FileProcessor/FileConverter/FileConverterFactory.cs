@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using EPSCoR.Common.Exceptions;
 
-namespace EPSCoR.Web.Database.Services.FileConverter
+namespace EPSCoR.Web.FileProcessor.FileConverter
 {
     public class FileConverterFactory
     {

@@ -1,5 +1,5 @@
 ﻿
-namespace EPSCoR.Web.Database.Services.FileConverter
+namespace EPSCoR.Web.FileProcessor.FileConverter
 {
     /// <summary>
     /// Define method for every fileconverter to implement.

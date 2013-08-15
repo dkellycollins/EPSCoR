@@ -47,8 +47,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileConverter\CSVFileConverter.cs" />
+    <Compile Include="FileConverter\FileConverterFactory.cs" />
+    <Compile Include="FileConverter\IFileConverter.cs" />
     <Compile Include="FileProcessor.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="FileProcessorService.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="FileProcessorService.Designer.cs">
+      <DependentUpon>FileProcessorService.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

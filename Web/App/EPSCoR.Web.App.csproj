@@ -467,12 +467,15 @@
     <Content Include="Scripts\Modernizr\modernizr-2.5.3.js" />
     <Content Include="Scripts\SignalR\jquery.signalR-1.1.2.js" />
     <Content Include="Scripts\SignalR\jquery.signalR-1.1.2.min.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />

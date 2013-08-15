@@ -1,8 +1,9 @@
 ﻿using System;
 using System.IO;
+using EPSCoR.Web.Database.Services;
 using EPSCoR.Web.Database.Services.Log;
 
-namespace EPSCoR.Web.Database.Services.FileConverter
+namespace EPSCoR.Web.FileProcessor.FileConverter
 {
     /// <summary>
     /// This file converter handles csv files.
