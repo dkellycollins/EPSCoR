@@ -1,41 +1,51 @@
-﻿using EPSCoR.Web.Database.Context;
+﻿using System.Configuration;
+using System.Data;
+using System.Data.Common;
+using EPSCoR.Web.Database.Context;
 using MySql.Data.MySqlClient;
 
 namespace EPSCoR.Web.Database
 {
-    public class DbContextFactory
+    public interface IDbContextFactory
     {
-        private const string USER_CONNECTION_STRING = "server=localhost;"
-            + "User Id=root;"
-            + "Persist Security Info=True;"
-            + "database=cybercomm_{0};"
-#if DEBUG
-            + "password=root;"
-#else
-            + "password=KsUwI1dC4tS!;"
-#endif
-            + "DefaultCommandTimeout=0;";
+        ModelDbContext GetModelDbContext();
+        ModelDbContext GetModelDbContextForUser(string userName);
+        TableDbContext GetTableDbContext();
+        TableDbContext GetTableDbContextForUser(string userName);
+    }
 
-        public static ModelDbContext GetModelDbContext()
+    public class DbContextFactory : IDbContextFactory
+    {
+        public ModelDbContext GetModelDbContext()
         {
             return new MySqlModelDbContext();
         }
 
-        public static ModelDbContext GetModelDbContextForUser(string userName)
+        public ModelDbContext GetModelDbContextForUser(string userName)
         {
-            MySqlConnection connection = new MySqlConnection(string.Format(USER_CONNECTION_STRING, userName));
+            MySqlConnection connection = new MySqlConnection(getUserConnectionString(userName));
             return new MySqlModelDbContext(connection);
         }
 
-        public static TableDbContext GetTableDbContext()
+        public TableDbContext GetTableDbContext()
         {
             return new MySqlTableDbContext();
         }
 
-        public static TableDbContext GetTableDbContextForUser(string userName)
+        public TableDbContext GetTableDbContextForUser(string userName)
         {
-            MySqlConnection connection = new MySqlConnection(string.Format(USER_CONNECTION_STRING, userName));
+            MySqlConnection connection = new MySqlConnection(getUserConnectionString(userName));
             return new MySqlTableDbContext(connection);
+        }
+
+        private string getUserConnectionString(string userName)
+        {
+            ConnectionStringSettings csSettings = ConfigurationManager.ConnectionStrings["MySqlConnection"];
+
+            MySqlConnectionStringBuilder csBuilder = new MySqlConnectionStringBuilder(csSettings.ConnectionString);
+            csBuilder.Database += "_" + userName;
+
+            return csBuilder.GetConnectionString(true);
         }
     }
 }

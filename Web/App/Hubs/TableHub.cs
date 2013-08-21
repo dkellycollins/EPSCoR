@@ -20,6 +20,14 @@ namespace EPSCoR.Web.App.Hubs
             _context = GlobalHost.ConnectionManager.GetHubContext<TableHub>();     
         }
 
+        public TableHub()
+            :base()
+        {}
+
+        public TableHub(IRepositoryFactory factory)
+            :base(factory)
+        {}
+
         /// <summary>
         /// Notifies the user who uploaded the table that there is a new table.
         /// </summary>
@@ -69,7 +77,7 @@ namespace EPSCoR.Web.App.Hubs
             string userName = Context.User.Identity.Name;
 
             //Remove index.
-            using (IModelRepository<TableIndex> tableIndexRepo = RepositoryFactory.GetModelRepository<TableIndex>())
+            using (IModelRepository<TableIndex> tableIndexRepo = _repoFactory.GetModelRepository<TableIndex>())
             {
                 TableIndex index = tableIndexRepo.GetAll().Where((i) => i.Name == tableName && i.UploadedByUser == userName).FirstOrDefault();
                 if (index == null)
@@ -81,13 +89,13 @@ namespace EPSCoR.Web.App.Hubs
             }
 
             //Drop table.
-            using (IAsyncTableRepository tableRepo = RepositoryFactory.GetAsyncTableRepository(userName))
+            using (IAsyncTableRepository tableRepo = _repoFactory.GetAsyncTableRepository(userName))
             {
                 await tableRepo.DropAsync(tableName);
             }
 
             //Delete files.
-            IAsyncFileAccessor fileAccessor = RepositoryFactory.GetAsyncFileAccessor(userName);
+            IAsyncFileAccessor fileAccessor = _repoFactory.GetAsyncFileAccessor(userName);
             await fileAccessor.DeleteFilesAsync(FileDirectory.Conversion, tableName);
             await fileAccessor.DeleteFilesAsync(FileDirectory.Archive, tableName);
             await fileAccessor.DeleteFilesAsync(FileDirectory.Upload, tableName);
@@ -108,7 +116,7 @@ namespace EPSCoR.Web.App.Hubs
             AlertsHub.SendAlertToUser("Your request has been submitted.", userName);
 
             //Validate input.
-            using (IModelRepository<TableIndex> tableIndexRepo = RepositoryFactory.GetModelRepository<TableIndex>())
+            using (IModelRepository<TableIndex> tableIndexRepo = _repoFactory.GetModelRepository<TableIndex>())
             {
                 TableIndex attTableIndex = tableIndexRepo.GetAll().Where((i) => i.Name == attTable && i.UploadedByUser == userName).FirstOrDefault();
                 TableIndex usTableIndex = tableIndexRepo.GetAll().Where((i) => i.Name == usTable && i.UploadedByUser == userName).FirstOrDefault();
@@ -124,7 +132,7 @@ namespace EPSCoR.Web.App.Hubs
                 }
             }
 
-            using (IAsyncDatabaseCalc dbCalc = RepositoryFactory.GetAsyncDatabaseCalc(userName))
+            using (IAsyncDatabaseCalc dbCalc = _repoFactory.GetAsyncDatabaseCalc(userName))
             {
                 CalcResult result;
                 switch (calcType)

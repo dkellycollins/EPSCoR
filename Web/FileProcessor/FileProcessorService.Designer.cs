@@ -28,10 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-            this.ServiceName = "Service1";
+            this.fileWatcher = new System.IO.FileSystemWatcher();
+            ((System.ComponentModel.ISupportInitialize)(this.fileWatcher)).BeginInit();
+            // 
+            // fileWatcher
+            // 
+            this.fileWatcher.IncludeSubdirectories = true;
+            this.fileWatcher.Created += new System.IO.FileSystemEventHandler(this._fileWatcher_Created);
+            this.fileWatcher.Error += new System.IO.ErrorEventHandler(this._fileWatcher_Error);
+            // 
+            // FileProcessorService
+            // 
+            this.ServiceName = "EPSCoR File Processor";
+            ((System.ComponentModel.ISupportInitialize)(this.fileWatcher)).EndInit();
+
         }
 
         #endregion
+
+        private System.IO.FileSystemWatcher fileWatcher;
     }
 }

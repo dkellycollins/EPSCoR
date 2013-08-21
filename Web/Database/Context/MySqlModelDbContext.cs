@@ -14,6 +14,7 @@ namespace EPSCoR.Web.Database.Context
         private DbSet<UserProfile> UserProfiles { get; set; }
         private DbSet<UserConnection> UserConnections { get; set; }
         private DbSet<LogEntry> LogEntries { get; set; }
+        private DbSet<DbEvent> Events { get; set; }
 
         public MySqlModelDbContext()
             : base("MySqlConnection")
@@ -21,7 +22,8 @@ namespace EPSCoR.Web.Database.Context
 
         public MySqlModelDbContext(MySqlConnection connection)
             : base(connection)
-        { }
+        {
+        }
 
         public TableIndex GetTableIndex(string tableName, string UserName)
         {

@@ -8,16 +8,8 @@ using System.Web;
 namespace EPSCoR.Web.Database.Models
 {
     [Table("Log")]
-    public class LogEntry : IModel
+    public class LogEntry : Model
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ID { get; set; }
-
-        public DateTime DateCreated { get; set; }
-
-        public DateTime DateUpdated { get; set; }
-
         [MaxLength(100)]
         public string Message { get; set; }
 

@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using EPSCoR.Web.Database;
 using EPSCoR.Web.Database.Context;
@@ -11,13 +14,14 @@ namespace EPSCoR.Web.App.Repositories.Async
     /// </summary>
     /// <typeparam name="T">Model type</typeparam>
     public class AsyncModelRepo<T> : IAsyncModelRepository<T>
-        where T : class, IModel
+        where T : Model
     {
         private ModelDbContext _context;
 
         public AsyncModelRepo()
         {
-            _context = DbContextFactory.GetModelDbContext();
+            IDbContextFactory contextFactory = new DbContextFactory();
+            _context = contextFactory.GetModelDbContext();
         }
 
         public AsyncModelRepo(ModelDbContext context)
@@ -29,12 +33,17 @@ namespace EPSCoR.Web.App.Repositories.Async
 
         public async Task<T> GetAsync(int entityID)
         {
-            return await Task.Run(() => _context.Set<T>().Find(entityID));
+            return await Task.Run(() => _context.GetModel<T>(entityID));
         }
 
-        public async Task<IQueryable<T>> GetAllAsync()
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await Task.Run(() => _context.Set<T>().AsQueryable());
+            return await Task.Run(() => _context.GetAllModels<T>().ToList());
+        }
+
+        public async Task<IEnumerable<T>> WhereAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await Task.Run(() => _context.GetAllModels<T>().Where(predicate).ToList());
         }
 
         public async Task CreateAsync(T itemToCreate)

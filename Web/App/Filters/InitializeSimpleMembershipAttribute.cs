@@ -28,7 +28,7 @@ namespace EPSCoR.Web.App.Filters
             {
                 System.Data.Entity.Database.SetInitializer<ModelDbContext>(null);
 
-                var context = DbContextFactory.GetModelDbContext();
+                var context = new DbContextFactory().GetModelDbContext();
                 try
                 {
                     if (!context.Database.Exists())

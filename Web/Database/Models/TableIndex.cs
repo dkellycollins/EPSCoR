@@ -8,26 +8,8 @@ namespace EPSCoR.Web.Database.Models
     /// <summary>
     /// Model for entries in the tableindexes table.
     /// </summary>
-    public class TableIndex : IModel
+    public class TableIndex : Model
     {
-        /// <summary>
-        /// Primary key.
-        /// </summary>
-        [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
-        [JsonIgnore]
-        public int ID { get; set; }
-
-        /// <summary>
-        /// When the entry was created.
-        /// </summary>
-        public DateTime DateCreated { get; set; }
-
-        /// <summary>
-        /// When the entry was last updated.
-        /// </summary>
-        public DateTime DateUpdated { get; set; }
-
         /// <summary>
         /// The name of the table.
         /// </summary>

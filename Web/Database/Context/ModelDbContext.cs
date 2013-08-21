@@ -11,7 +11,7 @@ namespace EPSCoR.Web.Database.Context
     /// </summary>
     public class ModelDbContext : DbContext
     {
-        public delegate void ModelEventHandler(IModel model);
+        public delegate void ModelEventHandler(Model model);
 
         /// <summary>
         /// Raised when a model has been created in the database.
@@ -49,7 +49,7 @@ namespace EPSCoR.Web.Database.Context
         /// <param name="modelId">ID of the model.</param>
         /// <returns>The model.</returns>
         public virtual T GetModel<T>(int modelId)
-            where T : class, IModel
+            where T : Model
         {
             return Set<T>().Find(modelId);
         }
@@ -60,7 +60,7 @@ namespace EPSCoR.Web.Database.Context
         /// <typeparam name="T">Type of the model.</typeparam>
         /// <returns></returns>
         public virtual IQueryable<T> GetAllModels<T>()
-            where T : class, IModel
+            where T : Model
         {
             return Set<T>().AsQueryable();
         }
@@ -69,7 +69,7 @@ namespace EPSCoR.Web.Database.Context
         /// Creates a new model in the database.
         /// </summary>
         /// <param name="model">The model to create.</param>
-        public virtual void CreateModel(IModel model)
+        public virtual void CreateModel(Model model)
         {
             model.DateCreated = DateTime.Now;
             model.DateUpdated = DateTime.Now;
@@ -82,7 +82,7 @@ namespace EPSCoR.Web.Database.Context
         /// Updates a model in the database.
         /// </summary>
         /// <param name="model"></param>
-        public virtual void UpdateModel(IModel model)
+        public virtual void UpdateModel(Model model)
         {
             model.DateUpdated = DateTime.Now;
             Entry(model).State = System.Data.EntityState.Modified;
@@ -94,7 +94,7 @@ namespace EPSCoR.Web.Database.Context
         /// Removes a model from the database.
         /// </summary>
         /// <param name="model"></param>
-        public virtual void RemoveModel(IModel model)
+        public virtual void RemoveModel(Model model)
         {
             Set(model.GetType()).Remove(model);
             SaveChanges();

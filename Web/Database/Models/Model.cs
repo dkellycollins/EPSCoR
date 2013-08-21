@@ -1,25 +1,33 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
 namespace EPSCoR.Web.Database.Models
 {
     /// <summary>
     /// Defines fields that every model will need to have.
     /// </summary>
-    public interface IModel
+    public class Model
     {
         /// <summary>
         /// The primary id for the model.
         /// </summary>
-        int ID { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [JsonIgnore]
+        public int ID { get; set; }
 
         /// <summary>
         /// When the model was created.
         /// </summary>
-        DateTime DateCreated { get; set; }
+        [JsonIgnore]
+        public DateTime DateCreated { get; set; }
 
         /// <summary>
         /// When the model was last updated.
         /// </summary>
-        DateTime DateUpdated { get; set; }
+        [JsonIgnore]
+        public DateTime DateUpdated { get; set; }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using EPSCoR.Web.Database.Models;
 
@@ -10,7 +12,7 @@ namespace EPSCoR.Web.App.Repositories
     /// </summary>
     /// <typeparam name="T">Model Type.</typeparam>
     public interface IAsyncModelRepository<T> : IDisposable
-        where T : IModel
+        where T : Model
     {
         /// <summary>
         /// Returns one entity that has the given id.
@@ -23,7 +25,9 @@ namespace EPSCoR.Web.App.Repositories
         /// Returns all entities in the database.
         /// </summary>
         /// <returns></returns>
-        Task<IQueryable<T>> GetAllAsync();
+        Task<IEnumerable<T>> GetAllAsync();
+
+        Task<IEnumerable<T>> WhereAsync(Expression<Func<T, bool>> predicate);
 
         /// <summary>
         /// Creates a new entity in the database.

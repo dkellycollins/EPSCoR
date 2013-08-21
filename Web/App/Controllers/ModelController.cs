@@ -9,18 +9,18 @@ using EPSCoR.Web.Database.Models;
 namespace EPSCoR.Web.App.Controllers
 {
     public class ModelController<T> : Controller
-        where T : class, IModel
+        where T : Model, new() 
     {
-        protected IModelRepository<T> ModelRepo;
+        protected IRepositoryFactory _repoFactory;
 
         protected ModelController()
         {
-            ModelRepo = RepositoryFactory.GetModelRepository<T>();
+            _repoFactory = new RepositoryFactory();
         }
 
-        protected ModelController(IModelRepository<T> modelRepo)
+        protected ModelController(IRepositoryFactory factory)
         {
-            ModelRepo = modelRepo;
+            _repoFactory = factory;
         }
 
         /// <summary>
@@ -31,9 +31,10 @@ namespace EPSCoR.Web.App.Controllers
         [MultipleResponseFormats]
         public virtual ActionResult Index()
         {
-            IEnumerable<T> models = ModelRepo.GetAll().ToList();
-
-            return View(models);
+            using (IModelRepository<T> repo = _repoFactory.GetModelRepository<T>())
+            {
+                return View(repo.GetAll());
+            }
         }
 
         /// <summary>
@@ -45,7 +46,11 @@ namespace EPSCoR.Web.App.Controllers
         [MultipleResponseFormats]
         public virtual ActionResult Details(int id = 0)
         {
-            T model = ModelRepo.Get(id);
+            T model = null;
+            using (IModelRepository<T> repo = _repoFactory.GetModelRepository<T>())
+            {
+                model = repo.Get(id);
+            }
 
             if (model == null)
             {
@@ -63,7 +68,7 @@ namespace EPSCoR.Web.App.Controllers
         [MultipleResponseFormats(ResponseFormat.Ajax)]
         public virtual ActionResult Create()
         {
-            T model = default(T);
+            T model = new T();
 
             return View(model);
         }
@@ -74,7 +79,10 @@ namespace EPSCoR.Web.App.Controllers
         {
             if (ModelState.IsValid)
             {
-                ModelRepo.Create(model);
+                using (IModelRepository<T> repo = _repoFactory.GetModelRepository<T>())
+                {
+                    repo.Create(model);
+                }
                 return RedirectToAction("Index");
             }
 
@@ -85,7 +93,11 @@ namespace EPSCoR.Web.App.Controllers
         [MultipleResponseFormats(ResponseFormat.Ajax)]
         public virtual ActionResult Edit(int id = 0)
         {
-            T model = ModelRepo.Get(id);
+            T model = null;
+            using (IModelRepository<T> repo = _repoFactory.GetModelRepository<T>())
+            {
+                model = repo.Get(id);
+            }
 
             if (model == null)
             {
@@ -101,7 +113,10 @@ namespace EPSCoR.Web.App.Controllers
         {
             if (ModelState.IsValid)
             {
-                ModelRepo.Update(model);
+                using (IModelRepository<T> repo = _repoFactory.GetModelRepository<T>())
+                {
+                    repo.Update(model);
+                }
                 return RedirectToAction("Index");
             }
 
@@ -111,7 +126,10 @@ namespace EPSCoR.Web.App.Controllers
         [HttpGet]
         public virtual ActionResult Delete(int id)
         {
-            ModelRepo.Remove(id);
+            using (IModelRepository<T> repo = _repoFactory.GetModelRepository<T>())
+            {
+                repo.Remove(id);
+            }
 
             return RedirectToAction("Index");
         }
@@ -120,24 +138,13 @@ namespace EPSCoR.Web.App.Controllers
     [AddUserWhenAuthorized(Roles = "Admin")]
     public class TableIndexController : ModelController<TableIndex>
     {
-        private ITableRepository _tableRepo;
-
         public TableIndexController()
             : base()
         { }
 
-        public TableIndexController(IModelRepository<TableIndex> repo)
-            : base(repo)
+        public TableIndexController(IRepositoryFactory factory)
+            : base(factory)
         { }
-
-        [HttpGet]
-        [MultipleResponseFormats]
-        public override ActionResult Create()
-        {
-            TableIndex tableIndex = new TableIndex();
-
-            return View(tableIndex);
-        }
 
         public override ActionResult Delete(int id)
         {
@@ -145,25 +152,28 @@ namespace EPSCoR.Web.App.Controllers
             string userName;
 
             //Remove index.
-            TableIndex index = ModelRepo.Get(id);
-
-            if (index == null)
+            using (IModelRepository<TableIndex> repo = _repoFactory.GetModelRepository<TableIndex>())
             {
-                return HttpNotFound();
+                TableIndex index = repo.Get(id);
+
+                if (index == null)
+                {
+                    return HttpNotFound();
+                }
+
+                tableName = index.Name;
+                userName = index.UploadedByUser;
+                repo.Remove(index.ID);
             }
 
-            tableName = index.Name;
-            userName = index.UploadedByUser;
-            ModelRepo.Remove(index.ID);
-
             //Drop table.
-            using (ITableRepository tableRepo = RepositoryFactory.GetTableRepository(userName))
+            using (ITableRepository tableRepo = _repoFactory.GetTableRepository(userName))
             {
                 tableRepo.Drop(tableName);
             }
 
             //Delete files.
-            IFileAccessor fileAccessor = RepositoryFactory.GetFileAccessor(userName);
+            IFileAccessor fileAccessor = _repoFactory.GetFileAccessor(userName);
             fileAccessor.DeleteFiles(FileDirectory.Conversion, tableName);
             fileAccessor.DeleteFiles(FileDirectory.Archive, tableName);
             fileAccessor.DeleteFiles(FileDirectory.Upload, tableName);
@@ -175,58 +185,48 @@ namespace EPSCoR.Web.App.Controllers
     [AddUserWhenAuthorized(Roles = "Admin")]
     public class UserProfileController : ModelController<UserProfile>
     {
-        private IModelRepository<TableIndex> _tableIndexRepo;
-
         public UserProfileController()
             : base()
-        {
-            _tableIndexRepo = RepositoryFactory.GetModelRepository<TableIndex>();
-        }
+        { }
 
-        public UserProfileController(IModelRepository<UserProfile> userProfileRepo, IModelRepository<TableIndex> tableIndexRepo)
-            : base(userProfileRepo)
-        {
-            _tableIndexRepo = tableIndexRepo;
-        }
-
-        [HttpGet]
-        public override ActionResult Create()
-        {
-            UserProfile userProfile = new UserProfile();
-
-            if (Request.IsAjaxRequest())
-                return PartialView(userProfile);
-            return View(userProfile);
-        }
+        public UserProfileController(IRepositoryFactory factory)
+            : base(factory)
+        { }
 
         public override ActionResult Delete(int id)
         {
-            UserProfile userProfile = ModelRepo.Get(id);
-            if (userProfile == null)
+            using (IModelRepository<UserProfile> userRepo = _repoFactory.GetModelRepository<UserProfile>())
             {
-                return HttpNotFound();
-            }
-
-            ModelRepo.Remove(userProfile.ID);
-
-            IEnumerable<TableIndex> userTables = _tableIndexRepo.GetAll().Where((t) => t.UploadedByUser == userProfile.UserName).ToList();
-
-            foreach (TableIndex table in userTables)
-            {
-                //Remove index.
-                _tableIndexRepo.Remove(table.ID);
-
-                //Drop table.
-                using (ITableRepository tableRepo = RepositoryFactory.GetTableRepository(userProfile.UserName))
+                UserProfile userProfile = userRepo.Get(id);
+                if (userProfile == null)
                 {
-                    tableRepo.Drop(table.Name);
+                    return HttpNotFound();
                 }
 
-                //Delete files.
-                IFileAccessor fileAccessor = RepositoryFactory.GetFileAccessor(userProfile.UserName);
-                fileAccessor.DeleteFiles(FileDirectory.Conversion, table.Name);
-                fileAccessor.DeleteFiles(FileDirectory.Archive, table.Name);
-                fileAccessor.DeleteFiles(FileDirectory.Upload, table.Name);
+                userRepo.Remove(userProfile.ID);
+
+                using (IModelRepository<TableIndex> tableIndexRepo = _repoFactory.GetModelRepository<TableIndex>())
+                {
+                    IEnumerable<TableIndex> userTables = tableIndexRepo.Where((t) => t.UploadedByUser == userProfile.UserName);
+
+                    foreach (TableIndex table in userTables)
+                    {
+                        //Remove index.
+                        tableIndexRepo.Remove(table.ID);
+
+                        //Drop table.
+                        using (ITableRepository tableRepo = _repoFactory.GetTableRepository(userProfile.UserName))
+                        {
+                            tableRepo.Drop(table.Name);
+                        }
+
+                        //Delete files.
+                        IFileAccessor fileAccessor = _repoFactory.GetFileAccessor(userProfile.UserName);
+                        fileAccessor.DeleteFiles(FileDirectory.Conversion, table.Name);
+                        fileAccessor.DeleteFiles(FileDirectory.Archive, table.Name);
+                        fileAccessor.DeleteFiles(FileDirectory.Upload, table.Name);
+                    }
+                }
             }
 
             return RedirectToAction("Index");
@@ -235,12 +235,13 @@ namespace EPSCoR.Web.App.Controllers
 
     public class LogController : ModelController<LogEntry>
     {
-        private IModelRepository<LogEntry> _logRepo;
-
         public LogController()
-        {
-            _logRepo = RepositoryFactory.GetModelRepository<LogEntry>();
-        }
+            :base ()
+        { }
+
+        public LogController(IRepositoryFactory factory)
+            : base(factory)
+        { }
 
         public override ActionResult Create()
         {

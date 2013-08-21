@@ -10,42 +10,44 @@ namespace EPSCoR.Web.Database
 {
     public class DbWatcher
     {
-        public delegate void ModelEventHandler(IModel model);
+        public delegate void ModelEventHandler(Model model);
 
         /// <summary>
         /// Raised when a model has been created in the database.
         /// </summary>
-        public static event ModelEventHandler ModelCreated = delegate { };
+        public event ModelEventHandler ModelCreated = delegate { };
 
         /// <summary>
         /// Raised when a model has been updated in the database.
         /// </summary>
-        public static event ModelEventHandler ModelUpdated = delegate { };
+        public event ModelEventHandler ModelUpdated = delegate { };
 
         /// <summary>
         /// Raised when a model has been removed from the datbase.
         /// </summary>
-        public static event ModelEventHandler ModelRemoved = delegate { };
+        public event ModelEventHandler ModelRemoved = delegate { };
 
         private System.Timers.Timer _timer;
         private int _lastId;
+        private IDbContextFactory _contextFactory;
 
         public DbWatcher()
         {
+            _contextFactory = new DbContextFactory();
             _timer = new System.Timers.Timer()
             {
                 AutoReset = true,
                 Interval = 10000, // 10 seconds.
             };
-
             _timer.Elapsed += checkTable;
         }
 
         public void Start()
         {
-            using (ModelDbContext context = DbContextFactory.GetModelDbContext())
+            using (ModelDbContext context = _contextFactory.GetModelDbContext())
             {
-                DbEvent lastEvent = context.GetAllModels<DbEvent>().LastOrDefault();
+                IEnumerable<DbEvent> events = context.GetAllModels<DbEvent>();
+                DbEvent lastEvent = events.LastOrDefault();
                 _lastId = (lastEvent == null) ? 0 : lastEvent.ID;
             }
 
@@ -59,12 +61,12 @@ namespace EPSCoR.Web.Database
 
         private void checkTable(object sender, System.Timers.ElapsedEventArgs args)
         {
-            using (ModelDbContext context = DbContextFactory.GetModelDbContext())
+            using (ModelDbContext context = _contextFactory.GetModelDbContext())
             {
                 IEnumerable<DbEvent> events = context.GetAllModels<DbEvent>().Where((e) => e.ID > _lastId);
                 foreach (DbEvent e in events)
                 {
-                    IModel model = null;
+                    Model model = null;
                     switch (e.Table)
                     {
                         case "TableIndexes":

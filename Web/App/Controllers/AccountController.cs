@@ -16,16 +16,16 @@ namespace EPSCoR.Web.App.Controllers
     [InitializeSimpleMembership]
     public class AccountController : Controller
     {
-        private IModelRepository<UserProfile> _userProfileRepo;
+        private IRepositoryFactory _repoFactory;
 
         public AccountController()
         {
-            _userProfileRepo = RepositoryFactory.GetModelRepository<UserProfile>();
+            _repoFactory = new RepositoryFactory();
         }
 
-        public AccountController(IModelRepository<UserProfile> userProfileRepo)
+        public AccountController(IRepositoryFactory factory)
         {
-            _userProfileRepo = userProfileRepo;
+            _repoFactory = factory;
         }
 
         /// <summary>
@@ -36,7 +36,11 @@ namespace EPSCoR.Web.App.Controllers
         public ActionResult Login(string returnUrl)
         {
             //This is where we should check to see if the user has an account.
-            UserProfile profile = _userProfileRepo.GetAll().Where((x) => x.UserName == WebSecurity.CurrentUserName).FirstOrDefault();
+            UserProfile profile = null;
+            using (IModelRepository<UserProfile> repo = _repoFactory.GetModelRepository<UserProfile>())
+            {
+                profile = repo.GetAll().Where((x) => x.UserName == WebSecurity.CurrentUserName).FirstOrDefault();
+            }
 
             if (profile == null)
             {
@@ -82,7 +86,10 @@ namespace EPSCoR.Web.App.Controllers
             {
                 UserName = WebSecurity.CurrentUserName
             };
-            _userProfileRepo.Create(profile);
+            using (IModelRepository<UserProfile> repo = _repoFactory.GetModelRepository<UserProfile>())
+            {
+                repo.Create(profile);
+            }
         }
 
         /// <summary>

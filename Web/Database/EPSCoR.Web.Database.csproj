@@ -42,6 +42,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Xml.Linq" />
@@ -58,7 +59,7 @@
     <Compile Include="DbContextFactory.cs" />
     <Compile Include="DbWatcher.cs" />
     <Compile Include="Models\DbEvent.cs" />
-    <Compile Include="Models\IModel.cs" />
+    <Compile Include="Models\Model.cs" />
     <Compile Include="Models\LogEntry.cs" />
     <Compile Include="Models\TableIndex.cs" />
     <Compile Include="Models\UserConnection.cs" />
@@ -74,7 +75,9 @@
     <Compile Include="Services\Log\LoggerFactory.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

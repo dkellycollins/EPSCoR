@@ -20,34 +20,16 @@ namespace EPSCoR.Web.App.Controllers
     [AddUserWhenAuthorized]
     public class TablesController : Controller
     {
-        private IModelRepository<TableIndex> _tableIndexRepo;
-        private IAsyncTableRepository _tableRepo;
-        private IAsyncDatabaseCalc _dbCalc;
+        private IRepositoryFactory _repoFactory;
 
         public TablesController()
         {
-            _tableIndexRepo = RepositoryFactory.GetModelRepository<TableIndex>();
-            _tableRepo = RepositoryFactory.GetAsyncTableRepository(WebSecurity.CurrentUserName);
-            _dbCalc = RepositoryFactory.GetAsyncDatabaseCalc(WebSecurity.CurrentUserName);
+            _repoFactory = new RepositoryFactory();
         }
 
-        public TablesController(
-            IModelRepository<TableIndex> tableIndexRepo,
-            IAsyncTableRepository tableRepo,
-            IAsyncDatabaseCalc dbCalc)
+        public TablesController(IRepositoryFactory factory)
         {
-            _tableIndexRepo = tableIndexRepo;
-            _tableRepo = tableRepo;
-            _dbCalc = dbCalc;
-        }
-
-        protected override void OnActionExecuted(ActionExecutedContext filterContext)
-        {
-            _tableIndexRepo.Dispose();
-            _tableRepo.Dispose();
-            _dbCalc.Dispose();
-
-            base.OnActionExecuted(filterContext);
+            _repoFactory = factory;
         }
 
         /// <summary>
@@ -61,7 +43,12 @@ namespace EPSCoR.Web.App.Controllers
         [MultipleResponseFormats]
         public async Task<ActionResult> Details(string id, int lowerLimit = 0, int upperLimit = 10)
         {
-            DataTable table = await _tableRepo.ReadAsync(id, lowerLimit, upperLimit);
+            DataTable table = null;
+            using (IAsyncTableRepository repo = _repoFactory.GetAsyncTableRepository(WebSecurity.CurrentUserName))
+            {
+                table = await repo.ReadAsync(id, lowerLimit, upperLimit);
+            }
+
             if (table == null)
             {
                 return HttpNotFound();
@@ -76,9 +63,15 @@ namespace EPSCoR.Web.App.Controllers
         /// <returns></returns>
         public async Task<ActionResult> DataTableDetails(DataTableParams args)
         {
-            DataTable data = await _tableRepo.ReadAsync(args.TableName, args.DisplayStart, args.DisplayLength);
-            int totalRows = await _tableRepo.CountAsync(args.TableName);
+            DataTable data = null; 
+            int totalRows = 0; 
             int echo = Int32.Parse(args.Echo);
+
+            using (IAsyncTableRepository repo = _repoFactory.GetAsyncTableRepository(WebSecurity.CurrentUserName))
+            {
+                data = await repo.ReadAsync(args.TableName, args.DisplayStart, args.DisplayLength);
+                totalRows = await repo.CountAsync(args.TableName);
+            }
 
             return new DataTableResult(totalRows, totalRows, echo, data);
         }
@@ -90,9 +83,11 @@ namespace EPSCoR.Web.App.Controllers
         public ActionResult GetAllDetails()
         {
             string userName = WebSecurity.CurrentUserName;
-            var tables = _tableIndexRepo.GetAll();
-            IEnumerable<TableIndex> allDetails = tables.Where((index) => index.UploadedByUser == userName).ToList();
-            return new NewtonsoftJsonResult(allDetails);
+            using (IModelRepository<TableIndex> repo = _repoFactory.GetModelRepository<TableIndex>())
+            {
+                IEnumerable<TableIndex> allDetails = repo.Where((index) => index.UploadedByUser == userName);
+                return new NewtonsoftJsonResult(allDetails);
+            }
         }
     }
 }

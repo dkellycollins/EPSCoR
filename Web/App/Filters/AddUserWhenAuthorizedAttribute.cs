@@ -12,13 +12,20 @@ namespace EPSCoR.Web.App.Filters
 {
     public class AddUserWhenAuthorizedAttribute : AuthorizeAttribute
     {
+        private IRepositoryFactory _repoFactory;
+
+        public AddUserWhenAuthorizedAttribute()
+        {
+            _repoFactory = new RepositoryFactory();
+        }
+
         public override void OnAuthorization(AuthorizationContext filterContext)
         {
             base.OnAuthorization(filterContext);
 
             if (!string.IsNullOrEmpty(WebSecurity.CurrentUserName))
             {
-                using (IModelRepository<UserProfile> repo = RepositoryFactory.GetModelRepository<UserProfile>())
+                using (IModelRepository<UserProfile> repo = _repoFactory.GetModelRepository<UserProfile>())
                 {
                     UserProfile user = repo.GetAll().Where((u) => u.UserName == WebSecurity.CurrentUserName).FirstOrDefault();
 

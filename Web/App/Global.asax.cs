@@ -4,16 +4,20 @@ using System.Web.Optimization;
 using System.Web.Routing;
 using EPSCoR.Web.App;
 using EPSCoR.Web.App.Hubs;
+using EPSCoR.Web.Database;
 using EPSCoR.Web.Database.Context;
 using EPSCoR.Web.Database.Models;
+using EPSCoR.Web.Database.Services;
 
-namespace EPSCoR
+namespace EPSCoR.Web.App
 {
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
     // visit http://go.microsoft.com/?LinkId=9394801
 
     public class MvcApplication : System.Web.HttpApplication
     {
+        private DbWatcher _dbWatcher;
+
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
@@ -28,12 +32,20 @@ namespace EPSCoR
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new RazorViewEngine());
 
-            ModelDbContext.ModelCreated += DefaultContext_ModelCreated;
-            ModelDbContext.ModelRemoved += DefaultContext_ModelRemoved;
-            ModelDbContext.ModelUpdated += DefaultContext_ModelUpdated;
+            DirectoryManager.SetRootDirectory(Server.MapPath("~/App_Data"));
+
+            ModelDbContext.ModelCreated += ModelCreated;
+            ModelDbContext.ModelRemoved += ModelRemoved;
+            ModelDbContext.ModelUpdated += ModelUpdated;
+
+            _dbWatcher = new DbWatcher();
+            _dbWatcher.ModelCreated += ModelCreated;
+            _dbWatcher.ModelRemoved += ModelRemoved;
+            _dbWatcher.ModelUpdated += ModelUpdated;
+            _dbWatcher.Start();
         }
 
-        void DefaultContext_ModelUpdated(IModel model)
+        void ModelUpdated(Model model)
         {
             if (model is TableIndex)
             {
@@ -41,7 +53,7 @@ namespace EPSCoR
             }
         }
 
-        void DefaultContext_ModelRemoved(IModel model)
+        void ModelRemoved(Model model)
         {
             if (model is TableIndex)
             {
@@ -49,7 +61,7 @@ namespace EPSCoR
             }
         }
 
-        void DefaultContext_ModelCreated(IModel model)
+        void ModelCreated(Model model)
         {
             if (model is TableIndex)
             {

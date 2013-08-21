@@ -19,25 +19,16 @@ namespace EPSCoR.Web.App.Controllers
     [AddUserWhenAuthorized]
     public class FilesController : Controller
     {
-        private IModelRepository<TableIndex> _tableIndexRepo;
-        private IFileAccessor _fileAccessor;
-        private IAsyncFileAccessor _asyncFileAccessor;
+        private IRepositoryFactory _repoFactory;
 
         public FilesController()
         {
-            _tableIndexRepo = RepositoryFactory.GetModelRepository<TableIndex>();
-            _fileAccessor = RepositoryFactory.GetFileAccessor(WebSecurity.CurrentUserName);
-            _asyncFileAccessor = RepositoryFactory.GetAsyncFileAccessor(WebSecurity.CurrentUserName);
+            _repoFactory = new RepositoryFactory();
         }
 
-        public FilesController(
-            IModelRepository<TableIndex> tableIndexRepo,
-            IFileAccessor fileAccessor,
-            IAsyncFileAccessor asyncFileAccessor)
+        public FilesController(IRepositoryFactory factory)
         {
-            _tableIndexRepo = tableIndexRepo;
-            _fileAccessor = fileAccessor;
-            _asyncFileAccessor = asyncFileAccessor;
+            _repoFactory = factory;
         }
 
         /// <summary>
@@ -59,7 +50,8 @@ namespace EPSCoR.Web.App.Controllers
                 FileSize = file.TotalFileLength
             };
 
-            bool saveSuccessful = _fileAccessor.SaveFiles(FileDirectory.Temp, wrapper);
+            IFileAccessor fileAccessor = _repoFactory.GetFileAccessor(WebSecurity.CurrentUserName);
+            bool saveSuccessful = fileAccessor.SaveFiles(FileDirectory.Temp, wrapper);
 
             if(saveSuccessful)
                 return new FileUploadResult(fileName);
@@ -79,13 +71,16 @@ namespace EPSCoR.Web.App.Controllers
             string tableName = Path.GetFileNameWithoutExtension(id);
             string userName = WebSecurity.CurrentUserName;
 
-            var tables = _tableIndexRepo.GetAll();
-            TableIndex existingTable = tables.Where(t => t.Name == tableName && t.UploadedByUser == userName).FirstOrDefault();
-            fileExists = existingTable != null;
-
-            if (await _asyncFileAccessor.FileExistAsync(FileDirectory.Temp, id))
+            using (IModelRepository<TableIndex> repo = _repoFactory.GetModelRepository<TableIndex>())
             {
-                FileInfo info = await _asyncFileAccessor.GetFileInfoAsync(FileDirectory.Temp, id);
+                TableIndex existingTable = repo.Where(t => t.Name == tableName && t.UploadedByUser == userName).FirstOrDefault();
+                fileExists = existingTable != null;
+            }
+
+            IAsyncFileAccessor asyncFileAccessor = _repoFactory.GetAsyncFileAccessor(WebSecurity.CurrentUserName);
+            if (await asyncFileAccessor.FileExistAsync(FileDirectory.Temp, id))
+            {
+                FileInfo info = await asyncFileAccessor.GetFileInfoAsync(FileDirectory.Temp, id);
                 uploadedBytes = (int)info.Length;
             }
 
@@ -100,7 +95,8 @@ namespace EPSCoR.Web.App.Controllers
         [HttpPost]
         public async Task<ActionResult> CompleteUpload(string id)
         {
-            if (!(await _asyncFileAccessor.FileExistAsync(FileDirectory.Temp, id)))
+            IAsyncFileAccessor asyncFileAccessor = _repoFactory.GetAsyncFileAccessor(WebSecurity.CurrentUserName);
+            if (!(await asyncFileAccessor.FileExistAsync(FileDirectory.Temp, id)))
                 return new FileUploadResult(id, "File has not been uploaded.");
 
             TableIndex index = new TableIndex()
@@ -109,12 +105,14 @@ namespace EPSCoR.Web.App.Controllers
                 UploadedByUser = WebSecurity.CurrentUserName,
                 Type = (id.Contains("_US")) ? TableTypes.UPSTREAM : TableTypes.ATTRIBUTE,
                 Status = "Queued for processing",
-                FileKey = await _asyncFileAccessor.GenerateFileKeyAsync(FileDirectory.Temp, id)
+                FileKey = await asyncFileAccessor.GenerateFileKeyAsync(FileDirectory.Temp, id)
             };
-            _tableIndexRepo.Create(index);
+            using (IModelRepository<TableIndex> repo = _repoFactory.GetModelRepository<TableIndex>())
+            {
+                repo.Create(index);
+            }
 
-            await _asyncFileAccessor.MoveFileAsync(FileDirectory.Temp, FileDirectory.Upload, id);
-
+            await asyncFileAccessor.MoveFileAsync(FileDirectory.Temp, FileDirectory.Upload, id);
             return new FileUploadResult(id);
         }
 
@@ -122,24 +120,28 @@ namespace EPSCoR.Web.App.Controllers
         [AddUserWhenAuthorized(Roles="Admin")]
         public async Task<ActionResult> CompleteUploadAdmin(string id, string tableName, string userName, string type)
         {
-            if(!(await _asyncFileAccessor.FileExistAsync(FileDirectory.Temp, id)))
+            IAsyncFileAccessor asyncFileAccessor = _repoFactory.GetAsyncFileAccessor(WebSecurity.CurrentUserName);
+            if(!(await asyncFileAccessor.FileExistAsync(FileDirectory.Temp, id)))
                 return new FileUploadResult(id, "File has not been uploaded.");
 
-            TableIndex existingTable = _tableIndexRepo.GetAll().Where((i) => i.Name == tableName && i.UploadedByUser == userName).FirstOrDefault();
-            if(existingTable != null)
-                return new FileUploadResult(id, "Table already exists");
-
-            existingTable = new TableIndex()
+            using (IModelRepository<TableIndex> repo = _repoFactory.GetModelRepository<TableIndex>())
             {
-                Name = tableName,
-                UploadedByUser = userName,
-                Type = type,
-                Status = "Queued for processing",
-                FileKey = await _asyncFileAccessor.GenerateFileKeyAsync(FileDirectory.Temp, id)
-            };
-            _tableIndexRepo.Create(existingTable);
+                TableIndex existingTable = repo.Where((i) => i.Name == tableName && i.UploadedByUser == userName).FirstOrDefault();
+                if (existingTable != null)
+                    return new FileUploadResult(id, "Table already exists");
 
-            await _asyncFileAccessor.MoveFileAsync(FileDirectory.Temp, FileDirectory.Upload, id);
+                existingTable = new TableIndex()
+                {
+                    Name = tableName,
+                    UploadedByUser = userName,
+                    Type = type,
+                    Status = "Queued for processing",
+                    FileKey = await asyncFileAccessor.GenerateFileKeyAsync(FileDirectory.Temp, id)
+                };
+                repo.Create(existingTable);
+            }
+
+            await asyncFileAccessor.MoveFileAsync(FileDirectory.Temp, FileDirectory.Upload, id);
             return new FileUploadResult(id);
         }
 
@@ -151,8 +153,9 @@ namespace EPSCoR.Web.App.Controllers
         [HttpGet]
         public async Task<ActionResult> DownloadCsv(string id)
         {
+            IAsyncFileAccessor asyncFileAccessor = _repoFactory.GetAsyncFileAccessor(WebSecurity.CurrentUserName);
             string fileName = id + ".csv";
-            if(!(await _asyncFileAccessor.FileExistAsync(FileDirectory.Conversion, fileName)))
+            if(!(await asyncFileAccessor.FileExistAsync(FileDirectory.Conversion, fileName)))
             {
                 return new HttpNotFoundResult();
             }
@@ -163,7 +166,7 @@ namespace EPSCoR.Web.App.Controllers
                 Inline = false
             };
             Response.AppendHeader("Content-Disposition", cd.ToString());
-            return File((await _asyncFileAccessor.OpenFileAsync(FileDirectory.Conversion, fileName)), "text/csv");
+            return File((await asyncFileAccessor.OpenFileAsync(FileDirectory.Conversion, fileName)), "text/csv");
         }
     }
 }

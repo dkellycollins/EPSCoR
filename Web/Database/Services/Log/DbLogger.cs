@@ -9,12 +9,19 @@ namespace EPSCoR.Web.Database.Services.Log
 {
     public class DbLogger : ILogger
     {
+        IDbContextFactory _contextFactory;
+
+        public DbLogger()
+        {
+            _contextFactory = new DbContextFactory();
+        }
+
         public void Log(string message)
         {
             if (message.Length > 100)
                 message = message.Substring(0, 97) + "...";
 
-            using (ModelDbContext context = DbContextFactory.GetModelDbContext())
+            using (ModelDbContext context = _contextFactory.GetModelDbContext())
             {
                 context.CreateModel(new LogEntry()
                 {
@@ -32,7 +39,7 @@ namespace EPSCoR.Web.Database.Services.Log
             if (errMessage.Length > 100)
                 errMessage = errMessage.Substring(0, 97) + "...";
 
-            using (ModelDbContext context = DbContextFactory.GetModelDbContext())
+            using (ModelDbContext context = _contextFactory.GetModelDbContext())
             {
                 context.CreateModel(new LogEntry()
                 {

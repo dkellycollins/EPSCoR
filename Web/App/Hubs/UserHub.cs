@@ -13,6 +13,18 @@ namespace EPSCoR.Web.App.Hubs
     /// </summary>
     public class UserHub : Hub
     {
+        protected IRepositoryFactory _repoFactory;
+
+        public UserHub()
+        {
+            _repoFactory = new RepositoryFactory();
+        }
+
+        public UserHub(IRepositoryFactory factory)
+        {
+            _repoFactory = factory;
+        }
+
         /// <summary>
         /// Adds connectionId to user.
         /// </summary>
@@ -22,7 +34,7 @@ namespace EPSCoR.Web.App.Hubs
             string userName = Context.User.Identity.Name;
             string connectionId = Context.ConnectionId;
 
-            using (IModelRepository<UserConnection> connectionRepo = RepositoryFactory.GetModelRepository<UserConnection>())
+            using (IModelRepository<UserConnection> connectionRepo = _repoFactory.GetModelRepository<UserConnection>())
             {
                 UserConnection connection = connectionRepo.GetAll().Where((cid) => cid.ConnectionId == connectionId).FirstOrDefault();
                 if (connection == null)
@@ -51,7 +63,7 @@ namespace EPSCoR.Web.App.Hubs
             string userName = Context.User.Identity.Name;
             string connectionId = Context.ConnectionId;
 
-            using (IModelRepository<UserConnection> connectionRepo = RepositoryFactory.GetModelRepository<UserConnection>())
+            using (IModelRepository<UserConnection> connectionRepo = _repoFactory.GetModelRepository<UserConnection>())
             {
                 UserConnection connection = connectionRepo.GetAll().Where((cid) => cid.User == userName && cid.ConnectionId == connectionId).FirstOrDefault();
                 if (connection != null)
@@ -65,7 +77,8 @@ namespace EPSCoR.Web.App.Hubs
 
         protected static UserProfile GetUserByUserName(string userName)
         {
-            using (IModelRepository<UserProfile> userRepo = RepositoryFactory.GetModelRepository<UserProfile>())
+            IRepositoryFactory repoFactory = new RepositoryFactory();
+            using (IModelRepository<UserProfile> userRepo = repoFactory.GetModelRepository<UserProfile>())
             {
                 return userRepo.GetAll().Where((u) => u.UserName == userName).FirstOrDefault();
             }
@@ -73,7 +86,8 @@ namespace EPSCoR.Web.App.Hubs
 
         protected static IEnumerable<UserConnection> GetConnectionsForUser(string userName)
         {
-            using (IModelRepository<UserConnection> connectionRepo = RepositoryFactory.GetModelRepository<UserConnection>())
+            IRepositoryFactory repoFactory = new RepositoryFactory();
+            using (IModelRepository<UserConnection> connectionRepo = repoFactory.GetModelRepository<UserConnection>())
             {
                 return connectionRepo.GetAll().Where((cid) => cid.User == userName).ToList();
             }

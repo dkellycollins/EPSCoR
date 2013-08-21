@@ -18,8 +18,9 @@ namespace EPSCoR.Web.App.Repositories.Async
 
         public AsyncTableRepo(string userName)
         {
-            _modelContext = DbContextFactory.GetModelDbContext();
-            _tableContext = DbContextFactory.GetTableDbContextForUser(userName);
+            IDbContextFactory contextFactory = new DbContextFactory();
+            _modelContext = contextFactory.GetModelDbContext();
+            _tableContext = contextFactory.GetTableDbContextForUser(userName);
             _currentUser = userName;
         }
 

@@ -8,16 +8,8 @@ using System.Threading.Tasks;
 
 namespace EPSCoR.Web.Database.Models
 {
-    public class DbEvent : IModel
+    public class DbEvent : Model
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ID { get; set; }
-
-        public DateTime DateCreated { get; set; }
-
-        public DateTime DateUpdated { get; set; }
-
         public int ActionCode { get; set; }
 
         public string Table { get; set; }
