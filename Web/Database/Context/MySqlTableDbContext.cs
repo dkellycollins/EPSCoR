@@ -108,6 +108,7 @@ namespace EPSCoR.Web.Database.Context
             ThrowExceptionIfInvalidSql(table);
 
             Database.ExecuteSqlCommand("DROP TABLE IF EXISTS " + table);
+            LoggerFactory.GetLogger().Log("Table, " + table + ", dropped from " + Database.Connection.Database);
         }
 
         private void createCalcTable(string attTable, string usTable, string calcTable, string calc)

@@ -17,6 +17,8 @@ namespace EPSCoR.Web.FileProcessor
     /// </summary>
     public static class FileProcessor
     {
+        private static DbContextFactory _contextFactory = new DbContextFactory();
+
         /// <summary>
         /// Starts a task that converts the file to csv and add the result to database.
         /// Note that the conversion is stored in DirectoryManager.ConversionDir so DirectoryManager.SetRootDirectory must be called be fore calling this method.
@@ -27,7 +29,7 @@ namespace EPSCoR.Web.FileProcessor
         {
             string fileKey = FileKeyGenerator.GenerateKey(filePath);
             TableIndex tableIndex = null;
-            using (ModelDbContext context = DbContextFactory.GetModelDbContext())
+            using (ModelDbContext context = _contextFactory.GetModelDbContext())
             {
                 tableIndex = context.GetAllModels<TableIndex>().Where((i) => i.FileKey == fileKey).FirstOrDefault();
             }
@@ -54,7 +56,7 @@ namespace EPSCoR.Web.FileProcessor
             //Add converted file to the database.
             tableIndex.FileKey = FileKeyGenerator.GenerateKey(conversionPath);
             updateTableStatus(tableIndex, "Creating table in database.");
-            using (TableDbContext tableContext = DbContextFactory.GetTableDbContextForUser(tableIndex.UploadedByUser))
+            using (TableDbContext tableContext = _contextFactory.GetTableDbContextForUser(tableIndex.UploadedByUser))
             {
                 tableContext.AddTableFromFile(conversionPath);
                 tableContext.PopulateTableFromFile(conversionPath);
@@ -122,7 +124,7 @@ namespace EPSCoR.Web.FileProcessor
 
         private static void updateTableStatus(TableIndex index, string status, bool processed = false, bool error = false)
         {
-            using (ModelDbContext context = DbContextFactory.GetModelDbContext())
+            using (ModelDbContext context = _contextFactory.GetModelDbContext())
             {
                 index.Status = status;
                 index.Processed = processed;

@@ -16,6 +16,7 @@ namespace EPSCoR.Web.FileProcessor
 {
     partial class FileProcessorService : ServiceBase
     {
+        private static readonly TimeSpan WAIT_TIME = new TimeSpan(0, 1, 0);
 
         public FileProcessorService()
         {
@@ -25,11 +26,10 @@ namespace EPSCoR.Web.FileProcessor
         protected override void OnStart(string[] args)
         {
             string rootDir = args[0];
-
-            fileWatcher.Path = rootDir;
-            fileWatcher.EnableRaisingEvents = true;
-
             DirectoryManager.SetRootDirectory(rootDir);
+
+            fileWatcher.Path = DirectoryManager.UploadDir;
+            fileWatcher.EnableRaisingEvents = true;
         }
 
         protected override void OnStop()
@@ -41,6 +41,7 @@ namespace EPSCoR.Web.FileProcessor
         {
             if(File.Exists(e.FullPath))
             {
+                waitUntilFileCanBeOpened(e.FullPath);
                 FileProcessor.ProcessFileAsync(e.FullPath);
             }
         }
@@ -48,6 +49,30 @@ namespace EPSCoR.Web.FileProcessor
         private void _fileWatcher_Error(object sender, ErrorEventArgs e)
         {
             EventLog.WriteEntry("FILE WATCHER FAILED \n" + e.ToString(), EventLogEntryType.Error);
+        }
+
+        private void waitUntilFileCanBeOpened(string filePath)
+        {
+            bool fileOpened = false;
+            while (!fileOpened)
+            {
+                try
+                {
+                    using (FileStream fileStream = File.Open(filePath, FileMode.Open))
+                    {
+                        fileOpened = fileStream.Length > 0;
+                    }
+                }
+                catch
+                {
+                    FileInfo fileInfo = new FileInfo(filePath);
+                    if (DateTime.Now - fileInfo.LastWriteTime > WAIT_TIME)
+                    {
+                        throw new Exception("Could not open file");
+                    }
+                }
+            }
+
         }
     }
 }

@@ -61,34 +61,37 @@ namespace EPSCoR.Web.Database
 
         private void checkTable(object sender, System.Timers.ElapsedEventArgs args)
         {
-            using (ModelDbContext context = _contextFactory.GetModelDbContext())
+            lock (this)
             {
-                IEnumerable<DbEvent> events = context.GetAllModels<DbEvent>().Where((e) => e.ID > _lastId);
-                foreach (DbEvent e in events)
+                using (ModelDbContext context = _contextFactory.GetModelDbContext())
                 {
-                    Model model = null;
-                    switch (e.Table)
+                    IEnumerable<DbEvent> events = context.GetAllModels<DbEvent>().Where((e) => e.ID > _lastId).ToList();
+                    foreach (DbEvent e in events)
                     {
-                        case "TableIndexes":
-                            model = context.GetModel<TableIndex>(e.EntryID);
-                            break;
-                        default:
-                            throw new Exception("Unsupported model type");
-                    }
-                    switch ((Models.Action)e.ActionCode)
-                    {
-                        case Models.Action.Created:
-                            ModelCreated(model);
-                            break;
-                        case Models.Action.Deleted:
-                            ModelRemoved(model);
-                            break;
-                        case Models.Action.Updated:
-                            ModelUpdated(model);
-                            break;
-                    }
+                        Model model = null;
+                        switch (e.Table)
+                        {
+                            case "TableIndexes":
+                                model = context.GetModel<TableIndex>(e.EntryID);
+                                break;
+                            default:
+                                throw new Exception("Unsupported model type");
+                        }
+                        switch ((Models.Action)e.ActionCode)
+                        {
+                            case Models.Action.Created:
+                                ModelCreated(model);
+                                break;
+                            case Models.Action.Deleted:
+                                ModelRemoved(model);
+                                break;
+                            case Models.Action.Updated:
+                                ModelUpdated(model);
+                                break;
+                        }
 
-                    _lastId = e.ID;
+                        _lastId = e.ID;
+                    }
                 }
             }
         }

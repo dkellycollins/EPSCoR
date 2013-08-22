@@ -6,9 +6,11 @@
     <!--The viewport meta tag is used to improve the presentation and behavior of the samples
     on iOS devices-->
     <meta name="viewport" content="initial-scale=1">
-
     <title>@ViewBag.Title</title>
-
+    <link rel="icon" href="@Url.Content("~/content/images/favicon.ico")" type="image/x-icon"/>
+    <!--[if IE]>
+    <link rel="shortcut icon" href="@Url.Content("~/content/images/favicon.ico")" type="image/x-icon" />
+    <![endif]-->
     @RenderSection("Styles", false)
     <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
     <!--<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/css/bootstrap.min.css" rel="stylesheet">-->

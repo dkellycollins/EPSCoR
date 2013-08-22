@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using EPSCoR.Common.Exceptions;
+using EPSCoR.Web.Database.Services.Log;
 
 namespace EPSCoR.Web.Database.Context
 {
@@ -118,6 +119,7 @@ namespace EPSCoR.Web.Database.Context
             ThrowExceptionIfInvalidSql(table);
 
             Database.ExecuteSqlCommand("DROP TABLE " + table);
+            LoggerFactory.GetLogger().Log("Table, " + table + ", dropped from " + Database.Connection.Database);
         }
 
         #region Helper Methods

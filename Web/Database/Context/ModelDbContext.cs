@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Data.Common;
 using System.Data.Entity;
 using System.Linq;
@@ -85,7 +86,7 @@ namespace EPSCoR.Web.Database.Context
         public virtual void UpdateModel(Model model)
         {
             model.DateUpdated = DateTime.Now;
-            Entry(model).State = System.Data.EntityState.Modified;
+            Entry(model).State = EntityState.Modified;
             SaveChanges();
             ModelUpdated(model);
         }

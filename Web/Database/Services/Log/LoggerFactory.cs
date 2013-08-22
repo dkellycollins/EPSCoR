@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace EPSCoR.Web.Database.Services.Log
 {
@@ -15,7 +16,7 @@ namespace EPSCoR.Web.Database.Services.Log
             if (_loggerInstance == null)
             {
                 _loggerInstance = new CompoundLogger(
-                    new FileLogger(DirectoryManager.RootDir),
+                    new FileLogger(Path.Combine(DirectoryManager.RootDir, "logs")),
                     new DbLogger()
                     );
             }
