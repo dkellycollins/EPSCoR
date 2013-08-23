@@ -15,5 +15,7 @@ namespace EPSCoR.Web.Database.Models
 
         [MaxLength(100)]
         public string Error { get; set; }
+
+        public string Source { get; set; }
     }
 }

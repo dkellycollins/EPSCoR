@@ -28,6 +28,21 @@ namespace EPSCoR.Web.FileProcessor
             string rootDir = args[0];
             DirectoryManager.SetRootDirectory(rootDir);
 
+            try
+            {
+                //Process any files in waiting.
+                IEnumerable<string> files = Directory.GetFiles(DirectoryManager.UploadDir);
+                foreach (string file in files)
+                {
+                    FileProcessor.ProcessFileAsync(file);
+                }
+            }
+            catch (Exception ex)
+            {
+                handleError(ex);
+            }
+
+            //Start looking for new files to process.
             fileWatcher.Path = DirectoryManager.UploadDir;
             fileWatcher.EnableRaisingEvents = true;
         }
@@ -39,16 +54,23 @@ namespace EPSCoR.Web.FileProcessor
 
         private void _fileWatcher_Created(object sender, FileSystemEventArgs e)
         {
-            if(File.Exists(e.FullPath))
+            try
             {
-                waitUntilFileCanBeOpened(e.FullPath);
-                FileProcessor.ProcessFileAsync(e.FullPath);
+                if (File.Exists(e.FullPath))
+                {
+                    waitUntilFileCanBeOpened(e.FullPath);
+                    FileProcessor.ProcessFileAsync(e.FullPath);
+                }
+            }
+            catch (Exception ex)
+            {
+                handleError(ex);
             }
         }
 
         private void _fileWatcher_Error(object sender, ErrorEventArgs e)
         {
-            EventLog.WriteEntry("FILE WATCHER FAILED \n" + e.ToString(), EventLogEntryType.Error);
+            handleError(e.GetException());
         }
 
         private void waitUntilFileCanBeOpened(string filePath)
@@ -73,6 +95,11 @@ namespace EPSCoR.Web.FileProcessor
                 }
             }
 
+        }
+
+        private void handleError(Exception e)
+        {
+            EventLog.WriteEntry("Error: " + e.ToString(), EventLogEntryType.Error);
         }
     }
 }

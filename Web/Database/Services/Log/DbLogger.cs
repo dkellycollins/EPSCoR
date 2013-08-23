@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 using EPSCoR.Web.Database.Context;
 using EPSCoR.Web.Database.Models;
@@ -10,10 +11,12 @@ namespace EPSCoR.Web.Database.Services.Log
     public class DbLogger : ILogger
     {
         IDbContextFactory _contextFactory;
+        string _source;
 
         public DbLogger()
         {
             _contextFactory = new DbContextFactory();
+            _source = Assembly.GetExecutingAssembly().FullName;
         }
 
         public void Log(string message)
@@ -25,7 +28,8 @@ namespace EPSCoR.Web.Database.Services.Log
             {
                 context.CreateModel(new LogEntry()
                 {
-                    Message = message
+                    Message = message,
+                    Source = _source
                 });
             }
         }
@@ -44,7 +48,8 @@ namespace EPSCoR.Web.Database.Services.Log
                 context.CreateModel(new LogEntry()
                 {
                     Message = message,
-                    Error = errMessage
+                    Error = errMessage,
+                    Source = _source
                 });
             }
         }

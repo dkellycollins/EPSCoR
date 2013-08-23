@@ -37,7 +37,7 @@ namespace EPSCoR.Web.App.Controllers
         /// <param name="file">Contains information on the file.</param>
         /// <returns>Status of the upload.</returns>
         [HttpPost]
-        public ActionResult UploadFiles(FileUpload file)
+        public async Task<ActionResult> UploadFiles(FileUpload file)
         {
             string fileName = Path.GetFileName(file.FileName);
 
@@ -50,8 +50,8 @@ namespace EPSCoR.Web.App.Controllers
                 FileSize = file.TotalFileLength
             };
 
-            IFileAccessor fileAccessor = _repoFactory.GetFileAccessor(WebSecurity.CurrentUserName);
-            bool saveSuccessful = fileAccessor.SaveFiles(FileDirectory.Temp, wrapper);
+            IAsyncFileAccessor fileAccessor = _repoFactory.GetAsyncFileAccessor(WebSecurity.CurrentUserName);
+            bool saveSuccessful = await fileAccessor.SaveFilesAsync(FileDirectory.Temp, wrapper);
 
             if(saveSuccessful)
                 return new FileUploadResult(fileName);

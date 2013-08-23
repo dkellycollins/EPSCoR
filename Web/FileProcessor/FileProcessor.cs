@@ -135,7 +135,7 @@ namespace EPSCoR.Web.FileProcessor
                 {
                     ActionCode = (int)EPSCoR.Web.Database.Models.Action.Updated,
                     EntryID = index.ID,
-                    Table = "TableIndexes"
+                    TableName = "TableIndexes"
                 });
             }
         }

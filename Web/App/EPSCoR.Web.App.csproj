@@ -511,6 +511,7 @@
     <Content Include="Views\Tables\DetailsPartial.cshtml" />
     <Content Include="Views\Tables\fineUpload.cshtml" />
     <Content Include="Views\Task\Index.cshtml" />
+    <Content Include="Views\Shared\_DidYouKnowLoader.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

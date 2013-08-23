@@ -12,9 +12,11 @@ namespace EPSCoR.Web.Database.Models
     {
         public int ActionCode { get; set; }
 
-        public string Table { get; set; }
+        public string TableName { get; set; }
 
         public int EntryID { get; set; }
+
+        public string Source { get; set; }
     }
 
     public enum Action

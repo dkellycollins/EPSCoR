@@ -69,7 +69,7 @@ namespace EPSCoR.Web.Database
                     foreach (DbEvent e in events)
                     {
                         Model model = null;
-                        switch (e.Table)
+                        switch (e.TableName)
                         {
                             case "TableIndexes":
                                 model = context.GetModel<TableIndex>(e.EntryID);
