@@ -33,6 +33,7 @@ namespace EPSCoR.Web.App.Controllers
         /// </summary>
         /// <param name="returnUrl">Url to redirect the user to.</param>
         /// <returns></returns>
+        /// <remarks>Due to redirection issues this is not used. See AddUserWhenAuthorizedAttribute as that is where users are added.</remarks>
         public ActionResult Login(string returnUrl)
         {
             //This is where we should check to see if the user has an account.
@@ -49,6 +50,11 @@ namespace EPSCoR.Web.App.Controllers
             return redirectToLocal(returnUrl);
         }
 
+        /// <summary>
+        /// Redirects user to the homepage after loging out.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>This is band-aid fix that might be able to be fixed by configuring the CAS server differently.</remarks>
         [HttpGet]
         public ActionResult LogOff()
         {
@@ -59,6 +65,7 @@ namespace EPSCoR.Web.App.Controllers
         /// Logs the user out of Cas. Then redirect the user to the main page of the app.
         /// </summary>
         /// <returns></returns>
+        /// <remarks>redirecToLocal is seemingly ignored. This is because SingleSignOut overrides the redirect.</remarks>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult LogOff(string returnUrl)

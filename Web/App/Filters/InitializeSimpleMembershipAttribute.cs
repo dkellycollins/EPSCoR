@@ -8,6 +8,9 @@ using WebMatrix.WebData;
 
 namespace EPSCoR.Web.App.Filters
 {
+    /// <summary>
+    /// Ensures that Simple membership is initialized before trying to use it.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public sealed class InitializeSimpleMembershipAttribute : ActionFilterAttribute
     {
@@ -21,7 +24,6 @@ namespace EPSCoR.Web.App.Filters
             LazyInitializer.EnsureInitialized(ref _initializer, ref _isInitialized, ref _initializerLock);
         }
 
-        //Marked as internal so the seed method can get access to this.
         private class SimpleMembershipInitializer
         {
             public SimpleMembershipInitializer()

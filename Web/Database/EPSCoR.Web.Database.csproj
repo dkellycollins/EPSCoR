@@ -55,8 +55,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Context\ModelDbContext.cs" />
-    <Compile Include="Context\MySqlModelDbContext.cs" />
-    <Compile Include="Context\MySqlTableDbContext.cs" />
+    <Compile Include="Context\MySql\MySqlModelDbContext.cs" />
+    <Compile Include="Context\MySql\MySqlTableDbContext.cs" />
     <Compile Include="Context\TableDbContext.cs" />
     <Compile Include="DbContextFactory.cs" />
     <Compile Include="DbWatcher.cs" />

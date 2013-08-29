@@ -32,7 +32,7 @@ namespace EPSCoR.Web.App.Controllers
         }
 
         /// <summary>
-        /// Handles saveing the posted file to the temp directory.
+        /// Handles saving the posted file to the temp directory.
         /// </summary>
         /// <param name="file">Contains information on the file.</param>
         /// <returns>Status of the upload.</returns>
@@ -116,6 +116,11 @@ namespace EPSCoR.Web.App.Controllers
             return new FileUploadResult(id);
         }
 
+        /// <summary>
+        /// Finalizes the file upload. Set the tableIndex properties with the values provided.
+        /// </summary>
+        /// <param name="id">File to finalize.</param>
+        /// <returns></returns>
         [HttpPost]
         [AddUserWhenAuthorized(Roles="Admin")]
         public async Task<ActionResult> CompleteUploadAdmin(string id, string tableName, string userName, string type)

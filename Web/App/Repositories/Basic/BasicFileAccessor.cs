@@ -8,6 +8,9 @@ using EPSCoR.Common;
 
 namespace EPSCoR.Web.App.Repositories.Basic
 {
+    /// <summary>
+    /// Implements IFileAccessor using just System.IO.
+    /// </summary>
     public class BasicFileAccessor : IFileAccessor
     {
         private string _user;

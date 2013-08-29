@@ -4,22 +4,17 @@ using System.IO;
 namespace EPSCoR.Web.Database.Services.Log
 {
     /// <summary>
-    /// Handles logging messages.
+    /// Writes messages to a file on the database.
     /// </summary>
     public class FileLogger : ILogger
     {
         private object _lock;
-        private string _logFile;
+        private string _directory;
 
         public FileLogger(string directory)
         {
             _lock = new object();
-            _logFile = Path.Combine(directory, "Log.txt");
-            if (!File.Exists(_logFile))
-            {
-                FileStream file = File.Create(_logFile);
-                file.Close();
-            }
+            _directory = directory;
         }
 
         /// <summary>
@@ -28,10 +23,12 @@ namespace EPSCoR.Web.Database.Services.Log
         /// <param name="entry">Log entry.</param>
         public void Log(string entry)
         {
+            string logFile = getLogFilePath();
             lock (_lock)
             {
-                using (StreamWriter logFileStream = new StreamWriter(File.Open(_logFile, FileMode.Append)))
+                using (StreamWriter logFileStream = new StreamWriter(File.Open(logFile, FileMode.OpenOrCreate)))
                 {
+                    logFileStream.BaseStream.Seek(0, SeekOrigin.End); //Seek to end of the file.
                     logFileStream.WriteLine(string.Format("{0} - {1}", DateTime.Now.ToString(), entry));
                     logFileStream.Flush();
                 }
@@ -45,11 +42,12 @@ namespace EPSCoR.Web.Database.Services.Log
         /// <param name="e"></param>
         public void Log(string message, Exception e)
         {
+            string logFile = getLogFilePath();
             lock (_lock)
             {
-                using (StreamWriter logFileStream = new StreamWriter(File.Open(_logFile, FileMode.Append)))
+                using (StreamWriter logFileStream = new StreamWriter(File.Open(logFile, FileMode.Append)))
                 {
-
+                    logFileStream.BaseStream.Seek(0, SeekOrigin.End); //Seek to end of the file.
                     logFileStream.WriteLine(string.Format("{0} - {1}", DateTime.Now.ToString(), message));
 
                     Exception currentException = e;
@@ -63,6 +61,11 @@ namespace EPSCoR.Web.Database.Services.Log
                     logFileStream.Flush();
                 }
             }
+        }
+
+        private string getLogFilePath()
+        {
+            return Path.Combine(_directory, "Logs", "Log-" + DateTime.Now.ToShortDateString() + ".txt");
         }
     }
 }

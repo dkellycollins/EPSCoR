@@ -10,6 +10,11 @@ namespace EPSCoR.Common
 {
     public class FileKeyGenerator
     {
+        /// <summary>
+        /// Generates a unique key based on the file and it contents.
+        /// </summary>
+        /// <param name="filePath">The fully qualified path the file.</param>
+        /// <returns>Unique file key.</returns>
         public static string GenerateKey(string filePath)
         {
             using (BufferedStream fileStream = new BufferedStream(File.Open(filePath, FileMode.Open)))
@@ -18,6 +23,11 @@ namespace EPSCoR.Common
             }
         }
 
+        /// <summary>
+        /// Generates a unique key based on the file and it contents.
+        /// </summary>
+        /// <param name="fileStream">The open file stream.</param>
+        /// <returns>Unique file key.</returns>
         public static string GenerateKey(Stream fileStream)
         {
             MD5 hasher = MD5.Create();

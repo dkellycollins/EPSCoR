@@ -14,6 +14,9 @@ using EPSCoR.Web.Database.Services.Log;
 
 namespace EPSCoR.Web.FileProcessor
 {
+    /// <summary>
+    /// This service just watches for new files to process.
+    /// </summary>
     partial class FileProcessorService : ServiceBase
     {
         private static readonly TimeSpan WAIT_TIME = new TimeSpan(0, 1, 0);
@@ -73,6 +76,10 @@ namespace EPSCoR.Web.FileProcessor
             handleError(e.GetException());
         }
 
+        /// <summary>
+        /// Blocks until the file can be open or the file has not changed for a period of time.
+        /// </summary>
+        /// <param name="filePath"></param>
         private void waitUntilFileCanBeOpened(string filePath)
         {
             bool fileOpened = false;

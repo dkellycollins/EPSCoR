@@ -8,6 +8,9 @@ using EPSCoR.Web.Database.Models;
 
 namespace EPSCoR.Web.Database.Services.Log
 {
+    /// <summary>
+    /// Logs messages to the database.
+    /// </summary>
     public class DbLogger : ILogger
     {
         IDbContextFactory _contextFactory;

@@ -11,7 +11,7 @@ namespace EPSCoR.Web.App.Results
         /// <summary>
         /// The data to be serialized.
         /// </summary>
-        public object Data { get; protected set; }
+        protected object Data { get; set; }
 
         public NewtonsoftJsonResult()
             : base()
@@ -23,6 +23,10 @@ namespace EPSCoR.Web.App.Results
             this.Data = data;
         }
 
+        /// <summary>
+        /// Serailizes the data and writes it to the response.
+        /// </summary>
+        /// <param name="context"></param>
         public override void ExecuteResult(System.Web.Mvc.ControllerContext context)
         {
             var response = context.HttpContext.Response;

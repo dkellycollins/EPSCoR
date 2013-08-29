@@ -9,6 +9,12 @@ namespace EPSCoR.Web.App.Repositories
 {
     public interface IDirectoryResolver
     {
+        /// <summary>
+        /// Determines the path to the user directory.
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
         string GetUserDirectory(FileDirectory directory, string user);
     }
 

@@ -7,20 +7,20 @@ namespace EPSCoR.Web.App.Repositories
     public interface IAsyncTableRepository : IDisposable
     {
         /// <summary>
-        /// Creates a new table in the database using table.
+        /// Creates a new table in the database using the given table.
         /// </summary>
         /// <param name="table"></param>
         Task CreateAsync(DataTable table);
 
         /// <summary>
-        /// Reads the entire table into a Datatable object. Note that if the table is large this might throw an OutOfMemoryException.
+        /// Reads the entire table into a DataTable object. Note that if the table is large this might throw an OutOfMemoryException.
         /// </summary>
         /// <param name="tableName"></param>
         /// <returns></returns>
         Task<DataTable> ReadAsync(string tableName);
 
         /// <summary>
-        /// Reads a portion of the table into a Databtable object.
+        /// Reads a portion of the table into a DatabTable object.
         /// </summary>
         /// <param name="tableName"></param>
         /// <param name="lowerLimit"></param>
@@ -36,7 +36,7 @@ namespace EPSCoR.Web.App.Repositories
         Task<int> CountAsync(string tableName);
 
         /// <summary>
-        /// Updates the table using table.
+        /// Updates the table using the given table.
         /// </summary>
         /// <param name="table"></param>
         Task UpdateAsync(DataTable table);

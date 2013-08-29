@@ -12,7 +12,7 @@ using EPSCoR.Web.Database.Services.Log;
 namespace EPSCoR.Web.Database.Context
 {
     /// <summary>
-    /// This is the base class for all DbCmd classes. This class will mostly define helper functions for the sub classes to use.
+    /// Extends DbContext to allow access to the full tables in the database.
     /// </summary>
     public abstract class TableDbContext : DbContext
     {
@@ -75,6 +75,14 @@ namespace EPSCoR.Web.Database.Context
             return CommonSelect(query);
         }
 
+        /// <summary>
+        /// Selected the given range from the table and return the result in a DataTable object.
+        /// </summary>
+        /// <param name="table">The table to select from.</param>
+        /// <param name="lowerLimit">The lower limit of the range.</param>
+        /// <param name="upperLimit">The upper limit of the range.</param>
+        /// <param name="totalRows">How many rows were returns from the complete query.</param>
+        /// <returns></returns>
         public virtual DataTable SelectAllFrom(string table, int lowerLimit, int upperLimit, out int totalRows)
         {
             ThrowExceptionIfInvalidSql(table);
@@ -89,6 +97,11 @@ namespace EPSCoR.Web.Database.Context
             return result;
         }
 
+        /// <summary>
+        /// Returns how many rows are in the given table.
+        /// </summary>
+        /// <param name="table">Name of the table.</param>
+        /// <returns></returns>
         public virtual int Count(string table)
         {
             ThrowExceptionIfInvalidSql(table);
@@ -114,6 +127,10 @@ namespace EPSCoR.Web.Database.Context
             return dataTable;
         }
 
+        /// <summary>
+        /// Drops the given table.
+        /// </summary>
+        /// <param name="table">Name of the table to drop.</param>
         public virtual void DropTable(string table)
         {
             ThrowExceptionIfInvalidSql(table);
@@ -147,10 +164,15 @@ namespace EPSCoR.Web.Database.Context
             foreach (string arg in args)
             {
                 if (!Regex.IsMatch(arg.Trim(), @"^[a-zA-Z0-9_]+$", RegexOptions.IgnorePatternWhitespace))
-                    throw new Exception(arg + " contains invalid characters");
+                    throw new InvalidSqlException("Query contains invalid characters", arg);
             }
         }
 
+        /// <summary>
+        /// Determines the fields for a table from the first row in the file.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         protected static List<string> GetFieldsFromFile(string file)
         {
             List<string> fields = new List<string>();
@@ -158,6 +180,11 @@ namespace EPSCoR.Web.Database.Context
             return fields;
         }
 
+        /// <summary>
+        /// Returns the second row from the file, tis should be a "sample" of the data
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         protected static List<string> GetSampleFromFile(string file)
         {
             List<string> samples = new List<string>();
@@ -165,6 +192,12 @@ namespace EPSCoR.Web.Database.Context
             return samples;
         }
 
+        /// <summary>
+        /// Returns the first row as fields and the second row as samples.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="fields"></param>
+        /// <param name="samples"></param>
         protected static void GetFieldsAndSamplesFromFile(string file, List<string> fields, List<string> samples)
         {
             using (TextReader reader = File.OpenText(file))

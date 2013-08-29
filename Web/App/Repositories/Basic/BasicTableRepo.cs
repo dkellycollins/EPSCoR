@@ -10,6 +10,9 @@ using EPSCoR.Web.Database.Services;
 
 namespace EPSCoR.Web.App.Repositories.Basic
 {
+    /// <summary>
+    /// Implements ITableRepository and IDatabaseCalc using ModelDbContext and TableDbContext.
+    /// </summary>
     public class BasicTableRepo : ITableRepository, IDatabaseCalc
     {
         ModelDbContext _modelContext;
@@ -24,7 +27,7 @@ namespace EPSCoR.Web.App.Repositories.Basic
             _currentUser = userName;
         }
 
-        #region IRawRepository Members
+        #region ITableRepository Members
 
         public void Create(DataTable table)
         {
@@ -83,7 +86,7 @@ namespace EPSCoR.Web.App.Repositories.Basic
             _tableContext.Dispose();
         }
 
-        #endregion IRawRepository Members
+        #endregion ITableRepository Members
 
         #region IDatabaseCalc Members
 

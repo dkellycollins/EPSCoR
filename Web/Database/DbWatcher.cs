@@ -8,6 +8,9 @@ using EPSCoR.Web.Database.Models;
 
 namespace EPSCoR.Web.Database
 {
+    /// <summary>
+    /// Periodically checks the database for modified entries. Will raise an event for each modified entry.
+    /// </summary>
     public class DbWatcher
     {
         public delegate void ModelEventHandler(Model model);
@@ -37,11 +40,14 @@ namespace EPSCoR.Web.Database
             _timer = new System.Timers.Timer()
             {
                 AutoReset = true,
-                Interval = 10000, // 10 seconds.
+                Interval = 1000, // 1 second.
             };
             _timer.Elapsed += checkTable;
         }
 
+        /// <summary>
+        /// Starts polling the database.
+        /// </summary>
         public void Start()
         {
             using (ModelDbContext context = _contextFactory.GetModelDbContext())
@@ -54,11 +60,15 @@ namespace EPSCoR.Web.Database
             _timer.Start();
         }
 
+        /// <summary>
+        /// Stops polling the database.
+        /// </summary>
         public void Stop()
         {
             _timer.Stop();
         }
 
+        //Handles checking the database and looking up an entry when a table is modified.
         private void checkTable(object sender, System.Timers.ElapsedEventArgs args)
         {
             lock (this)

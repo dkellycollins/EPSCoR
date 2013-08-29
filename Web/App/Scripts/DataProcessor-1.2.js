@@ -9,6 +9,7 @@
     SignalR
 */
 
+//Define EPSCoR or take the current definition.
 var EPSCoR = EPSCoR || {};
 
 $(function () {
@@ -131,6 +132,7 @@ $(function () {
         */
         Tables: {
 
+            //These keep track of the tables currently loaded on the page.
             upstreamTables: [],
             attributeTables: [],
             calcTables: [],
@@ -169,7 +171,7 @@ $(function () {
                     }
                 });
             },
-            //Removes the table from the page.
+            //Removes the table from the page after confirm the deletion.
             confirmDeleteTable: function (tableName) {
                 EPSCoR.Dialogs.yesNoDialog('Confirm delete', 'Are you sure you want to delete ' + tableName + '?', function (result) {
                     if (result) {
@@ -177,6 +179,7 @@ $(function () {
                     }
                 });
             },
+            //Removes the table from the page, no confirmation.
             deleteTable: function(tableName) {
                 tableHub.server.removeTable(tableName).fail(function (error) {
                     EPSCoR.Alerts.addAlert("Failed to remove table " + tableName + ": " + error, "", "error");
@@ -236,7 +239,7 @@ $(function () {
             toggleButtons: function (divId, enable) {
                 $('#' + divId + ' .btn').toggleAttr('disabled', enable);
             },
-
+            //submits a request to generate a calc table.
             submitCalcTable: function(attTable, usTable, calcType)
             {
                 tableHub.server.submitCalcTable(attTable, usTable, calcType).fail(function (error) {

@@ -7,22 +7,19 @@ using Microsoft.AspNet.SignalR;
 namespace EPSCoR.Web.App.Hubs
 {
     /// <summary>
-    /// Handles send alerts to users.
+    /// Handles sending alerts to users.
     /// </summary>
     public class AlertsHub : UserHub
     {
         private static IHubContext _context;
 
-        /// <summary>
-        /// Initializer.
-        /// </summary>
         static AlertsHub()
         {
             _context = GlobalHost.ConnectionManager.GetHubContext<AlertsHub>();
         }
 
         /// <summary>
-        /// Sends an alert to the given user. If the user cannot be found then nothign is sent.
+        /// Sends an alert to the given user. If the user cannot be found then nothing is sent.
         /// </summary>
         /// <param name="message">The body of the alert.</param>
         /// <param name="userName">Name of the user to send the message to.</param>

@@ -10,6 +10,12 @@ using WebMatrix.WebData;
 
 namespace EPSCoR.Web.App.Filters
 {
+    /// <summary>
+    /// Since the user will be forced to login at just about any point in our site
+    /// the AccountController.Login is never reached. 
+    /// Using this attribute instead of just Authorize will ensure that the user is 
+    /// added no matter what page they access first.
+    /// </summary>
     public class AddUserWhenAuthorizedAttribute : AuthorizeAttribute
     {
         private IRepositoryFactory _repoFactory;
@@ -19,6 +25,10 @@ namespace EPSCoR.Web.App.Filters
             _repoFactory = new RepositoryFactory();
         }
 
+        /// <summary>
+        /// Check to see if this is a new user. If so then add them to our database.
+        /// </summary>
+        /// <param name="filterContext"></param>
         public override void OnAuthorization(AuthorizationContext filterContext)
         {
             base.OnAuthorization(filterContext);

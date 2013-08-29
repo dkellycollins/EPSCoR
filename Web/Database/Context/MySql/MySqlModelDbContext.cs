@@ -3,10 +3,10 @@ using System.Linq;
 using EPSCoR.Web.Database.Models;
 using MySql.Data.MySqlClient;
 
-namespace EPSCoR.Web.Database.Context
+namespace EPSCoR.Web.Database.Context.MySql
 {
     /// <summary>
-    /// 
+    /// Extends ModelDbContext to use a MySql database conntection.
     /// </summary>
     public class MySqlModelDbContext : ModelDbContext
     {

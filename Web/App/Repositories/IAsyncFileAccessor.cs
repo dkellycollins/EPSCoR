@@ -57,6 +57,12 @@ namespace EPSCoR.Web.App.Repositories
         /// <param name="fileName">Name of the file to move.</param>
         Task MoveFileAsync(FileDirectory currentDirectory, FileDirectory newDirectory, string fileName);
 
+        /// <summary>
+        /// Generates a unique file key for the given file.
+        /// </summary>
+        /// <param name="directory">The directory the fiel is currently in.</param>
+        /// <param name="fileName">Name of the file.</param>
+        /// <returns></returns>
         Task<string> GenerateFileKeyAsync(FileDirectory directory, string fileName);
     }
 }

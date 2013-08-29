@@ -4,6 +4,10 @@ using System.Net.Mail;
 
 namespace EPSCoR.Web.Database.Services.Log
 {
+    /// <summary>
+    /// Sends an email when an error is logged.
+    /// </summary>
+    /// <remarks>Use cation with this logger. If site is unstable and sends multiple messages it could make the SMTP_HOST look like spam.</remarks>
     public class EmailLogger : ILogger
     {
         //TODO move this to a config file.

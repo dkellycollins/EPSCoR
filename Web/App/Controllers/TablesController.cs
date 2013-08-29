@@ -39,7 +39,6 @@ namespace EPSCoR.Web.App.Controllers
         /// <param name="lowerLimit">The lower limit to return.</param>
         /// <param name="upperLimit">The upper limit to return.</param>
         /// <returns></returns>
-        //[OutputCache(Duration=0, VaryByParam="id, lowerLimit, upperLimit", VaryByCustom="user")]
         [MultipleResponseFormats]
         public async Task<ActionResult> Details(string id, int lowerLimit = 0, int upperLimit = 10)
         {
@@ -57,7 +56,7 @@ namespace EPSCoR.Web.App.Controllers
         }
 
         /// <summary>
-        /// For use with datatable, return a portion of the table.
+        /// For use with datatable plugin; return a portion of the table.
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>

@@ -3,24 +3,6 @@
 namespace EPSCoR.Web.App.Repositories
 {
     /// <summary>
-    /// The posible result for creating a calc table.
-    /// </summary>
-    public enum CalcResult
-    {
-        TableAlreadyExists,
-        SubmittedForProcessing,
-        Error,
-        Success,
-        Unknown
-    }
-
-    public static class CalcType
-    {
-        public const string Sum = "SUM";
-        public const string Avg = "AVG";
-    }
-
-    /// <summary>
     /// Provides functions for creating calc tables.
     /// </summary>
     public interface IDatabaseCalc : IDisposable
