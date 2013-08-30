@@ -8,6 +8,9 @@ namespace EPSCoR.Common.Exceptions
     [Serializable]
     public class InvalidFileException : Exception
     {
+        /// <summary>
+        /// The fully quilified path to the file.
+        /// </summary>
         public string InvalidFile { get; set; }
 
         public InvalidFileException(string invalidFile, string message)

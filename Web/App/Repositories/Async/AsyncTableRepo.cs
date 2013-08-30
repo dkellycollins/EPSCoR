@@ -10,6 +10,9 @@ using EPSCoR.Web.Database.Services;
 
 namespace EPSCoR.Web.App.Repositories.Async
 {
+    /// <summary>
+    /// Implements IAsyncTableRepository and IAsyncDatabase using TableDbContext and ModelDbContext
+    /// </summary>
     public class AsyncTableRepo : IAsyncTableRepository, IAsyncDatabaseCalc
     {
         private ModelDbContext _modelContext;

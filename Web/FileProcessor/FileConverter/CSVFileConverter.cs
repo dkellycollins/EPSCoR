@@ -10,7 +10,14 @@ namespace EPSCoR.Web.FileProcessor.FileConverter
     /// </summary>
     public class CSVFileConverter : IFileConverter
     {
+        /// <summary>
+        /// The pah to the file to convert.
+        /// </summary>
         public string FilePath { get; private set; }
+
+        /// <summary>
+        /// The user who owns the file. This is used to determine the user Directory.
+        /// </summary>
         public string User { get; private set; }
 
         public CSVFileConverter(string file, string user)

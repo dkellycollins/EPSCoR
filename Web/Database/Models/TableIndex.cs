@@ -54,6 +54,9 @@ namespace EPSCoR.Web.Database.Models
         /// </summary>
         //public bool Shared { get; set; }
 
+        /// <summary>
+        /// The unique key to identify the file that this index represents.
+        /// </summary>
         [MaxLength(32)]
         [JsonIgnore]
         public string FileKey { get; set; }

@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace EPSCoR.Web.App.Repositories.Async
 {
+    /// <summary>
+    /// Implements IAsyncFileAccessor using just System.IO;
+    /// </summary>
     public class AsyncFileAccessor : IAsyncFileAccessor
     {
         private string _user;

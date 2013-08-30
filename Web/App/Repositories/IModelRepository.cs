@@ -26,6 +26,11 @@ namespace EPSCoR.Web.App.Repositories
         /// <returns></returns>
         IEnumerable<T> GetAll();
 
+        /// <summary>
+        /// Returns all entities that match the given predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         IEnumerable<T> Where(Expression<Func<T, bool>> predicate);
 
         /// <summary>

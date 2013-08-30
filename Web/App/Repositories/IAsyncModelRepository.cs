@@ -27,6 +27,11 @@ namespace EPSCoR.Web.App.Repositories
         /// <returns></returns>
         Task<IEnumerable<T>> GetAllAsync();
 
+        /// <summary>
+        /// Returns all entities that match the given predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         Task<IEnumerable<T>> WhereAsync(Expression<Func<T, bool>> predicate);
 
         /// <summary>

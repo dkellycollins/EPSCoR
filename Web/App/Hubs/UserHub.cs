@@ -45,10 +45,6 @@ namespace EPSCoR.Web.App.Hubs
                         ConnectionId = connectionId
                     });
                 }
-                else
-                {
-                    connectionRepo.Update(connection);
-                }
             }
 
             return base.OnConnected();

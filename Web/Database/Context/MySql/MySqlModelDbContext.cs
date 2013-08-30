@@ -6,7 +6,7 @@ using MySql.Data.MySqlClient;
 namespace EPSCoR.Web.Database.Context.MySql
 {
     /// <summary>
-    /// 
+    /// Extends ModelDbContext to use a MySql database conntection.
     /// </summary>
     public class MySqlModelDbContext : ModelDbContext
     {

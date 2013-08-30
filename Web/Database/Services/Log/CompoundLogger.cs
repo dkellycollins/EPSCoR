@@ -2,6 +2,9 @@
 
 namespace EPSCoR.Web.Database.Services.Log
 {
+    /// <summary>
+    /// Combines multiple loggers into one.
+    /// </summary>
     public class CompoundLogger : ILogger
     {
         private ILogger[] _loggers;

@@ -3,9 +3,6 @@ using System.Web.Mvc;
 
 namespace EPSCoR.Web.App.Results
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public class DataTableResult : NewtonsoftJsonResult
     {
         /// <summary>

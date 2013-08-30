@@ -75,6 +75,12 @@ namespace EPSCoR.Web.Database.Context.MySql
             LoggerFactory.GetLogger().Log(rowsUpdated + " rows updated in table " + table + ", " + Database.Connection.Database);
         }
 
+        /// <summary>
+        /// Saves the give table to the given file. Note that if the file already exist it will be overwritten.
+        /// </summary>
+        /// <param name="table">Name of the table to save.</param>
+        /// <param name="filePath">Fully qualified path to the file.</param>
+        /// <remarks>This query might fail if the program does not have permission to write to a file.</remarks>
         public override void SaveTableToFile(string table, string filePath)
         {
             IEnumerable<string> columns = getColumnsForTable(table);
@@ -98,11 +104,20 @@ namespace EPSCoR.Web.Database.Context.MySql
             createCalcTable(attTable, usTable, calcTable, "SUM");
         }
 
+        /// <summary>
+        /// Creates a new table where the two given tables have been averaged.
+        /// </summary>
+        /// <param name="attTable">Attribute Table</param>
+        /// <param name="usTable">Upstream Table</param>
         public override void AvgTables(string attTable, string usTable, string calcTable)
         {
             createCalcTable(attTable, usTable, calcTable, "AVG");
         }
 
+        /// <summary>
+        /// Drops the given table if it exists.
+        /// </summary>
+        /// <param name="table">Name of the table to drop.</param>
         public override void DropTable(string table)
         {
             ThrowExceptionIfInvalidSql(table);
@@ -123,7 +138,7 @@ namespace EPSCoR.Web.Database.Context.MySql
             StringBuilder curColumns = new StringBuilder();
             foreach (string column in columns)
             {
-                //TODO make this if statement dynamic
+                //TODO we only dont want to sum the key fields. See if we can just determine the primary keys of the table and ignore those only.
                 if (column != "ID" && column != "ARCID" && column != "OBJECTID" && column != "uni")
                 {
                     newColumns.Append(string.Format(", {0}({1}) AS {0}_{1}", calc, column));

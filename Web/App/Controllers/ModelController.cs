@@ -8,6 +8,10 @@ using EPSCoR.Web.Database.Models;
 
 namespace EPSCoR.Web.App.Controllers
 {
+    /// <summary>
+    /// A generic controller for Models. Note that this class cannot be used directly.
+    /// </summary>
+    /// <typeparam name="T">The model type</typeparam>
     public class ModelController<T> : Controller
         where T : Model, new() 
     {
@@ -38,7 +42,7 @@ namespace EPSCoR.Web.App.Controllers
         }
 
         /// <summary>
-        /// Attempts to find a model by the id. If one is found returns the details view. Otherwise returns HttpNotFound.
+        /// Attempts to find a model by the id. If one is found returns the details. Otherwise returns HttpNotFound.
         /// </summary>
         /// <param name="id">Id of the model</param>
         /// <returns></returns>
@@ -61,7 +65,6 @@ namespace EPSCoR.Web.App.Controllers
 
         /// <summary>
         /// Attemps to create a default instance of the model and return the create view.
-        /// Note that any subclasses should probably override this method as the default for classes is null.
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -73,6 +76,11 @@ namespace EPSCoR.Web.App.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Creates a new model using the data from model.
+        /// </summary>
+        /// <param name="model">Model to create.</param>
+        /// <returns></returns>
         [HttpPost]
         [MultipleResponseFormats(ResponseFormat.Ajax)]
         public virtual ActionResult Create(T model)
@@ -89,6 +97,11 @@ namespace EPSCoR.Web.App.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Attempt to find the model using id. If one is found returns the data so it can be edited.
+        /// </summary>
+        /// <param name="id">Id for the model.</param>
+        /// <returns></returns>
         [HttpGet]
         [MultipleResponseFormats(ResponseFormat.Ajax)]
         public virtual ActionResult Edit(int id = 0)
@@ -107,6 +120,11 @@ namespace EPSCoR.Web.App.Controllers
             return View("Create", model);
         }
 
+        /// <summary>
+        /// Updates the model using the model provided.
+        /// </summary>
+        /// <param name="model">Model with updates.</param>
+        /// <returns></returns>
         [HttpPost]
         [MultipleResponseFormats(ResponseFormat.Ajax)]
         public virtual ActionResult Edit(T model)
@@ -123,6 +141,11 @@ namespace EPSCoR.Web.App.Controllers
             return View("Create", model);
         }
 
+        /// <summary>
+        /// Removes the model completely from the database.
+        /// </summary>
+        /// <param name="id">Id of the model to remove.</param>
+        /// <returns></returns>
         [HttpGet]
         public virtual ActionResult Delete(int id)
         {
@@ -146,6 +169,11 @@ namespace EPSCoR.Web.App.Controllers
             : base(factory)
         { }
 
+        /// <summary>
+        /// Removed the table index as well the table and any files it represented.
+        /// </summary>
+        /// <param name="id">Id of the table index</param>
+        /// <returns></returns>
         public override ActionResult Delete(int id)
         {
             string tableName;
@@ -193,6 +221,11 @@ namespace EPSCoR.Web.App.Controllers
             : base(factory)
         { }
 
+        /// <summary>
+        /// Removed the user, any table indexes the user had and the actual tables and file those table indexes represented.
+        /// </summary>
+        /// <param name="id">Id of the user.</param>
+        /// <returns></returns>
         public override ActionResult Delete(int id)
         {
             using (IModelRepository<UserProfile> userRepo = _repoFactory.GetModelRepository<UserProfile>())
@@ -233,6 +266,9 @@ namespace EPSCoR.Web.App.Controllers
         }
     }
 
+    /// <summary>
+    /// Log entries should be treated as readonly. This class overrides most functionality simply to prevent it.
+    /// </summary>
     public class LogController : ModelController<LogEntry>
     {
         public LogController()

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using EPSCoR.Common;
 using EPSCoR.Web.Database;
@@ -135,7 +136,8 @@ namespace EPSCoR.Web.FileProcessor
                 {
                     ActionCode = (int)EPSCoR.Web.Database.Models.Action.Updated,
                     EntryID = index.ID,
-                    TableName = "TableIndexes"
+                    TableName = "TableIndexes",
+                    Source = Assembly.GetExecutingAssembly().FullName
                 });
             }
         }

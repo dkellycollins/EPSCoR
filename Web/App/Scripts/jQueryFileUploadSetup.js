@@ -1,5 +1,6 @@
 ﻿/*jslint unparam: true, white: true, indent: 4 */
 /* global: $ serverBase */
+/* This script will find the div with the id fileUpload and initialize it using jquery file upload. */
 $(function () {
     'use strict';
     var baseUrl = '/Files/',

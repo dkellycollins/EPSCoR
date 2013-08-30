@@ -8,9 +8,6 @@ using Microsoft.AspNet.SignalR;
 
 namespace EPSCoR.Web.App.Hubs
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public class TableHub : UserHub
     {
         private static IHubContext _context;
@@ -76,6 +73,8 @@ namespace EPSCoR.Web.App.Hubs
         {
             string userName = Context.User.Identity.Name;
 
+            //TODO this deltion code is used often move it to a central location.
+
             //Remove index.
             using (IModelRepository<TableIndex> tableIndexRepo = _repoFactory.GetModelRepository<TableIndex>())
             {
@@ -134,6 +133,7 @@ namespace EPSCoR.Web.App.Hubs
 
             using (IAsyncDatabaseCalc dbCalc = _repoFactory.GetAsyncDatabaseCalc(userName))
             {
+                //TODO can we move this processing out of the program?
                 CalcResult result;
                 switch (calcType)
                 {
